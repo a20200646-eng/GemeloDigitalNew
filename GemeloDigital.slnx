@@ -1,0 +1,10 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="GemeloDigital.Console/GemeloDigital.Console.vcxproj" />
+  <Project Path="GemeloDigital.Controller/GemeloDigital.Controller.vcxproj" />
+  <Project Path="GemeloDigital.Model/GemeloDigital.Model.vcxproj" />
+  <Project Path="LOGIN/LOGIN/LOGIN.vcxproj" Id="f333a6a0-df01-b7b9-7d30-2e7f895becdb" />
+</Solution>
