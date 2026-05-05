@@ -2,7 +2,7 @@
 using namespace System;
 using namespace System::Collections::Generic;
 using namespace GemeloDigitalModel;
-
+//pedro
 namespace GemeloDigitalController {
 
     public ref class AdministradorController {
