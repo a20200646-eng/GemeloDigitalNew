@@ -4,6 +4,7 @@
 using namespace System;
 using namespace System::Collections::Generic;
 //Model de EstacionBodyFraming: Representa la estación de ensamblaje de carrocerías, con sus brazos robóticos y estado general del sistema.
+//
 namespace GemeloDigitalModel {
 
     public ref class EstacionBodyFramingModel {

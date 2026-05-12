@@ -1,13 +1,21 @@
 #pragma once
 using namespace System;
 using namespace System::Collections::Generic;
+using namespace System::IO;
 using namespace GemeloDigitalModel;
 
 namespace GemeloDigitalController {
+    // ============================================================
+    // EventoErrorController
+    // Formato: id|timestamp|descripcion|codigoError|fase
+    // (nivel siempre ERROR)
+    // ============================================================
 
     public ref class EventoErrorController {
     private:
         List<EventoErrorModel^>^ repositorio;
+        static String^ RUTA = "datos\\eventos_error.dat";
+
 
     public:
         EventoErrorController() {
@@ -60,6 +68,32 @@ namespace GemeloDigitalController {
                 return true;
             }
             return false;
+        }
+
+		//PERSISTENCIA
+
+        void guardarArchivo() {
+            Directory::CreateDirectory("datos");
+            StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
+            for each(EventoErrorModel ^ e in repositorio)
+                sw->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}",
+                    e->getId(), e->getTimestamp(), e->getDescripcion(),
+                    e->getCodigoError(), e->getFase()));
+            sw->Close();
+        }
+
+        void cargarArchivo() {
+            if (!File::Exists(RUTA)) return;
+            repositorio->Clear();
+            StreamReader^ sr = gcnew StreamReader(RUTA, Text::Encoding::UTF8);
+            String^ linea;
+            while ((linea = sr->ReadLine()) != nullptr) {
+                if (linea->Trim()->Length == 0) continue;
+                array<String^>^ c = linea->Split('|');
+                repositorio->Add(gcnew EventoErrorModel(
+                    Int32::Parse(c[0]), c[1], c[2], c[3], c[4]));
+            }
+            sr->Close();
         }
     };
 }

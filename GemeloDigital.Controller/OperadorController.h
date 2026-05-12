@@ -3,13 +3,19 @@ using namespace System;
 using namespace System::Collections::Generic;
 using namespace GemeloDigitalModel;
 
+using namespace System::IO; // Para manejo de archivos (si se decide implementar persistencia en archivos)
+
 namespace GemeloDigitalController {
 
     public ref class OperadorController {
     private:
         List<OperadorModel^>^ repositorio;
+		static String^ RUTA = "datos\\operadores.dat"; // Ruta para persistencia
 
     public:
+
+
+
         OperadorController() {
             repositorio = gcnew List<OperadorModel^>();
         }
@@ -59,5 +65,29 @@ namespace GemeloDigitalController {
             }
             return false;
         }
+
+        void guardarArchivo() {
+            Directory::CreateDirectory("datos");
+            StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
+            for each (OperadorModel ^ o in repositorio)
+                sw->WriteLine(String::Format("{0}|{1}|{2}|{3}",
+                    o->getId(), o->getNombre(), o->getContrasena(), o->getTurno()));
+            sw->Close();
+        }
+
+        void cargarArchivo() {
+            if (!File::Exists(RUTA)) return;
+            repositorio->Clear();
+            StreamReader^ sr = gcnew StreamReader(RUTA, Text::Encoding::UTF8);
+            String^ linea;
+            while ((linea = sr->ReadLine()) != nullptr) {
+                if (linea->Trim()->Length == 0) continue;
+                array<String^>^ c = linea->Split('|');
+                repositorio->Add(gcnew OperadorModel(
+                    Int32::Parse(c[0]), c[1], c[2], c[3]));
+            }
+            sr->Close();
+        }
+
     };
 }

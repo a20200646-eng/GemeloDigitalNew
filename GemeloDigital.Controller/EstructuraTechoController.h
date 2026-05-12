@@ -1,6 +1,7 @@
 #pragma once
 using namespace System;
 using namespace System::Collections::Generic;
+using namespace System::IO;
 using namespace GemeloDigitalModel;
 
 namespace GemeloDigitalController {
@@ -8,6 +9,8 @@ namespace GemeloDigitalController {
     public ref class EstructuraTechoController {
     private:
         List<EstructuraTechoModel^>^ repositorio;
+        static String^ RUTA = "datos\\estructuras_techo.dat";
+
 
     public:
         EstructuraTechoController() {
@@ -68,6 +71,34 @@ namespace GemeloDigitalController {
                 return true;
             }
             return false;
+        }
+
+		// ── Persistencia ─────────────────────────────────────────
+        void guardarArchivo() {
+            Directory::CreateDirectory("datos");
+            StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
+            for each(EstructuraTechoModel ^ e in repositorio)
+                sw->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}|{5}",
+                    e->getId(), e->getMaterial(), e->getPeso(),
+                    (int)e->getEstado(), e->getPuntosUnion(), e->getAnchura()));
+            sw->Close();
+        }
+
+        void cargarArchivo() {
+            if (!File::Exists(RUTA)) return;
+            repositorio->Clear();
+            StreamReader^ sr = gcnew StreamReader(RUTA, Text::Encoding::UTF8);
+            String^ linea;
+            while ((linea = sr->ReadLine()) != nullptr) {
+                if (linea->Trim()->Length == 0) continue;
+                array<String^>^ c = linea->Split('|');
+                EstructuraTechoModel^ e = gcnew EstructuraTechoModel(
+                    Int32::Parse(c[0]), c[1], Double::Parse(c[2]),
+                    Int32::Parse(c[4]), Double::Parse(c[5]));
+                e->setEstado((EstadoPieza)Int32::Parse(c[3]));
+                repositorio->Add(e);
+            }
+            sr->Close();
         }
     };
 }

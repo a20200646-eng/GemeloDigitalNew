@@ -1,18 +1,28 @@
 #pragma once
 using namespace System;
 using namespace System::Collections::Generic;
+using namespace System::IO;
 using namespace GemeloDigitalModel;
 
 namespace GemeloDigitalController {
 
+    // ============================================================
+    // TareaSoldarController
+    // Formato: id|estado|puntosObjetivo|puntosCompletados|temperatura
+    // ============================================================
+
     public ref class TareaSoldarController {
     private:
         List<TareaSoldarModel^>^ repositorio;
+        static String^ RUTA = "datos\\tareas_soldar.dat";
 
     public:
         TareaSoldarController() {
             repositorio = gcnew List<TareaSoldarModel^>();
+            
+
         }
+       
 
         // CREATE
         bool agregar(int id, int puntosObjetivo, double temperatura) {
@@ -60,5 +70,36 @@ namespace GemeloDigitalController {
             }
             return false;
         }
+
+		//persistencia
+
+        void guardarArchivo() {
+            Directory::CreateDirectory("datos");
+            StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
+            for each(TareaSoldarModel ^ t in repositorio)
+                sw->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}",
+                    t->getId(), t->getEstado(), t->getPuntosObjetivo(),
+                    t->getPuntosCompletados(), t->getTemperatura()));
+            sw->Close();
+        }
+
+        void cargarArchivo() {
+            if (!File::Exists(RUTA)) return;
+            repositorio->Clear();
+            StreamReader^ sr = gcnew StreamReader(RUTA, Text::Encoding::UTF8);
+            String^ linea;
+            while ((linea = sr->ReadLine()) != nullptr) {
+                if (linea->Trim()->Length == 0) continue;
+                array<String^>^ c = linea->Split('|');
+                TareaSoldarModel^ t = gcnew TareaSoldarModel(
+                    Int32::Parse(c[0]), Int32::Parse(c[2]), Double::Parse(c[4]));
+                t->setEstado(c[1]);
+                t->setPuntosCompletados(Int32::Parse(c[3]));
+                repositorio->Add(t);
+            }
+            sr->Close();
+        }
+
+
     };
 }

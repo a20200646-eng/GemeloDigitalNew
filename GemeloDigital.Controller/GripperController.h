@@ -1,6 +1,7 @@
 #pragma once
 using namespace System;
 using namespace System::Collections::Generic;
+using namespace System::IO;
 using namespace GemeloDigitalModel;
 
 namespace GemeloDigitalController {
@@ -8,6 +9,8 @@ namespace GemeloDigitalController {
     public ref class GripperController {
     private:
         List<GripperModel^>^ repositorio;
+        static String^ RUTA = "datos\\grippers.dat";
+
 
     public:
         GripperController() {
@@ -62,6 +65,34 @@ namespace GemeloDigitalController {
                 return true;
             }
             return false;
+        }
+
+        //PERSISTANCE
+        // Formato: id|nombre|activo|apertura|fuerzaAgarre|abierto
+        void guardarArchivo() {
+            Directory::CreateDirectory("datos");
+            StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
+            for each (GripperModel ^ g in repositorio)
+                sw->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}|{5}",
+                    g->getId(), g->getNombre(), (g->getActivo() ? 1 : 0),
+                    g->getApertura(), g->getFuerzaAgarre(), (g->getAbierto() ? 1 : 0)));
+            sw->Close();
+        }
+
+        void cargarArchivo() {
+            if (!File::Exists(RUTA)) return;
+            repositorio->Clear();
+            StreamReader^ sr = gcnew StreamReader(RUTA, Text::Encoding::UTF8);
+            String^ linea;
+            while ((linea = sr->ReadLine()) != nullptr) {
+                if (linea->Trim()->Length == 0) continue;
+                array<String^>^ c = linea->Split('|');
+                GripperModel^ g = gcnew GripperModel(
+					Int32::Parse(c[0]), c[1], Boolean::Parse(c[2]),
+                    Double::Parse(c[3]), Double::Parse(c[4]), c[5]->Equals("1"));
+                repositorio->Add(g);
+            }
+            sr->Close();
         }
     };
 }

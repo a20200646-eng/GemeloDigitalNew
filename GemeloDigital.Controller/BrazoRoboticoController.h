@@ -1,13 +1,35 @@
 #pragma once
 using namespace System;
 using namespace System::Collections::Generic;
+using namespace System::IO;
 using namespace GemeloDigitalModel;
 
 namespace GemeloDigitalController {
 
+    // ============================================================
+    // BrazoRoboticoController
+    //
+    // Persistencia en CINCO archivos separados:
+    //   datos\brazos.dat                → campos propios del brazo
+    //   datos\brazo_articulaciones.dat  → articulaciones por brazo
+    //   datos\brazo_grippers.dat        → gripper por brazo
+    //   datos\brazo_sensores_pos.dat    → sensores de posicion por brazo
+    //   datos\brazo_sensores_fuerza.dat → sensores de fuerza por brazo
+    //
+    // Al cargar: primero cargarArchivo() para reconstruir los brazos,
+    // luego los componentes se reinyectan llamando a agregarArticulacion(),
+    // asignarGripper(), agregarSensorPosicion() y agregarSensorFuerza().
+    // ============================================================
+
     public ref class BrazoRoboticoController {
     private:
         List<BrazoRoboticoModel^>^ repositorio;
+
+        static String^ RUTA_BRAZOS = "datos\\brazos.dat";
+        static String^ RUTA_ARTS = "datos\\brazo_articulaciones.dat";
+        static String^ RUTA_GRIPPERS = "datos\\brazo_grippers.dat";
+        static String^ RUTA_SENS_POS = "datos\\brazo_sensores_pos.dat";
+        static String^ RUTA_SENS_FUE = "datos\\brazo_sensores_fuerza.dat";
 
     public:
         BrazoRoboticoController() {
@@ -110,6 +132,142 @@ namespace GemeloDigitalController {
                 return true;
             }
             return false;
+        }
+
+        // ── Persistencia ─────────────────────────────────────────
+
+        // brazos.dat      → id|rol|estado|gripper
+        // articulaciones  → brazoId|id|nombre|activo|anguloActual|anguloMin|anguloMax
+        // grippers        → brazoId|id|nombre|activo|apertura|fuerzaAgarre|abierto
+        // sensores pos    → brazoId|id|nombre|activo|anguloMedido|tolerancia
+        // sensores fuerza → brazoId|id|nombre|activo|fuerzaActual|fuerzaMin|fuerzaMax
+        void guardarArchivo() {
+            Directory::CreateDirectory("datos");
+
+            // --- brazos.dat ---
+            StreamWriter^ swB = gcnew StreamWriter(RUTA_BRAZOS, false, Text::Encoding::UTF8);
+            // --- articulaciones ---
+            StreamWriter^ swA = gcnew StreamWriter(RUTA_ARTS, false, Text::Encoding::UTF8);
+            // --- grippers ---
+            StreamWriter^ swG = gcnew StreamWriter(RUTA_GRIPPERS, false, Text::Encoding::UTF8);
+            // --- sensores posicion y fuerza ---
+            StreamWriter^ swSP = gcnew StreamWriter(RUTA_SENS_POS, false, Text::Encoding::UTF8);
+            StreamWriter^ swSF = gcnew StreamWriter(RUTA_SENS_FUE, false, Text::Encoding::UTF8);
+
+            for each (BrazoRoboticoModel ^ b in repositorio) {
+                // Brazo
+                swB->WriteLine(String::Format("{0}|{1}|{2}|{3}",
+                    b->getId(), (int)b->getRol(), (int)b->getEstado(), b->getGripper())); 
+
+                // Articulaciones del brazo
+                for each (ArticulacionModel ^ a in b->getArticulaciones())
+                    swA->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}",
+                        b->getId(), a->getId(), a->getNombre(), (a->getActivo() ? 1 : 0),
+                        a->getAnguloActual(), a->getAnguloMinimo(), a->getAnguloMaximo()));
+
+                // Gripper del brazo
+                GripperModel^ g = b->getGripper();
+                if (g != nullptr)
+                    swG->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}",
+                        b->getId(), g->getId(), g->getNombre(), (g->getActivo() ? 1 : 0),
+                        g->getApertura(), g->getFuerzaAgarre(), (g->getAbierto() ? 1 : 0)));
+
+                // Sensores del brazo: distinguir tipo por dynamic_cast
+                for each (SensorModel ^ s in b->getSensores()) {
+                    SensorPosicionModel^ sp = dynamic_cast<SensorPosicionModel^>(s);
+                    SensorFuerzaModel^ sf = dynamic_cast<SensorFuerzaModel^>(s);
+                    if (sp != nullptr)
+                        swSP->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}|{5}",
+                            b->getId(), sp->getId(), sp->getNombre(), (sp->getActivo() ? 1 : 0),
+                            sp->getAnguloMedido(), sp->getTolerancia()));
+                    else if (sf != nullptr)
+                        swSF->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}",
+                            b->getId(), sf->getId(), sf->getNombre(), (sf->getActivo() ? 1 : 0),
+                            sf->getFuerzaActual(), sf->getFuerzaMinima(), sf->getFuerzaMaxima()));
+                }
+            }
+
+            swB->Close(); swA->Close(); swG->Close(); swSP->Close(); swSF->Close();
+        }
+
+        void cargarArchivo() {
+            // PASO 1: reconstruir brazos basicos
+            if (!File::Exists(RUTA_BRAZOS)) return;
+            repositorio->Clear();
+            StreamReader^ sr = gcnew StreamReader(RUTA_BRAZOS, Text::Encoding::UTF8);
+            String^ linea;
+            while ((linea = sr->ReadLine()) != nullptr) {
+                if (linea->Trim()->Length == 0) continue;
+                array<String^>^ c = linea->Split('|');
+                BrazoRoboticoModel^ b = gcnew BrazoRoboticoModel(
+                    Int32::Parse(c[0]), (RolBrazo)Int32::Parse(c[1]));
+                b->setEstado((EstadoBrazo)Int32::Parse(c[2]));
+                // No reconstruimos aquí el Gripper a partir de una cadena.
+                // Los grippers se reinyectan en el PASO 3 leyendo el archivo correspondiente.
+                b->setGripper(nullptr);
+                repositorio->Add(b);
+            }
+            sr->Close();
+
+            // PASO 2: reinyectar articulaciones
+            if (File::Exists(RUTA_ARTS)) {
+                sr = gcnew StreamReader(RUTA_ARTS, Text::Encoding::UTF8);
+                while ((linea = sr->ReadLine()) != nullptr) {
+                    if (linea->Trim()->Length == 0) continue;
+                    array<String^>^ c = linea->Split('|');
+                    ArticulacionModel^ a = gcnew ArticulacionModel(
+                        Int32::Parse(c[1]), c[2],Boolean::Parse(c[3]),
+                        Double::Parse(c[4]), Double::Parse(c[5]), Double::Parse(c[6]));
+                    BrazoRoboticoModel^ b = buscarPorId(Int32::Parse(c[0]));
+                    if (b != nullptr) b->getArticulaciones()->Add(a);
+                }
+                sr->Close();
+            }
+
+            // PASO 3: reinyectar grippers
+            if (File::Exists(RUTA_GRIPPERS)) {
+                sr = gcnew StreamReader(RUTA_GRIPPERS, Text::Encoding::UTF8);
+                while ((linea = sr->ReadLine()) != nullptr) {
+                    if (linea->Trim()->Length == 0) continue;
+                    array<String^>^ c = linea->Split('|');
+                    GripperModel^ g = gcnew GripperModel(
+                        Int32::Parse(c[1]), c[2],Boolean::Parse(c[3]),
+                        Double::Parse(c[4]), Double::Parse(c[5]), c[6]->Equals("1"));
+                    BrazoRoboticoModel^ b = buscarPorId(Int32::Parse(c[0]));
+                    if (b != nullptr) b->setGripper(g);
+                }
+                sr->Close();
+            }
+
+            // PASO 4: reinyectar sensores de posicion
+            if (File::Exists(RUTA_SENS_POS)) {
+                sr = gcnew StreamReader(RUTA_SENS_POS, Text::Encoding::UTF8);
+                while ((linea = sr->ReadLine()) != nullptr) {
+                    if (linea->Trim()->Length == 0) continue;
+                    array<String^>^ c = linea->Split('|');
+                    SensorPosicionModel^ s = gcnew SensorPosicionModel(
+                        Int32::Parse(c[1]), c[2],Boolean::Parse(c[3]), Double::Parse(c[4]), Double::Parse(c[5]));
+
+                    BrazoRoboticoModel^ b = buscarPorId(Int32::Parse(c[0]));
+                    if (b != nullptr) b->getSensores()->Add(s);
+                }
+                sr->Close();
+            }
+
+            // PASO 5: reinyectar sensores de fuerza
+            if (File::Exists(RUTA_SENS_FUE)) {
+                sr = gcnew StreamReader(RUTA_SENS_FUE, Text::Encoding::UTF8);
+                while ((linea = sr->ReadLine()) != nullptr) {
+                    if (linea->Trim()->Length == 0) continue;
+                    array<String^>^ c = linea->Split('|');
+                    SensorFuerzaModel^ s = gcnew SensorFuerzaModel(
+						Int32::Parse(c[1]), c[2], Boolean::Parse(c[3]),
+                        Double::Parse(c[4]), Double::Parse(c[5]), Double::Parse(c[6]));
+                    BrazoRoboticoModel^ b = buscarPorId(Int32::Parse(c[0]));
+                    if (b != nullptr) b->getSensores()->Add(s);
+                }
+                sr->Close();
+            }
         }
     };
 }
