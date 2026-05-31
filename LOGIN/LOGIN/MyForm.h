@@ -1,8 +1,7 @@
 ﻿#pragma once
-#include "FormMenuJefe.h"
-#include "FormMenuOperador.h"
-#include "FormMenuControlador.h"
-#include "FormMenuAdmin.h"
+
+#include "Interfaz.h"
+
 using namespace LOGIN;
 
 
@@ -42,6 +41,30 @@ namespace LOGIN {
 		// Variables para rastrear el estado del movimiento
 		bool moviendo = false;
 
+	private:
+		// Variable global para rastrear y controlar el formulario que está en pantalla
+		Form^ formActivo = nullptr;
+
+		void AbrirFormHijo(Form^ formHijo) {
+			// 1. Si ya hay un formulario abierto en el panel, lo cerramos para liberar memoria
+			if (this->formActivo != nullptr) {
+				this->formActivo->Close();
+			}
+
+			// 2. Guardamos el nuevo formulario como el activo
+			this->formActivo = formHijo;
+
+			// 3. Configuración para transformar la ventana en un control interno
+			formHijo->TopLevel = false; // Frena que se abra como una ventana flotante externa
+			formHijo->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None; // Quita la barra de título, bordes y botones de cerrar
+			formHijo->Dock = DockStyle::Fill; // Fuerza al formulario hijo a estirarse al tamaño exacto del panel contenedor
+
+			// 4. Agregamos el formulario al panel contenedor y lo mostramos
+			this->panel2->Controls->Add(formHijo);
+			this->panel2->Tag = formHijo;
+			formHijo->BringToFront(); // Lo trae al frente para que no lo tape ningún otro control
+			formHijo->Show(); // Lo renderiza en pantalla
+		}
 
 		   Point posicionInicial;
 
@@ -364,23 +387,52 @@ namespace LOGIN {
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
 		String^ user = txtUsuario->Text;
 		String^ pass = txtPassword->Text;
+		Interfaz^ Principal = gcnew Interfaz();
+
 
 		if (user == "jefe" && pass == "123") {
-			FormMenuJefe^ f = gcnew FormMenuJefe();
-			f->Show();
-			
+			Principal->label1->Text = "Jefe de Operaciones";
+			Principal->button1->Text = "Dashboard";
+			Principal->button2->Text = "Estación / Ciclo";
+			Principal->button3->Text = "Línea Ensamblaje";
+			Principal->button4->Text = "Eventos";
+			Principal->button5->Text = "Reportes";
+			Principal->button6->Text = "Cerrar sesión";
+			Principal->Show();
+
 		}
 		else if (user == "operador" && pass == "123") {
-			FormMenuOperador^ f = gcnew FormMenuOperador();
-			f->Show();
+			Principal->label1->Text = "Operador";
+			Principal->button1->Text = "Dashboard";
+			Principal->button2->Text = "Tareas";
+			Principal->button3->Text = "Brazos";
+			Principal->button4->Text = "Eventos";
+			Principal->button6->Text = "Salir";
+			Principal->button5->Visible = false;
+			Principal->Show();
 		}
 		else if (user == "controlador" && pass == "123") {
-			FormMenuControlador^ f = gcnew FormMenuControlador();
-			f->Show();
+			Principal->label1->Text = "Controlador de piezas";
+			Principal->button1->Text = "Dashboard";
+			Principal->button2->Text = "Inventario";
+			Principal->button3->Text = "Est. Trabajo";
+			Principal->button4->Text = "Línea Ensamblaje";
+			Principal->button6->Text = "Salir";
+			Principal->button5->Visible = false;
+			Principal->Show();
+
+
 		}
 		else if (user == "admin" && pass == "123") {
-			FormMenuAdmin^ f = gcnew FormMenuAdmin();
-			f->Show();
+			Principal->label1->Text = "Administrador";
+			Principal->button1->Text = "Usuarios";
+			Principal->button2->Text = "Inventario";
+			Principal->button3->Text = "Eventos";
+			Principal->button4->Text = "Reportes";
+			Principal->button6->Text = "Salir";
+			Principal->button5->Visible = false;
+			Principal->Show();
+
 		}
 		else {
 			MessageBox::Show("Usuario o contraseña incorrectos");
