@@ -362,6 +362,7 @@ namespace LOGIN {
 			this->Controls->Add(this->label8);
 			this->Name = L"Reportes_de_Costos_Admin";
 			this->Text = L"Reportes_de_Costos_Admin";
+			this->Load += gcnew System::EventHandler(this, &Reportes_de_Costos_Admin::Reportes_de_Costos_Admin_Load);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView2))->EndInit();
 			this->panel1->ResumeLayout(false);
@@ -371,5 +372,8 @@ namespace LOGIN {
 
 		}
 #pragma endregion
-	};
+	private: System::Void Reportes_de_Costos_Admin_Load(System::Object^ sender, System::EventArgs^ e) {
+
+	}
+};
 }
