@@ -14,3 +14,5 @@ namespace GemeloDigitalModel {
         virtual void dataReport() override = 0;
     };
 }
+
+
