@@ -89,7 +89,7 @@ namespace LOGIN {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle2 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
+			System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle1 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
 			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(Dashboard_admin::typeid));
 			this->label4 = (gcnew System::Windows::Forms::Label());
 			this->label18 = (gcnew System::Windows::Forms::Label());
@@ -189,21 +189,22 @@ namespace LOGIN {
 			this->dataGridView1->Location = System::Drawing::Point(133, 343);
 			this->dataGridView1->Name = L"dataGridView1";
 			this->dataGridView1->RowHeadersBorderStyle = System::Windows::Forms::DataGridViewHeaderBorderStyle::Single;
-			dataGridViewCellStyle2->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
-			dataGridViewCellStyle2->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(58)),
+			dataGridViewCellStyle1->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
+			dataGridViewCellStyle1->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(58)),
 				static_cast<System::Int32>(static_cast<System::Byte>(95)));
-			dataGridViewCellStyle2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			dataGridViewCellStyle1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			dataGridViewCellStyle2->ForeColor = System::Drawing::SystemColors::WindowText;
-			dataGridViewCellStyle2->SelectionBackColor = System::Drawing::SystemColors::Highlight;
-			dataGridViewCellStyle2->SelectionForeColor = System::Drawing::SystemColors::HighlightText;
-			dataGridViewCellStyle2->WrapMode = System::Windows::Forms::DataGridViewTriState::True;
-			this->dataGridView1->RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
+			dataGridViewCellStyle1->ForeColor = System::Drawing::SystemColors::WindowText;
+			dataGridViewCellStyle1->SelectionBackColor = System::Drawing::SystemColors::Highlight;
+			dataGridViewCellStyle1->SelectionForeColor = System::Drawing::SystemColors::HighlightText;
+			dataGridViewCellStyle1->WrapMode = System::Windows::Forms::DataGridViewTriState::True;
+			this->dataGridView1->RowHeadersDefaultCellStyle = dataGridViewCellStyle1;
 			this->dataGridView1->RowHeadersVisible = false;
 			this->dataGridView1->RowHeadersWidth = 51;
 			this->dataGridView1->RowTemplate->Height = 24;
 			this->dataGridView1->Size = System::Drawing::Size(442, 160);
 			this->dataGridView1->TabIndex = 37;
+			this->dataGridView1->CellContentClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &Dashboard_admin::dataGridView1_CellContentClick);
 			// 
 			// Column1
 			// 
@@ -569,6 +570,7 @@ namespace LOGIN {
 			this->Controls->Add(this->label1);
 			this->Name = L"Dashboard_admin";
 			this->Text = L"Dashboard_admin";
+			this->Load += gcnew System::EventHandler(this, &Dashboard_admin::Dashboard_admin_Load);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->EndInit();
 			this->panel12->ResumeLayout(false);
 			this->panel12->PerformLayout();
@@ -587,5 +589,92 @@ namespace LOGIN {
 
 		}
 #pragma endregion
-	};
+	private: System::Void Dashboard_admin_Load(System::Object^ sender, System::EventArgs^ e) {
+		try {
+			// --- 1. CONTEO Y CARGA DE USUARIOS EN LA TABLA ---
+			String^ rutaUsuarios = "usuarios.txt";
+			int totalUsuarios = 0;
+
+			// Limpiamos la tabla primero para evitar que se dupliquen las filas al recargar
+			this->dataGridView1->Rows->Clear();
+
+			// Verificamos si el archivo existe en la carpeta del proyecto
+			if (System::IO::File::Exists(rutaUsuarios)) {
+				// Lee todas las líneas y calcula el tamaño del arreglo
+				array<String^>^ lineasUsuarios = System::IO::File::ReadAllLines(rutaUsuarios);
+				totalUsuarios = lineasUsuarios->Length;
+
+				// RECORREMOS CADA LÍNEA PARA LLENAR TU DATAGRIDVIEW1
+				for (int i = 0; i < lineasUsuarios->Length; i++) {
+					String^ linea = lineasUsuarios[i];
+
+					// Separamos los datos por la coma (Usuario, Contraseña, Rol, Turno)
+					array<String^>^ datos = linea->Split(',');
+
+					// Validamos que la línea tenga la estructura mínima correcta
+					if (datos->Length >= 3) {
+						String^ nombre = datos[0];
+						String^ rol = datos[2];
+						// Si la línea tiene el campo turno guardado lo lee, si no, pone "Mañana" por defecto
+						String^ turno = (datos->Length > 3) ? datos[3] : "Mañana";
+
+						// Creamos un formato de ID simulado correlativo (U001, U002, etc.)
+						String^ idSimulado = "U00" + (i + 1);
+
+						// Insertamos la fila mapeando tus columnas: ID | Rol | Estado | Activo (Turno)
+						this->dataGridView1->Rows->Add(idSimulado, rol, "Activo", turno);
+					}
+				}
+			}
+			else {
+				// Si no existe el archivo, creamos uno de prueba para que no empiece vacío
+				array<String^>^ usuariosPrueba = {
+					"admin,123,Admin,Mañana",
+					"jefe,123,Jefe,Tarde",
+					"operador,123,Operador,Noche"
+				};
+				System::IO::File::WriteAllLines(rutaUsuarios, usuariosPrueba);
+				totalUsuarios = usuariosPrueba->Length;
+
+				// Cargamos los de prueba en la tabla también
+				for (int i = 0; i < usuariosPrueba->Length; i++) {
+					array<String^>^ datos = usuariosPrueba[i]->Split(',');
+					String^ idSimulado = "U00" + (i + 1);
+					this->dataGridView1->Rows->Add(idSimulado, datos[2], "Activo", datos[3]);
+				}
+			}
+			// Asignamos el valor dinámico a tu Label 10
+			this->label10->Text = totalUsuarios.ToString();
+
+
+			// --- 2. CONTEO DE EVENTOS DEL SISTEMA ---
+			String^ rutaEventos = "eventos.txt";
+			int totalEventos = 0;
+
+			if (System::IO::File::Exists(rutaEventos)) {
+				array<String^>^ lineasEventos = System::IO::File::ReadAllLines(rutaEventos);
+				totalEventos = lineasEventos->Length;
+			}
+			else {
+				// Si no existe, creamos un historial simulado inicial
+				array<String^>^ eventosPrueba = {
+					"01/06/2026 09:00 - Inicio de Sistema",
+					"01/06/2026 09:15 - Brazo 1 Activo"
+				};
+				System::IO::File::WriteAllLines(rutaEventos, eventosPrueba);
+				totalEventos = eventosPrueba->Length;
+			}
+			// Asignamos el valor dinámico a tu Label 12
+			this->label12->Text = totalEventos.ToString();
+
+		}
+		catch (Exception^ ex) {
+			MessageBox::Show("Error al inicializar las métricas del Dashboard: " + ex->Message, "Error");
+		}
+	}
+private: System::Void dataGridView1_CellContentClick(System::Object^ sender, System::Windows::Forms::DataGridViewCellEventArgs^ e) {
+}
+
+
+};
 }
