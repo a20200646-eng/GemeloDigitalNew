@@ -373,7 +373,37 @@ namespace LOGIN {
 		}
 #pragma endregion
 	private: System::Void Reportes_de_Costos_Admin_Load(System::Object^ sender, System::EventArgs^ e) {
+		try {
+			// 1. Limpiamos cualquier rastro o diseño previo de la gráfica
+			this->chart1->Series->Clear();
+			this->chart1->Titles->Clear();
 
+			// 2. Le damos el título corporativo y financiero a la sección
+			this->chart1->Titles->Add("Análisis de Costo Total por Ciclo de Producción ($)");
+
+			// 3. Creamos la serie de columnas/barras ideal para comparar montos de dinero
+			String^ nombreSerie = "CostosTotales";
+			this->chart1->Series->Add(nombreSerie);
+			this->chart1->Series[nombreSerie]->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Column;
+
+			// Cambiamos el color a un tono naranja moderno para que combine con tu interfaz
+			this->chart1->Series[nombreSerie]->Color = System::Drawing::Color::Orange;
+
+			// 4. Inyectamos los datos reales simulados de los costos de la planta
+			// El eje X muestra el ciclo evaluado y el eje Y muestra el Costo Total en dólares
+			this->chart1->Series[nombreSerie]->Points->AddXY("Ciclo 01 (BodyFraming)", 60.0);   // 0.5 hrs * $120
+			this->chart1->Series[nombreSerie]->Points->AddXY("Ciclo 02 (Soldadura)", 180.0);   // 1.5 hrs * $120
+			this->chart1->Series[nombreSerie]->Points->AddXY("Ciclo 03 (Pintura)", 120.0);     // 1.0 hrs * $120
+			this->chart1->Series[nombreSerie]->Points->AddXY("Ciclo 04 (Ensamblaje)", 240.0);  // 2.0 hrs * $120
+
+			// 5. Activamos las etiquetas para que el monto exacto en dólares se vea flotando arriba de cada barra
+			this->chart1->Series[nombreSerie]->IsValueShownAsLabel = true;
+			this->chart1->Series[nombreSerie]->LabelFormat = "$#,##0.00"; // Formato monetario profesional
+
+		}
+		catch (Exception^ ex) {
+			MessageBox::Show("Error al generar la gráfica de costos: " + ex->Message, "Aviso del Sistema");
+		}
 	}
 };
 }
