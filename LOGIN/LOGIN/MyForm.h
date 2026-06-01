@@ -379,79 +379,117 @@ namespace LOGIN {
 	private: System::Void textBox1_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 	}
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
-		String^ user = txtUsuario->Text;
-		String^ pass = txtPassword->Text;
-		Interfaz^ Principal = gcnew Interfaz(this);
+		String^ user = txtUsuario->Text->Trim();
+		String^ pass = txtPassword->Text->Trim();
 
-
-		if (user == "jefe" && pass == "123") {
-			Principal->label1->Text = "Jefe de Operaciones";
-			Principal->button1->Text = "Dashboard";
-			Principal->button2->Text = "Estación / Ciclo";
-			Principal->button3->Text = "Línea Ensamblaje";
-			Principal->button4->Text = "Eventos";
-			Principal->button5->Text = "Reportes";
-			Principal->button6->Text = "Cerrar sesión";
-			Principal->Show();
-
-		}
-		else if (user == "operador" && pass == "123") {
-			Principal->label1->Text = "Operador";
-			Principal->button1->Text = "Dashboard";
-			Principal->button2->Text = "Tareas";
-			Principal->button3->Text = "Brazos";
-			Principal->button4->Text = "Eventos";
-			Principal->button6->Text = "Salir";
-			Principal->button5->Visible = false;
-			Principal->Show();
-		}
-		else if (user == "controlador" && pass == "123") {
-			Principal->label1->Text = "Controlador de piezas";
-			Principal->button1->Text = "Dashboard";
-			Principal->button2->Text = "Inventario";
-			Principal->button3->Text = "Est. Trabajo";
-			Principal->button4->Text = "Línea Ensamblaje";
-			Principal->button6->Text = "Salir";
-			Principal->button5->Visible = false;
-			Principal->Show();
-
-
-		}
-		else if (user == "admin" && pass == "123") {
-			Principal->label1->Text = "Administrador";
-			Principal->button1->Text = "Dashboard";
-			Principal->button2->Text = "Usuarios";
-			Principal->button3->Text = "Eventos";
-			Principal->button4->Text = "Reportes";
-			Principal->button6->Text = "Salir";
-			Principal->button5->Visible = false;
-			Principal->Show();
-
-		}
-		else {
-			MessageBox::Show("Usuario o contraseña incorrectos");
+		if (user == "" || pass == "") {
+			MessageBox::Show("Por favor, ingrese usuario y contraseña.", "Campos Vacíos", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 			return;
 		}
-		txtUsuario->Text = "";
-		txtPassword->Text = "";
 
-		this->Hide();
+		try {
+			// 1. Instanciamos el controlador que lee el archivo de datos .dat de tus compañeros
+			GemeloDigitalController::AdministradorController^ contrUsuario = gcnew GemeloDigitalController::AdministradorController();
+
+			// 2. Obtenemos todos los usuarios de la persistencia
+			System::Collections::Generic::List<GemeloDigitalModel::AdministradorModel^>^ listaUsuarios = contrUsuario->obtenerTodos();
+
+			// === 🚨 MECANISMO SALVAVIDAS POR ARCHIVO VACÍO 🚨 ===
+			// Si la base de datos de tus compañeros no tiene registros, auto-creamos el admin base
+			if (listaUsuarios->Count == 0) {
+				// Agrega al archivo datos\administradores.dat de forma automática
+				contrUsuario->agregar(1, "admin", "123", 1);
+				// Recargamos la lista actualizada
+				listaUsuarios = contrUsuario->obtenerTodos();
+			}
+			// ====================================================
+
+			GemeloDigitalModel::AdministradorModel^ usuarioEncontrado = nullptr;
+
+			// 3. Buscamos si las credenciales coinciden con algún registro
+			for each (GemeloDigitalModel::AdministradorModel ^ u in listaUsuarios) {
+				if (u->Nombre->Trim()->Equals(user, StringComparison::OrdinalIgnoreCase) && u->Contrasena == pass) {
+					usuarioEncontrado = u;
+					break;
+				}
+			}
+
+			// === EVALUACIÓN DE ROLES DINÁMICOS ===
+			if (usuarioEncontrado != nullptr) {
+				Interfaz^ Principal = gcnew Interfaz(this);
+				int nivel = usuarioEncontrado->NivelAcceso;
+
+				// ROL 1: Administrador (Nivel 1)
+				if (nivel == 1) {
+					Principal->label1->Text = "Administrador";
+					Principal->button1->Text = "Dashboard";
+					Principal->button2->Text = "Usuarios";
+					Principal->button3->Text = "Eventos";
+					Principal->button4->Text = "Reportes";
+					Principal->button6->Text = "Salir";
+					Principal->button5->Visible = false;
+				}
+				// ROL 2: Jefe de Operaciones (Nivel 2)
+				else if (nivel == 2) {
+					Principal->label1->Text = "Jefe de Operaciones";
+					Principal->button1->Text = "Dashboard";
+					Principal->button2->Text = "Estación / Ciclo";
+					Principal->button3->Text = "Línea Ensamblaje";
+					Principal->button4->Text = "Eventos";
+					Principal->button5->Text = "Reportes";
+					Principal->button6->Text = "Cerrar sesión";
+				}
+				// ROL 3: Operador (Nivel 3)
+				else if (nivel == 3) {
+					Principal->label1->Text = "Operador";
+					Principal->button1->Text = "Dashboard";
+					Principal->button2->Text = "Tareas";
+					Principal->button3->Text = "Brazos";
+					Principal->button4->Text = "Eventos";
+					Principal->button6->Text = "Salir";
+					Principal->button5->Visible = false;
+				}
+				// 🌟 NUEVO ROL 4: Gestor (Nivel 4)
+				else if (nivel == 4) {
+					Principal->label1->Text = "Gestor de Planta";
+					Principal->button1->Text = "Dashboard";
+					Principal->button2->Text = "Eventos";        // El gestor ve eventos directamente
+					Principal->button3->Text = "Reportes";       // Ve reportes
+					Principal->button6->Text = "Salir";
+					Principal->button4->Visible = false;         // Ocultamos botones sobrantes
+					Principal->button5->Visible = false;
+				}
+
+				// Mostrar la pantalla principal y ocultar el login
+				Principal->Show();
+
+				// Limpiar campos de texto para el próximo login
+				txtUsuario->Text = "";
+				txtPassword->Text = "";
+				this->Hide();
+			}
+			else {
+				MessageBox::Show("Usuario o contraseña incorrectos.", "Error de Autenticación", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			}
+		}
+		catch (Exception^ ex) {
+			MessageBox::Show("Error al conectar con la base de datos de usuarios: " + ex->Message, "Error Crítico");
+		}
 	}
-private: System::Void label1_Click(System::Object^ sender, System::EventArgs^ e) {
-}
-private: System::Void panel1_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {
-}
-private: System::Void label3_Click(System::Object^ sender, System::EventArgs^ e) {
-}
-private: System::Void pictureBox1_Click(System::Object^ sender, System::EventArgs^ e) {
-}
-
-private: System::Void pictureBox3_Click(System::Object^ sender, System::EventArgs^ e) {
-}
-private: System::Void button1_Click_1(System::Object^ sender, System::EventArgs^ e) {
-	this->Close();
-}
-private: System::Void label1_Click_1(System::Object^ sender, System::EventArgs^ e) {
-}
+	private: System::Void label1_Click(System::Object^ sender, System::EventArgs^ e) {
+	}
+	private: System::Void panel1_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {
+	}
+	private: System::Void label3_Click(System::Object^ sender, System::EventArgs^ e) {
+	}
+	private: System::Void pictureBox1_Click(System::Object^ sender, System::EventArgs^ e) {
+	}
+	private: System::Void pictureBox3_Click(System::Object^ sender, System::EventArgs^ e) {
+	}
+	private: System::Void button1_Click_1(System::Object^ sender, System::EventArgs^ e) {
+		this->Close();
+	}
+	private: System::Void label1_Click_1(System::Object^ sender, System::EventArgs^ e) {
+	}
 };
 }

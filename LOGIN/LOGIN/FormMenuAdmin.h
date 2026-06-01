@@ -1,5 +1,6 @@
 #pragma once
 #include "FormRegistro.h"
+
 namespace LOGIN {
 
 	using namespace System;
@@ -568,305 +569,178 @@ namespace LOGIN {
 
 		   // === EVENTO DE CARGA DE LA INTERFAZ ===
 	private: System::Void FormMenuAdmin_Load(System::Object^ sender, System::EventArgs^ e) {
-		// Forzamos de manera automática la carga de la pestaña Administradores al arrancar
 		button1_Click(this->button1, nullptr);
 	}
 
-		   // === BOTÓN SUPERIOR: ADMINISTRADORES ===
+		   // === BOTONES SUPERIORES DE FILTRADO (Configuran el Tag y el título) ===
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) { // Administradores
 		this->label3->Text = "AGREGAR NUEVO ADMINISTRADOR";
 		this->label4->Text = "Turno (Mañana/Tarde/Noche):";
-		this->textBox1->Clear();
-		this->textBox2->Clear();
-		this->textBox3->Clear();
-		this->button5->Tag = "Admin";
-		CargarUsuariosPorRol("Admin");
+		this->textBox1->Clear(); this->textBox2->Clear(); this->textBox3->Clear();
+		this->button5->Tag = "1"; // Nivel 1 = Admin
+		CargarUsuariosPorRol(1);
 	}
 
-		   // === BOTÓN SUPERIOR: JEFE DE OPERACIONES ===
 	private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) { // Jefe de Operaciones
 		this->label3->Text = "AGREGAR NUEVO JEFE DE OPERACIONES";
 		this->label4->Text = "Turno (Mañana/Tarde/Noche):";
-		this->textBox1->Clear();
-		this->textBox2->Clear();
-		this->textBox3->Clear();
-		this->button5->Tag = "Jefe";
-		CargarUsuariosPorRol("Jefe");
+		this->textBox1->Clear(); this->textBox2->Clear(); this->textBox3->Clear();
+		this->button5->Tag = "2"; // Nivel 2 = Jefe
+		CargarUsuariosPorRol(2);
 	}
 
-		   // === BOTÓN SUPERIOR: OPERADORES ===
 	private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e) { // Operadores
 		this->label3->Text = "AGREGAR NUEVO OPERADOR";
 		this->label4->Text = "Turno (Mañana/Tarde/Noche):";
-		this->textBox1->Clear();
-		this->textBox2->Clear();
-		this->textBox3->Clear();
-		this->button5->Tag = "Operador";
-		CargarUsuariosPorRol("Operador");
+		this->textBox1->Clear(); this->textBox2->Clear(); this->textBox3->Clear();
+		this->button5->Tag = "3"; // Nivel 3 = Operador
+		CargarUsuariosPorRol(3);
 	}
 
-		   // === BOTÓN SUPERIOR: GESTORES ===
 	private: System::Void button4_Click(System::Object^ sender, System::EventArgs^ e) { // Gestores
 		this->label3->Text = "AGREGAR NUEVO GESTOR";
 		this->label4->Text = "Turno (Mañana/Tarde/Noche):";
-		this->textBox1->Clear();
-		this->textBox2->Clear();
-		this->textBox3->Clear();
-		this->button5->Tag = "Gestor";
-		CargarUsuariosPorRol("Gestor");
+		this->textBox1->Clear(); this->textBox2->Clear(); this->textBox3->Clear();
+		this->button5->Tag = "4"; // Nivel 4 = Gestor (¡El tuyo!)
+		CargarUsuariosPorRol(4);
 	}
 
 		   // === BOTÓN ACCIÓN: AGREGAR / GUARDAR USUARIO ===
 	private: System::Void button5_Click(System::Object^ sender, System::EventArgs^ e) {
 		String^ usuario = this->textBox1->Text->Trim();
 		String^ password = this->textBox2->Text->Trim();
-		String^ turno = this->textBox3->Text->Trim();
+		String^ turno = this->textBox3->Text->Trim(); // Nota: Guardaremos el turno temporalmente o puedes omitirlo si el modelo no lo tiene
 
-		if (usuario == "" || password == "" || turno == "") {
-			MessageBox::Show("Por favor, rellene todos los campos (Nombre, Contraseña y Turno).",
-				"Campos Vacíos", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+		if (usuario == "" || password == "") {
+			MessageBox::Show("Por favor, rellene los campos de Nombre y Contraseña.", "Campos Vacíos", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 			return;
 		}
-
 		if (usuario->Length < 4 || password->Length < 4) {
-			MessageBox::Show("El Nombre y la Contraseña deben tener al menos 4 caracteres.",
-				"Seguridad Insuficiente", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+			MessageBox::Show("El Nombre y la Contraseña deben tener al menos 4 caracteres.", "Seguridad", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 			return;
 		}
-
-		if (usuario->Contains(",") || password->Contains(",") || turno->Contains(",")) {
-			MessageBox::Show("No se permite el uso de comas ( , ) en ningún campo.",
-				"Carácter No Válido", MessageBoxButtons::OK, MessageBoxIcon::Error);
-			return;
-		}
-
-		String^ turnoMinuscula = turno->ToLower();
-		if (turnoMinuscula == "mañana" || turnoMinuscula == "manana") { turno = "Mañana"; }
-		else if (turnoMinuscula == "tarde") { turno = "Tarde"; }
-		else if (turnoMinuscula == "noche") { turno = "Noche"; }
-		else {
-			MessageBox::Show("El turno ingresado no es válido.\n\nPor favor use: Mañana, Tarde o Noche.",
-				"Turno Incorrecto", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+		if (usuario->Contains("|") || password->Contains("|")) {
+			MessageBox::Show("No se permite el uso del carácter pipe ( | ).", "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
 			return;
 		}
 
 		try {
-			String^ rutaUsuarios = "usuarios.txt";
-			String^ rolDinamico = (this->button5->Tag != nullptr) ? this->button5->Tag->ToString() : "Admin";
-			String^ nuevaLinea = usuario + "," + password + "," + rolDinamico + "," + turno;
+			// Usamos el controlador de tus compañeros
+			GemeloDigitalController::AdministradorController^ contr = gcnew GemeloDigitalController::AdministradorController();
 
-			System::IO::StreamWriter^ sw = gcnew System::IO::StreamWriter(rutaUsuarios, true);
-			sw->WriteLine(nuevaLinea);
-			sw->Close();
+			// Obtenemos el nivel de acceso desde el Tag del botón
+			int nivelAcceso = (this->button5->Tag != nullptr) ? Int32::Parse(this->button5->Tag->ToString()) : 1;
 
-			MessageBox::Show("¡" + rolDinamico + " '" + usuario + "' registrado con éxito en el turno " + turno + "!",
-				"Registro Guardado", MessageBoxButtons::OK, MessageBoxIcon::Information);
+			// Autogeneramos un ID secuencial
+			int nuevoId = contr->obtenerTodos()->Count + 1;
 
-			this->textBox1->Clear();
-			this->textBox2->Clear();
-			this->textBox3->Clear();
-
-			CargarUsuariosPorRol(rolDinamico);
+			// Guardamos directamente en la persistencia real del equipo (.dat)
+			if (contr->agregar(nuevoId, usuario, password, nivelAcceso)) {
+				MessageBox::Show("¡Usuario '" + usuario + "' registrado con éxito en el sistema!", "Éxito", MessageBoxButtons::OK, MessageBoxIcon::Information);
+				this->textBox1->Clear(); this->textBox2->Clear(); this->textBox3->Clear();
+				CargarUsuariosPorRol(nivelAcceso);
+			}
+			else {
+				MessageBox::Show("No se pudo registrar el usuario. El ID ya existe.", "Error");
+			}
 		}
 		catch (Exception^ ex) {
-			MessageBox::Show("Error crítico al guardar en la persistencia: " + ex->Message,
-				"Error de Archivo", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			MessageBox::Show("Error al guardar: " + ex->Message, "Error Crítico");
 		}
 	}
 
-		   // === FUNCIÓN AUXILIAR: FILTRADO INTELIGENTE DE LA TABLA ===
-	private: void CargarUsuariosPorRol(String^ rolFiltrar) {
+		   // === FUNCIÓN AUXILIAR: CARGAR Y FILTRAR TABLA DESDE EL CONTROLADOR ===
+	private: void CargarUsuariosPorRol(int nivelFiltrar) {
 		try {
-			String^ rutaUsuarios = "usuarios.txt";
 			this->dataGridView1->Rows->Clear();
+			GemeloDigitalController::AdministradorController^ contr = gcnew GemeloDigitalController::AdministradorController();
+			System::Collections::Generic::List<GemeloDigitalModel::AdministradorModel^>^ lista = contr->obtenerTodos();
 
-			if (System::IO::File::Exists(rutaUsuarios)) {
-				array<String^>^ lineas = System::IO::File::ReadAllLines(rutaUsuarios);
-
-				for (int i = 0; i < lineas->Length; i++) {
-					array<String^>^ datos = lineas[i]->Split(',');
-
-					if (datos->Length >= 3) {
-						String^ nombre = datos[0];
-						String^ password = datos[1];
-						String^ rol = datos[2];
-						String^ turno = (datos->Length > 3) ? datos[3] : "Mañana";
-
-						if (rol->Trim()->Equals(rolFiltrar->Trim(), StringComparison::OrdinalIgnoreCase)) {
-							String^ idSimulado = "U00" + (i + 1);
-							this->dataGridView1->Rows->Add(idSimulado, nombre, password, turno);
-						}
-					}
+			for each (GemeloDigitalModel::AdministradorModel ^ u in lista) {
+				if (u->NivelAcceso == nivelFiltrar) {
+					String^ idSimulado = "U00" + u->Id;
+					this->dataGridView1->Rows->Add(idSimulado, u->Nombre, u->Contrasena, "Nivel " + nivelFiltrar);
 				}
 			}
 		}
 		catch (Exception^ ex) {
-			MessageBox::Show("Error al filtrar la tabla de usuarios: " + ex->Message, "Error");
+			MessageBox::Show("Error al cargar la tabla: " + ex->Message, "Error");
 		}
 	}
 
-		   // === EVENTO: SELECCIONAR USUARIO DE LA TABLA CON UN CLIC ===
+		   // === EVENTO: SELECCIONAR USUARIO DE LA TABLA ===
 	private: System::Void dataGridView1_CellClick(System::Object^ sender, System::Windows::Forms::DataGridViewCellEventArgs^ e) {
-		if (e->RowIndex >= 0) {
+		if (e->RowIndex >= 0 && this->dataGridView1->Rows[e->RowIndex]->Cells[1]->Value != nullptr) {
 			this->textBox1->Text = this->dataGridView1->Rows[e->RowIndex]->Cells[1]->Value->ToString();
 			this->textBox2->Text = this->dataGridView1->Rows[e->RowIndex]->Cells[2]->Value->ToString();
-			this->textBox3->Text = this->dataGridView1->Rows[e->RowIndex]->Cells[3]->Value->ToString();
 		}
 	}
 
-		   // === BOTÓN 7: MODIFICAR SOLO NOMBRE ===
+		   // === BOTÓN 7: MODIFICAR NOMBRE ===
 	private: System::Void button7_Click(System::Object^ sender, System::EventArgs^ e) {
-		if (this->dataGridView1->CurrentRow == nullptr) {
-			MessageBox::Show("Por favor, seleccione primero el usuario que desea modificar en la tabla.", "Aviso", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-			return;
-		}
-
-		String^ nombreViejo = this->dataGridView1->CurrentRow->Cells[1]->Value->ToString();
-		String^ nombreNuevo = this->textBox1->Text->Trim();
-		String^ turnoActual = this->textBox3->Text->Trim();
-
-		if (nombreNuevo == "" || nombreNuevo->Length < 4 || nombreNuevo->Contains(",")) {
-			MessageBox::Show("El nuevo nombre no es válido (mínimo 4 caracteres y sin comas).", "Error de Validación", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-			return;
-		}
+		if (this->dataGridView1->CurrentRow == nullptr) return;
 
 		try {
-			String^ rutaUsuarios = "usuarios.txt";
-			array<String^>^ lineas = System::IO::File::ReadAllLines(rutaUsuarios);
-			bool modificado = false;
+			GemeloDigitalController::AdministradorController^ contr = gcnew GemeloDigitalController::AdministradorController();
+			String^ nombreViejo = this->dataGridView1->CurrentRow->Cells[1]->Value->ToString();
+			String^ nombreNuevo = this->textBox1->Text->Trim();
+			String^ passActual = this->textBox2->Text->Trim();
+			int nivelAcceso = (this->button5->Tag != nullptr) ? Int32::Parse(this->button5->Tag->ToString()) : 1;
 
-			for (int i = 0; i < lineas->Length; i++) {
-				array<String^>^ datos = lineas[i]->Split(',');
-				if (datos->Length >= 3 && datos[0]->Trim()->Equals(nombreViejo, StringComparison::OrdinalIgnoreCase)) {
-					lineas[i] = nombreNuevo + "," + datos[1] + "," + datos[2] + "," + turnoActual;
-					modificado = true;
+			// Buscamos el ID original
+			for each (GemeloDigitalModel::AdministradorModel ^ u in contr->obtenerTodos()) {
+				if (u->Nombre->Trim()->Equals(nombreViejo, StringComparison::OrdinalIgnoreCase)) {
+					contr->modificar(u->Id, nombreNuevo, passActual, nivelAcceso);
+					MessageBox::Show("Nombre modificado con éxito.", "Éxito");
 					break;
 				}
 			}
-
-			if (!modificado) {
-				MessageBox::Show("No se pudo localizar el registro original en el archivo.", "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
-				return;
-			}
-
-			System::IO::File::WriteAllLines(rutaUsuarios, lineas);
-			MessageBox::Show("Nombre actualizado correctamente de '" + nombreViejo + "' a '" + nombreNuevo + "'.", "Éxito", MessageBoxButtons::OK, MessageBoxIcon::Information);
-
-			String^ rolActual = (this->button5->Tag != nullptr) ? this->button5->Tag->ToString() : "Admin";
-			CargarUsuariosPorRol(rolActual);
+			CargarUsuariosPorRol(nivelAcceso);
 		}
-		catch (Exception^ ex) {
-			MessageBox::Show("Error al modificar nombre: " + ex->Message, "Error");
-		}
+		catch (Exception^ ex) { MessageBox::Show("Error: " + ex->Message); }
 	}
 
-		   // === BOTÓN 8: MODIFICAR SOLO CONTRASEÑA ===
+		   // === BOTÓN 8: MODIFICAR CONTRASEÑA ===
 	private: System::Void button8_Click(System::Object^ sender, System::EventArgs^ e) {
 		String^ usuario = this->textBox1->Text->Trim();
 		String^ nuevaPassword = this->textBox2->Text->Trim();
-
-		if (usuario == "" || nuevaPassword == "" || nuevaPassword->Length < 4 || nuevaPassword->Contains(",")) {
-			MessageBox::Show("La contraseña o el usuario no son válidos (mínimo 4 caracteres y sin comas).", "Error de Validación", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-			return;
-		}
+		int nivelAcceso = (this->button5->Tag != nullptr) ? Int32::Parse(this->button5->Tag->ToString()) : 1;
 
 		try {
-			String^ rutaUsuarios = "usuarios.txt";
-			array<String^>^ lineas = System::IO::File::ReadAllLines(rutaUsuarios);
-			bool encontrado = false;
-
-			for (int i = 0; i < lineas->Length; i++) {
-				array<String^>^ datos = lineas[i]->Split(',');
-				if (datos->Length >= 3 && datos[0]->Trim()->Equals(usuario, StringComparison::OrdinalIgnoreCase)) {
-					String^ turnoSeguro = (datos->Length > 3) ? datos[3] : "Mañana";
-					lineas[i] = datos[0] + "," + nuevaPassword + "," + datos[2] + "," + turnoSeguro;
-					encontrado = true;
+			GemeloDigitalController::AdministradorController^ contr = gcnew GemeloDigitalController::AdministradorController();
+			for each (GemeloDigitalModel::AdministradorModel ^ u in contr->obtenerTodos()) {
+				if (u->Nombre->Trim()->Equals(usuario, StringComparison::OrdinalIgnoreCase)) {
+					contr->modificar(u->Id, u->Nombre, nuevaPassword, nivelAcceso);
+					MessageBox::Show("Contraseña actualizada.", "Éxito");
 					break;
 				}
 			}
-
-			if (!encontrado) {
-				MessageBox::Show("No se encontró ningún usuario con el nombre '" + usuario + "' para modificar su contraseña.", "Usuario No Encontrado", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-				return;
-			}
-
-			System::IO::File::WriteAllLines(rutaUsuarios, lineas);
-			MessageBox::Show("Contraseña de '" + usuario + "' actualizada con éxito.", "Éxito", MessageBoxButtons::OK, MessageBoxIcon::Information);
-
-			String^ rolActual = (this->button5->Tag != nullptr) ? this->button5->Tag->ToString() : "Admin";
-			CargarUsuariosPorRol(rolActual);
+			CargarUsuariosPorRol(nivelAcceso);
 		}
-		catch (Exception^ ex) {
-			MessageBox::Show("Error al modificar contraseña: " + ex->Message, "Error");
-		}
+		catch (Exception^ ex) { MessageBox::Show("Error: " + ex->Message); }
 	}
 
 		   // === BOTÓN 6: ELIMINAR USUARIO ===
 	private: System::Void button6_Click(System::Object^ sender, System::EventArgs^ e) {
 		String^ usuarioAEliminar = this->textBox1->Text->Trim();
-
-		if (usuarioAEliminar == "") {
-			MessageBox::Show("Por favor, seleccione un usuario de la tabla o escriba el nombre para eliminar.",
-				"Aviso", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-			return;
-		}
-
-		if (usuarioAEliminar->ToLower() == "admin") {
-			MessageBox::Show("El administrador del sistema no puede ser eliminado a sí mismo.",
-				"Acción Denegada", MessageBoxButtons::OK, MessageBoxIcon::Stop);
-			return;
-		}
+		if (usuarioAEliminar == "" || usuarioAEliminar->ToLower() == "admin") return;
 
 		try {
-			String^ rutaUsuarios = "usuarios.txt";
+			GemeloDigitalController::AdministradorController^ contr = gcnew GemeloDigitalController::AdministradorController();
+			int nivelAcceso = (this->button5->Tag != nullptr) ? Int32::Parse(this->button5->Tag->ToString()) : 1;
 
-			if (!System::IO::File::Exists(rutaUsuarios)) {
-				MessageBox::Show("El archivo de usuarios no existe.", "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
-				return;
-			}
-
-			array<String^>^ lineas = System::IO::File::ReadAllLines(rutaUsuarios);
-			System::Collections::Generic::List<String^>^ lineasRestantes = gcnew System::Collections::Generic::List<String^>();
-			bool usuarioExiste = false;
-
-			for (int i = 0; i < lineas->Length; i++) {
-				array<String^>^ datos = lineas[i]->Split(',');
-
-				if (datos->Length > 0) {
-					if (datos[0]->Trim()->Equals(usuarioAEliminar, StringComparison::OrdinalIgnoreCase)) {
-						usuarioExiste = true;
+			for each (GemeloDigitalModel::AdministradorModel ^ u in contr->obtenerTodos()) {
+				if (u->Nombre->Trim()->Equals(usuarioAEliminar, StringComparison::OrdinalIgnoreCase)) {
+					if (MessageBox::Show("¿Eliminar permanentemente?", "Confirmar", MessageBoxButtons::YesNo) == System::Windows::Forms::DialogResult::Yes) {
+						contr->eliminar(u->Id);
+						this->textBox1->Clear(); this->textBox2->Clear();
+						CargarUsuariosPorRol(nivelAcceso);
 					}
-					else {
-						lineasRestantes->Add(lineas[i]);
-					}
+					break;
 				}
 			}
-
-			if (!usuarioExiste) {
-				MessageBox::Show("El usuario '" + usuarioAEliminar + "' no se encuentra registrado en el sistema.",
-					"Usuario No Encontrado", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-				return;
-			}
-
-			if (MessageBox::Show("¿Está seguro de que desea eliminar permanentemente al usuario '" + usuarioAEliminar + "'?",
-				"Confirmar Eliminación", MessageBoxButtons::YesNo, MessageBoxIcon::Question) == System::Windows::Forms::DialogResult::Yes) {
-
-				System::IO::File::WriteAllLines(rutaUsuarios, lineasRestantes->ToArray());
-
-				MessageBox::Show("Usuario '" + usuarioAEliminar + "' eliminado correctamente.",
-					"Éxito", MessageBoxButtons::OK, MessageBoxIcon::Information);
-
-				this->textBox1->Clear();
-				this->textBox2->Clear();
-				this->textBox3->Clear();
-
-				String^ rolActual = (this->button5->Tag != nullptr) ? this->button5->Tag->ToString() : "Admin";
-				CargarUsuariosPorRol(rolActual);
-			}
 		}
-		catch (Exception^ ex) {
-			MessageBox::Show("Error al intentar eliminar el usuario: " + ex->Message, "Error Crítico");
-		}
+		catch (Exception^ ex) { MessageBox::Show("Error al eliminar: " + ex->Message); }
 	}
 };
 }
