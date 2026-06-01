@@ -632,6 +632,7 @@ namespace LOGIN {
 					"admin,123,Admin,Mañana",
 					"jefe,123,Jefe,Tarde",
 					"operador,123,Operador,Noche"
+					"gestor,123,Gestor,Noche"
 				};
 				System::IO::File::WriteAllLines(rutaUsuarios, usuariosPrueba);
 				totalUsuarios = usuariosPrueba->Length;
