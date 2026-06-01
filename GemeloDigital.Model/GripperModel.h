@@ -2,14 +2,13 @@
 #include "ActuadorModel.h"
 using namespace System;
 
-
 namespace GemeloDigitalModel {
 
     public ref class GripperModel : public ActuadorModel {
     private:
         double apertura;
         double fuerzaAgarre;
-        bool abierto;
+        bool   abierto;
 
     public:
         GripperModel(int id, String^ nombre, bool activo,
@@ -20,22 +19,27 @@ namespace GemeloDigitalModel {
             this->abierto = abierto;
         }
 
-        // Getters
-        double getApertura() { return apertura; }
-        double getFuerzaAgarre() { return fuerzaAgarre; }
-        bool getAbierto() { return abierto; }
+        property double Apertura {
+            double get() { return apertura; }
+            void   set(double value) { apertura = value; }
+        }
 
-        // Setters
-        void setApertura(double a) { apertura = a; }
-        void setFuerzaAgarre(double f) { fuerzaAgarre = f; }
-        void setAbierto(bool a) { abierto = a; }
+        property double FuerzaAgarre {
+            double get() { return fuerzaAgarre; }
+            void   set(double value) { fuerzaAgarre = value; }
+        }
+
+        property bool Abierto {
+            bool get() { return abierto; }
+            void set(bool value) { abierto = value; }
+        }
 
         virtual void dataReport() override {
-            Console::WriteLine("  [Gripper] ID: " + id + " | Nombre: " + nombre);
-            Console::WriteLine("  |Activo: " + activo);
-            Console::WriteLine("  |Apertura: " + apertura);
-            Console::WriteLine("  |Fuerza Agarre: " + fuerzaAgarre);
-            Console::WriteLine("  |Abierto: " + abierto);
+            Console::WriteLine("  [Gripper] ID: " + Id + " | Nombre: " + Nombre);
+            Console::WriteLine("  |Activo: " + Activo);
+            Console::WriteLine("  |Apertura: " + Apertura);
+            Console::WriteLine("  |Fuerza Agarre: " + FuerzaAgarre);
+            Console::WriteLine("  |Abierto: " + Abierto);
         }
     };
 }

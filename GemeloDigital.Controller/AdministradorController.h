@@ -10,26 +10,25 @@ namespace GemeloDigitalController {
     private:
         List<AdministradorModel^>^ repositorio;
         static String^ RUTA = "datos\\administradores.dat";
+
     public:
         AdministradorController() {
             repositorio = gcnew List<AdministradorModel^>();
+            cargarArchivo();
         }
 
         // CREATE
         bool agregar(int id, String^ nombre, String^ contrasena, int nivelAcceso) {
-            AdministradorModel^ a = buscarPorId(id);
-            if (a == nullptr) {
-                repositorio->Add(gcnew AdministradorModel(id, nombre, contrasena, nivelAcceso));
-                return true;
-            }
-            return false;
+            if (buscarPorId(id) != nullptr) return false;
+            repositorio->Add(gcnew AdministradorModel(id, nombre, contrasena, nivelAcceso));
+            guardarArchivo();
+            return true;
         }
 
         // READ - por ID
         AdministradorModel^ buscarPorId(int id) {
-            for each (AdministradorModel ^ a in repositorio) {
-                if (a->getId() == id) return a;
-            }
+            for each (AdministradorModel ^ a in repositorio)
+                if (a->Id == id) return a;
             return nullptr;
         }
 
@@ -38,27 +37,24 @@ namespace GemeloDigitalController {
             return repositorio;
         }
 
-        // UPDATE - N: nombre | C: contrasena | NA: nivelAcceso
-        bool modificar(int id, String^ opcion, String^ valor) {
+        // UPDATE - reemplaza todos los atributos modificables
+        bool modificar(int id, String^ nombre, String^ contrasena, int nivelAcceso) {
             AdministradorModel^ a = buscarPorId(id);
-            if (a != nullptr) {
-                if (opcion->Equals("N"))       a->setNombre(valor);
-                else if (opcion->Equals("C"))  a->setContrasena(valor);
-                else if (opcion->Equals("NA")) a->setNivelAcceso(Convert::ToInt32(valor));
-                else return false;
-                return true;
-            }
-            return false;
+            if (a == nullptr) return false;
+            a->Nombre = nombre;
+            a->Contrasena = contrasena;
+            a->NivelAcceso = nivelAcceso;
+            guardarArchivo();
+            return true;
         }
 
         // DELETE
         bool eliminar(int id) {
             AdministradorModel^ a = buscarPorId(id);
-            if (a != nullptr) {
-                repositorio->Remove(a);
-                return true;
-            }
-            return false;
+            if (a == nullptr) return false;
+            repositorio->Remove(a);
+            guardarArchivo();
+            return true;
         }
 
         // PERSIST - guardar
@@ -68,7 +64,7 @@ namespace GemeloDigitalController {
             StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
             for each (AdministradorModel ^ a in repositorio)
                 sw->WriteLine(String::Format("{0}|{1}|{2}|{3}",
-                    a->getId(), a->getNombre(), a->getContrasena(), a->getNivelAcceso()));
+                    a->Id, a->Nombre, a->Contrasena, a->NivelAcceso));
             sw->Close();
         }
 

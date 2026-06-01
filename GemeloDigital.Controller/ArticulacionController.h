@@ -11,29 +11,26 @@ namespace GemeloDigitalController {
         List<ArticulacionModel^>^ repositorio;
         static String^ RUTA = "datos\\articulaciones.dat";
 
-
     public:
         ArticulacionController() {
             repositorio = gcnew List<ArticulacionModel^>();
+            cargarArchivo();
         }
 
         // CREATE
         bool agregar(int id, String^ nombre, bool activo,
             double anguloActual, double anguloMinimo, double anguloMaximo) {
-            ArticulacionModel^ art = buscarPorId(id);
-            if (art == nullptr) {
-                repositorio->Add(gcnew ArticulacionModel(
-                    id, nombre, activo, anguloActual, anguloMinimo, anguloMaximo));
-                return true;
-            }
-            return false;
+            if (buscarPorId(id) != nullptr) return false;
+            repositorio->Add(gcnew ArticulacionModel(
+                id, nombre, activo, anguloActual, anguloMinimo, anguloMaximo));
+            guardarArchivo();
+            return true;
         }
 
         // READ - por ID
         ArticulacionModel^ buscarPorId(int id) {
-            for each (ArticulacionModel ^ a in repositorio) {
-                if (a->getId() == id) return a;
-            }
+            for each (ArticulacionModel ^ a in repositorio)
+                if (a->Id == id) return a;
             return nullptr;
         }
 
@@ -42,32 +39,28 @@ namespace GemeloDigitalController {
             return repositorio;
         }
 
-        // UPDATE - A: activo | N: nombre | AA: anguloActual | AMI: anguloMinimo | AMA: anguloMaximo
-        bool modificar(int id, String^ opcion, String^ valor) {
-            ArticulacionModel^ art = buscarPorId(id);
-            if (art != nullptr) {
-                if (opcion->Equals("N"))        art->setNombre(valor);
-                else if (opcion->Equals("A"))   art->setActivo(valor->Equals("true"));
-                else if (opcion->Equals("AA"))  art->setAnguloActual(Convert::ToDouble(valor));
-                else if (opcion->Equals("AMI")) art->setAnguloMinimo(Convert::ToDouble(valor));
-                else if (opcion->Equals("AMA")) art->setAnguloMaximo(Convert::ToDouble(valor));
-                else return false;
-                return true;
-            }
-            return false;
+        // UPDATE - reemplaza todos los atributos modificables
+        bool modificar(int id, String^ nombre, bool activo,
+            double anguloActual, double anguloMinimo, double anguloMaximo) {
+            ArticulacionModel^ a = buscarPorId(id);
+            if (a == nullptr) return false;
+            a->Nombre = nombre;
+            a->Activo = activo;
+            a->AnguloActual = anguloActual;
+            a->AnguloMinimo = anguloMinimo;
+            a->AnguloMaximo = anguloMaximo;
+            guardarArchivo();
+            return true;
         }
 
         // DELETE
         bool eliminar(int id) {
-            ArticulacionModel^ art = buscarPorId(id);
-            if (art != nullptr) {
-                repositorio->Remove(art);
-                return true;
-            }
-            return false;
+            ArticulacionModel^ a = buscarPorId(id);
+            if (a == nullptr) return false;
+            repositorio->Remove(a);
+            guardarArchivo();
+            return true;
         }
-        //PERSISNTANCE
-
 
         // Formato: id|nombre|activo|anguloActual|anguloMinimo|anguloMaximo
         void guardarArchivo() {
@@ -75,8 +68,8 @@ namespace GemeloDigitalController {
             StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
             for each (ArticulacionModel ^ a in repositorio)
                 sw->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}|{5}",
-                    a->getId(), a->getNombre(), (a->getActivo() ? 1 : 0),
-                    a->getAnguloActual(), a->getAnguloMinimo(), a->getAnguloMaximo()));
+                    a->Id, a->Nombre, (a->Activo ? 1 : 0),
+                    a->AnguloActual, a->AnguloMinimo, a->AnguloMaximo));
             sw->Close();
         }
 
@@ -88,15 +81,11 @@ namespace GemeloDigitalController {
             while ((linea = sr->ReadLine()) != nullptr) {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
-                ArticulacionModel^ a = gcnew ArticulacionModel(
-                    Int32::Parse(c[0]), c[1],Boolean::Parse(c[2]),Double::Parse(c[3]), Double::Parse(c[4]), Double::Parse(c[5]));
-                
-                repositorio->Add(a);
+                repositorio->Add(gcnew ArticulacionModel(
+                    Int32::Parse(c[0]), c[1], c[2]->Equals("1"),
+                    Double::Parse(c[3]), Double::Parse(c[4]), Double::Parse(c[5])));
             }
             sr->Close();
         }
-
     };
 }
-///HOLA
-//chau

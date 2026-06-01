@@ -7,10 +7,10 @@ namespace GemeloDigitalModel {
 
     public ref class LineaEnsamblajeModel {
     private:
-        int id;
+        int                id;
         List<PiezaModel^>^ colaPiezas;
-        int indiceActual;
-        bool secuenciaAprobada;
+        int                indiceActual;
+        bool               secuenciaAprobada;
 
     public:
         LineaEnsamblajeModel(int id) {
@@ -20,25 +20,33 @@ namespace GemeloDigitalModel {
             colaPiezas = gcnew List<PiezaModel^>();
         }
 
-        // Getters
-        int getId() { return id; }
-        int getIndiceActual() { return indiceActual; }
-        bool getSecuenciaAprobada() { return secuenciaAprobada; }
-        List<PiezaModel^>^ getColaPiezas() { return colaPiezas; }
+        property int Id {
+            int get() { return id; }
+        }
 
-        // Setters
-        void setIndiceActual(int i) { indiceActual = i; }
-        void setSecuenciaAprobada(bool s) { secuenciaAprobada = s; }
+        property int IndiceActual {
+            int  get() { return indiceActual; }
+            void set(int value) { indiceActual = value; }
+        }
 
-        // Agregar pieza a la cola
+        property bool SecuenciaAprobada {
+            bool get() { return secuenciaAprobada; }
+            void set(bool value) { secuenciaAprobada = value; }
+        }
+
+        property List<PiezaModel^>^ ColaPiezas {
+            List<PiezaModel^>^ get() { return colaPiezas; }
+        }
+
+        // Metodo de agregacion — responsabilidad del Model
         void agregarPieza(PiezaModel^ p) { colaPiezas->Add(p); }
 
         void dataReport() {
             Console::WriteLine("=== LINEA DE ENSAMBLAJE ===");
-            Console::WriteLine("ID: " + id);
-            Console::WriteLine("|Indice Actual: " + indiceActual);
-            Console::WriteLine("|Secuencia Aprobada: " + secuenciaAprobada);
-            Console::WriteLine("|Piezas en cola: " + colaPiezas->Count);
+            Console::WriteLine("ID: " + Id);
+            Console::WriteLine("|Indice Actual: " + IndiceActual);
+            Console::WriteLine("|Secuencia Aprobada: " + SecuenciaAprobada);
+            Console::WriteLine("|Piezas en cola: " + ColaPiezas->Count);
         }
     };
 }

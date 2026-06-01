@@ -5,40 +5,32 @@ using namespace System::IO;
 using namespace GemeloDigitalModel;
 
 namespace GemeloDigitalController {
-    // ============================================================
-    // EventoErrorController
-    // Formato: id|timestamp|descripcion|codigoError|fase
-    // (nivel siempre ERROR)
-    // ============================================================
 
     public ref class EventoErrorController {
     private:
         List<EventoErrorModel^>^ repositorio;
         static String^ RUTA = "datos\\eventos_error.dat";
 
-
     public:
         EventoErrorController() {
             repositorio = gcnew List<EventoErrorModel^>();
+            cargarArchivo();
         }
 
         // CREATE
         bool agregar(int id, String^ timestamp, String^ descripcion,
             String^ codigoError, String^ fase) {
-            EventoErrorModel^ e = buscarPorId(id);
-            if (e == nullptr) {
-                repositorio->Add(gcnew EventoErrorModel(
-                    id, timestamp, descripcion, codigoError, fase));
-                return true;
-            }
-            return false;
+            if (buscarPorId(id) != nullptr) return false;
+            repositorio->Add(gcnew EventoErrorModel(
+                id, timestamp, descripcion, codigoError, fase));
+            guardarArchivo();
+            return true;
         }
 
         // READ - por ID
         EventoErrorModel^ buscarPorId(int id) {
-            for each (EventoErrorModel ^ e in repositorio) {
-                if (e->getId() == id) return e;
-            }
+            for each (EventoErrorModel ^ e in repositorio)
+                if (e->Id == id) return e;
             return nullptr;
         }
 
@@ -47,38 +39,35 @@ namespace GemeloDigitalController {
             return repositorio;
         }
 
-        // UPDATE - D: descripcion | C: codigoError | F: fase
-        bool modificar(int id, String^ opcion, String^ valor) {
+        // UPDATE - reemplaza atributos modificables
+        // Timestamp es inmutable — identifica cuándo ocurrió el error
+        bool modificar(int id, String^ descripcion, String^ codigoError, String^ fase) {
             EventoErrorModel^ e = buscarPorId(id);
-            if (e != nullptr) {
-                if (opcion->Equals("D"))      e->setDescripcion(valor);
-                else if (opcion->Equals("C")) e->setCodigoError(valor);
-                else if (opcion->Equals("F")) e->setFase(valor);
-                else return false;
-                return true;
-            }
-            return false;
+            if (e == nullptr) return false;
+            e->Descripcion = descripcion;
+            e->CodigoError = codigoError;
+            e->Fase = fase;
+            guardarArchivo();
+            return true;
         }
 
         // DELETE
         bool eliminar(int id) {
             EventoErrorModel^ e = buscarPorId(id);
-            if (e != nullptr) {
-                repositorio->Remove(e);
-                return true;
-            }
-            return false;
+            if (e == nullptr) return false;
+            repositorio->Remove(e);
+            guardarArchivo();
+            return true;
         }
 
-		//PERSISTENCIA
-
+        // Formato: id|timestamp|descripcion|codigoError|fase
         void guardarArchivo() {
             Directory::CreateDirectory("datos");
             StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
-            for each(EventoErrorModel ^ e in repositorio)
+            for each (EventoErrorModel ^ e in repositorio)
                 sw->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}",
-                    e->getId(), e->getTimestamp(), e->getDescripcion(),
-                    e->getCodigoError(), e->getFase()));
+                    e->Id, e->Timestamp, e->Descripcion,
+                    e->CodigoError, e->Fase));
             sw->Close();
         }
 

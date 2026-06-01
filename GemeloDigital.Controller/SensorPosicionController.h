@@ -11,29 +11,26 @@ namespace GemeloDigitalController {
         List<SensorPosicionModel^>^ repositorio;
         static String^ RUTA = "datos\\sensores_posicion.dat";
 
-
     public:
         SensorPosicionController() {
             repositorio = gcnew List<SensorPosicionModel^>();
+            cargarArchivo();
         }
 
         // CREATE
         bool agregar(int id, String^ nombre, bool activo,
             double anguloMedido, double tolerancia) {
-            SensorPosicionModel^ s = buscarPorId(id);
-            if (s == nullptr) {
-                repositorio->Add(gcnew SensorPosicionModel(
-                    id, nombre, activo, anguloMedido, tolerancia));
-                return true;
-            }
-            return false;
+            if (buscarPorId(id) != nullptr) return false;
+            repositorio->Add(gcnew SensorPosicionModel(
+                id, nombre, activo, anguloMedido, tolerancia));
+            guardarArchivo();
+            return true;
         }
 
         // READ - por ID
         SensorPosicionModel^ buscarPorId(int id) {
-            for each (SensorPosicionModel ^ s in repositorio) {
-                if (s->getId() == id) return s;
-            }
+            for each (SensorPosicionModel ^ s in repositorio)
+                if (s->Id == id) return s;
             return nullptr;
         }
 
@@ -42,39 +39,36 @@ namespace GemeloDigitalController {
             return repositorio;
         }
 
-        // UPDATE - N: nombre | A: activo | AM: anguloMedido | T: tolerancia
-        bool modificar(int id, String^ opcion, String^ valor) {
+        // UPDATE - reemplaza todos los atributos modificables
+        bool modificar(int id, String^ nombre, bool activo,
+            double anguloMedido, double tolerancia) {
             SensorPosicionModel^ s = buscarPorId(id);
-            if (s != nullptr) {
-                if (opcion->Equals("N"))       s->setNombre(valor);
-                else if (opcion->Equals("A"))  s->setActivo(valor->Equals("true"));
-                else if (opcion->Equals("AM")) s->setAnguloMedido(Convert::ToDouble(valor));
-                else if (opcion->Equals("T"))  s->setTolerancia(Convert::ToDouble(valor));
-                else return false;
-                return true;
-            }
-            return false;
+            if (s == nullptr) return false;
+            s->Nombre = nombre;
+            s->Activo = activo;
+            s->AnguloMedido = anguloMedido;
+            s->Tolerancia = tolerancia;
+            guardarArchivo();
+            return true;
         }
 
         // DELETE
         bool eliminar(int id) {
             SensorPosicionModel^ s = buscarPorId(id);
-            if (s != nullptr) {
-                repositorio->Remove(s);
-                return true;
-            }
-            return false;
+            if (s == nullptr) return false;
+            repositorio->Remove(s);
+            guardarArchivo();
+            return true;
         }
 
-        //PERSISTANCE
         // Formato: id|nombre|activo|anguloMedido|tolerancia
         void guardarArchivo() {
             Directory::CreateDirectory("datos");
             StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
             for each (SensorPosicionModel ^ s in repositorio)
                 sw->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}",
-                    s->getId(), s->getNombre(), (s->getActivo() ? 1 : 0),
-                    s->getAnguloMedido(), s->getTolerancia()));
+                    s->Id, s->Nombre, (s->Activo ? 1 : 0),
+                    s->AnguloMedido, s->Tolerancia));
             sw->Close();
         }
 
@@ -86,12 +80,11 @@ namespace GemeloDigitalController {
             while ((linea = sr->ReadLine()) != nullptr) {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
-                SensorPosicionModel^ s = gcnew SensorPosicionModel(
-                    Int32::Parse(c[0]), c[1], Boolean::Parse(c[2]), Double::Parse(c[3]), Double::Parse(c[4]));
-                repositorio->Add(s);
+                repositorio->Add(gcnew SensorPosicionModel(
+                    Int32::Parse(c[0]), c[1], c[2]->Equals("1"),
+                    Double::Parse(c[3]), Double::Parse(c[4])));
             }
             sr->Close();
         }
-
     };
 }

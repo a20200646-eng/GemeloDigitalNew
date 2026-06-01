@@ -5,9 +5,9 @@ namespace GemeloDigitalModel {
 
     public ref class EstacionTrabajoModel {
     private:
-        int id;
+        int     id;
         String^ tipoPiezaAceptada;
-        bool ocupada;
+        bool    ocupada;
 
     public:
         EstacionTrabajoModel(int id, String^ tipoPiezaAceptada, bool ocupada) {
@@ -16,20 +16,25 @@ namespace GemeloDigitalModel {
             this->ocupada = ocupada;
         }
 
-        // Getters
-        int getId() { return id; }
-        String^ getTipoPiezaAceptada() { return tipoPiezaAceptada; }
-        bool getOcupada() { return ocupada; }
+        property int Id {
+            int get() { return id; }
+        }
 
-        // Setters - id no se modifica
-        void setTipoPiezaAceptada(String^ t) { tipoPiezaAceptada = t; }
-        void setOcupada(bool o) { ocupada = o; }
+        property String^ TipoPiezaAceptada {
+            String^ get() { return tipoPiezaAceptada; }
+            void    set(String^ value) { tipoPiezaAceptada = value; }
+        }
+
+        property bool Ocupada {
+            bool get() { return ocupada; }
+            void set(bool value) { ocupada = value; }
+        }
 
         void dataReport() {
             Console::WriteLine("=== ESTACION DE TRABAJO ===");
-            Console::WriteLine("ID: " + id);
-            Console::WriteLine("|Tipo Pieza Aceptada: " + tipoPiezaAceptada);
-            Console::WriteLine("|Ocupada: " + ocupada);
+            Console::WriteLine("ID: " + Id);
+            Console::WriteLine("|Tipo Pieza Aceptada: " + TipoPiezaAceptada);
+            Console::WriteLine("|Ocupada: " + Ocupada);
         }
     };
 }

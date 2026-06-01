@@ -5,17 +5,6 @@ using namespace System::IO;
 using namespace GemeloDigitalModel;
 
 namespace GemeloDigitalController {
-    // ============================================================
-    // EstacionBodyFramingController
-    //
-    // Persistencia en DOS archivos:
-    //   datos\estacion.dat        → id|estadoSistema
-    //   datos\estacion_brazos.dat → estacionId|brazoId
-    //
-    // cargarArchivo(BrazoRoboticoController^) recibe el controller
-    // de brazos ya cargado para poder reconstruir las referencias.
-    // Llamar SIEMPRE DESPUES de BrazoRoboticoController.cargarArchivo().
-    // ============================================================
 
     public ref class EstacionBodyFramingController {
     private:
@@ -31,19 +20,16 @@ namespace GemeloDigitalController {
 
         // CREATE
         bool agregar(int id) {
-            EstacionBodyFramingModel^ e = buscarPorId(id);
-            if (e == nullptr) {
-                repositorio->Add(gcnew EstacionBodyFramingModel(id));
-                return true;
-            }
-            return false;
+            if (buscarPorId(id) != nullptr) return false;
+            repositorio->Add(gcnew EstacionBodyFramingModel(id));
+            guardarArchivo();
+            return true;
         }
 
         // READ - por ID
         EstacionBodyFramingModel^ buscarPorId(int id) {
-            for each (EstacionBodyFramingModel ^ e in repositorio) {
-                if (e->getId() == id) return e;
-            }
+            for each (EstacionBodyFramingModel ^ e in repositorio)
+                if (e->Id == id) return e;
             return nullptr;
         }
 
@@ -52,67 +38,51 @@ namespace GemeloDigitalController {
             return repositorio;
         }
 
-        // UPDATE - solo estado del sistema es modificable
-        // E: estadoSistema
-        bool modificar(int id, String^ opcion, String^ valor) {
+        // UPDATE - solo EstadoSistema es modificable
+        bool modificar(int id, EstadoSistema nuevoEstado) {
             EstacionBodyFramingModel^ e = buscarPorId(id);
-            if (e != nullptr) {
-                if (opcion->Equals("E")) {
-                    if (valor->Equals("INACTIVO"))           e->setEstadoSistema(EstadoSistema::INACTIVO);
-                    else if (valor->Equals("INICIALIZANDO")) e->setEstadoSistema(EstadoSistema::INICIALIZANDO);
-                    else if (valor->Equals("OPERATIVO"))     e->setEstadoSistema(EstadoSistema::OPERATIVO);
-                    else if (valor->Equals("PAUSADO"))       e->setEstadoSistema(EstadoSistema::PAUSADO);
-                    else if (valor->Equals("EMERGENCIA"))    e->setEstadoSistema(EstadoSistema::EMERGENCIA);
-                    else return false;
-                }
-                else return false;
-                return true;
-            }
-            return false;
+            if (e == nullptr) return false;
+            e->EstadoSistemaActual = nuevoEstado;
+            guardarArchivo();
+            return true;
         }
 
         // DELETE
         bool eliminar(int id) {
             EstacionBodyFramingModel^ e = buscarPorId(id);
-            if (e != nullptr) {
-                repositorio->Remove(e);
-                return true;
-            }
-            return false;
+            if (e == nullptr) return false;
+            repositorio->Remove(e);
+            guardarArchivo();
+            return true;
         }
 
         // Agregar brazo a la estacion
         bool agregarBrazo(int idEstacion, BrazoRoboticoModel^ brazo) {
             EstacionBodyFramingModel^ e = buscarPorId(idEstacion);
-            if (e != nullptr && brazo != nullptr) {
-                e->agregarBrazo(brazo);
-                return true;
-            }
-            return false;
+            if (e == nullptr || brazo == nullptr) return false;
+            e->agregarBrazo(brazo);
+            guardarArchivo();
+            return true;
         }
-
-		// ── Persistencia ─────────────────────────────────────────
 
         // estacion.dat        → id|estadoSistema
         // estacion_brazos.dat → estacionId|brazoId
         void guardarArchivo() {
             Directory::CreateDirectory("datos");
-
             StreamWriter^ swE = gcnew StreamWriter(RUTA_ESTACION, false, Text::Encoding::UTF8);
             StreamWriter^ swB = gcnew StreamWriter(RUTA_BRAZOS, false, Text::Encoding::UTF8);
 
-            for each(EstacionBodyFramingModel ^ e in repositorio) {
+            for each (EstacionBodyFramingModel ^ e in repositorio) {
                 swE->WriteLine(String::Format("{0}|{1}",
-                    e->getId(), (int)e->getEstadoSistema()));
-                for each(BrazoRoboticoModel ^ b in e->getBrazos())
-                    swB->WriteLine(String::Format("{0}|{1}", e->getId(), b->getId()));
+                    e->Id, (int)e->EstadoSistemaActual));
+                for each (BrazoRoboticoModel ^ b in e->Brazos)
+                    swB->WriteLine(String::Format("{0}|{1}", e->Id, b->Id));
             }
-
             swE->Close();
             swB->Close();
         }
 
-        // Requiere ctrlBrazo ya cargado para reconstruir referencias
+        // Requiere ctrlBrazo ya cargado — llamar DESPUES de BrazoRoboticoController
         void cargarArchivo(BrazoRoboticoController^ ctrlBrazo) {
             if (!File::Exists(RUTA_ESTACION)) return;
             repositorio->Clear();
@@ -124,12 +94,12 @@ namespace GemeloDigitalController {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
                 EstacionBodyFramingModel^ e = gcnew EstacionBodyFramingModel(Int32::Parse(c[0]));
-                e->setEstadoSistema((EstadoSistema)Int32::Parse(c[1]));
+                e->EstadoSistemaActual = (EstadoSistema)Int32::Parse(c[1]);
                 repositorio->Add(e);
             }
             sr->Close();
 
-            // PASO 2: reconstruir asociacion estacion<->brazo
+            // PASO 2: reconstruir asociacion estacion <-> brazo
             if (!File::Exists(RUTA_BRAZOS)) return;
             sr = gcnew StreamReader(RUTA_BRAZOS, Text::Encoding::UTF8);
             while ((linea = sr->ReadLine()) != nullptr) {
@@ -137,7 +107,7 @@ namespace GemeloDigitalController {
                 array<String^>^ c = linea->Split('|');
                 EstacionBodyFramingModel^ e = buscarPorId(Int32::Parse(c[0]));
                 BrazoRoboticoModel^ b = ctrlBrazo->buscarPorId(Int32::Parse(c[1]));
-                if (e != nullptr && b != nullptr) e->getBrazos()->Add(b);
+                if (e != nullptr && b != nullptr) e->Brazos->Add(b);
             }
             sr->Close();
         }

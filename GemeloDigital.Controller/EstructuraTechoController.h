@@ -11,29 +11,26 @@ namespace GemeloDigitalController {
         List<EstructuraTechoModel^>^ repositorio;
         static String^ RUTA = "datos\\estructuras_techo.dat";
 
-
     public:
         EstructuraTechoController() {
             repositorio = gcnew List<EstructuraTechoModel^>();
+            cargarArchivo();
         }
 
         // CREATE
         bool agregar(int id, String^ material, double peso,
             int puntosUnion, double anchura) {
-            EstructuraTechoModel^ e = buscarPorId(id);
-            if (e == nullptr) {
-                repositorio->Add(gcnew EstructuraTechoModel(
-                    id, material, peso, puntosUnion, anchura));
-                return true;
-            }
-            return false;
+            if (buscarPorId(id) != nullptr) return false;
+            repositorio->Add(gcnew EstructuraTechoModel(
+                id, material, peso, puntosUnion, anchura));
+            guardarArchivo();
+            return true;
         }
 
         // READ - por ID
         EstructuraTechoModel^ buscarPorId(int id) {
-            for each (EstructuraTechoModel ^ e in repositorio) {
-                if (e->getId() == id) return e;
-            }
+            for each (EstructuraTechoModel ^ e in repositorio)
+                if (e->Id == id) return e;
             return nullptr;
         }
 
@@ -42,45 +39,37 @@ namespace GemeloDigitalController {
             return repositorio;
         }
 
-        // UPDATE - M: material | P: peso | E: estado | PU: puntosUnion | A: anchura
-        bool modificar(int id, String^ opcion, String^ valor) {
+        // UPDATE - reemplaza todos los atributos modificables
+        bool modificar(int id, String^ material, double peso,
+            EstadoPieza estado, int puntosUnion, double anchura) {
             EstructuraTechoModel^ e = buscarPorId(id);
-            if (e != nullptr) {
-                if (opcion->Equals("M"))       e->setMaterial(valor);
-                else if (opcion->Equals("P"))  e->setPeso(Convert::ToDouble(valor));
-                else if (opcion->Equals("PU")) e->setPuntosUnion(Convert::ToInt32(valor));
-                else if (opcion->Equals("A"))  e->setAnchura(Convert::ToDouble(valor));
-                else if (opcion->Equals("E")) {
-                    if (valor->Equals("DISPONIBLE"))       e->setEstado(EstadoPieza::DISPONIBLE);
-                    else if (valor->Equals("EN_PROCESO"))  e->setEstado(EstadoPieza::EN_PROCESO);
-                    else if (valor->Equals("ENSAMBLADA"))  e->setEstado(EstadoPieza::ENSAMBLADA);
-                    else if (valor->Equals("DEFECTUOSA"))  e->setEstado(EstadoPieza::DEFECTUOSA);
-                    else return false;
-                }
-                else return false;
-                return true;
-            }
-            return false;
+            if (e == nullptr) return false;
+            e->Material = material;
+            e->Peso = peso;
+            e->Estado = estado;
+            e->PuntosUnion = puntosUnion;
+            e->Anchura = anchura;
+            guardarArchivo();
+            return true;
         }
 
         // DELETE
         bool eliminar(int id) {
             EstructuraTechoModel^ e = buscarPorId(id);
-            if (e != nullptr) {
-                repositorio->Remove(e);
-                return true;
-            }
-            return false;
+            if (e == nullptr) return false;
+            repositorio->Remove(e);
+            guardarArchivo();
+            return true;
         }
 
-		// ── Persistencia ─────────────────────────────────────────
+        // Formato: id|material|peso|estado|puntosUnion|anchura
         void guardarArchivo() {
             Directory::CreateDirectory("datos");
             StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
-            for each(EstructuraTechoModel ^ e in repositorio)
+            for each (EstructuraTechoModel ^ e in repositorio)
                 sw->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}|{5}",
-                    e->getId(), e->getMaterial(), e->getPeso(),
-                    (int)e->getEstado(), e->getPuntosUnion(), e->getAnchura()));
+                    e->Id, e->Material, e->Peso,
+                    (int)e->Estado, e->PuntosUnion, e->Anchura));
             sw->Close();
         }
 
@@ -95,7 +84,7 @@ namespace GemeloDigitalController {
                 EstructuraTechoModel^ e = gcnew EstructuraTechoModel(
                     Int32::Parse(c[0]), c[1], Double::Parse(c[2]),
                     Int32::Parse(c[4]), Double::Parse(c[5]));
-                e->setEstado((EstadoPieza)Int32::Parse(c[3]));
+                e->Estado = (EstadoPieza)Int32::Parse(c[3]);
                 repositorio->Add(e);
             }
             sr->Close();

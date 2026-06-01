@@ -5,40 +5,32 @@ using namespace System::IO;
 using namespace GemeloDigitalModel;
 
 namespace GemeloDigitalController {
-    // ============================================================
-    // EventoTareaController
-    // Formato: id|timestamp|descripcion|tareaId|resultado
-    // (nivel siempre INFO — no se guarda, se restaura en constructor)
-    // ============================================================
 
     public ref class EventoTareaController {
     private:
         List<EventoTareaModel^>^ repositorio;
         static String^ RUTA = "datos\\eventos_tarea.dat";
 
-
     public:
         EventoTareaController() {
             repositorio = gcnew List<EventoTareaModel^>();
+            cargarArchivo();
         }
 
         // CREATE
         bool agregar(int id, String^ timestamp, String^ descripcion,
             int tareaId, String^ resultado) {
-            EventoTareaModel^ e = buscarPorId(id);
-            if (e == nullptr) {
-                repositorio->Add(gcnew EventoTareaModel(
-                    id, timestamp, descripcion, tareaId, resultado));
-                return true;
-            }
-            return false;
+            if (buscarPorId(id) != nullptr) return false;
+            repositorio->Add(gcnew EventoTareaModel(
+                id, timestamp, descripcion, tareaId, resultado));
+            guardarArchivo();
+            return true;
         }
 
         // READ - por ID
         EventoTareaModel^ buscarPorId(int id) {
-            for each (EventoTareaModel ^ e in repositorio) {
-                if (e->getId() == id) return e;
-            }
+            for each (EventoTareaModel ^ e in repositorio)
+                if (e->Id == id) return e;
             return nullptr;
         }
 
@@ -47,36 +39,33 @@ namespace GemeloDigitalController {
             return repositorio;
         }
 
-        // UPDATE - D: descripcion | R: resultado
-        bool modificar(int id, String^ opcion, String^ valor) {
+        // UPDATE - Timestamp y TareaId son inmutables
+        bool modificar(int id, String^ descripcion, String^ resultado) {
             EventoTareaModel^ e = buscarPorId(id);
-            if (e != nullptr) {
-                if (opcion->Equals("D"))      e->setDescripcion(valor);
-                else if (opcion->Equals("R")) e->setResultado(valor);
-                else return false;
-                return true;
-            }
-            return false;
+            if (e == nullptr) return false;
+            e->Descripcion = descripcion;
+            e->Resultado = resultado;
+            guardarArchivo();
+            return true;
         }
 
         // DELETE
         bool eliminar(int id) {
             EventoTareaModel^ e = buscarPorId(id);
-            if (e != nullptr) {
-                repositorio->Remove(e);
-                return true;
-            }
-            return false;
+            if (e == nullptr) return false;
+            repositorio->Remove(e);
+            guardarArchivo();
+            return true;
         }
 
-		// ── Persistencia ─────────────────────────────────────────
+        // Formato: id|timestamp|descripcion|tareaId|resultado
         void guardarArchivo() {
             Directory::CreateDirectory("datos");
             StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
-            for each(EventoTareaModel ^ e in repositorio)
+            for each (EventoTareaModel ^ e in repositorio)
                 sw->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}",
-                    e->getId(), e->getTimestamp(), e->getDescripcion(),
-                    e->getTareaId(), e->getResultado()));
+                    e->Id, e->Timestamp, e->Descripcion,
+                    e->TareaId, e->Resultado));
             sw->Close();
         }
 

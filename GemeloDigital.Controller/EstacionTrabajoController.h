@@ -11,27 +11,24 @@ namespace GemeloDigitalController {
         List<EstacionTrabajoModel^>^ repositorio;
         static String^ RUTA = "datos\\estaciones_trabajo.dat";
 
-
     public:
         EstacionTrabajoController() {
             repositorio = gcnew List<EstacionTrabajoModel^>();
+            cargarArchivo();
         }
 
         // CREATE
         bool agregar(int id, String^ tipoPiezaAceptada, bool ocupada) {
-            EstacionTrabajoModel^ e = buscarPorId(id);
-            if (e == nullptr) {
-                repositorio->Add(gcnew EstacionTrabajoModel(id, tipoPiezaAceptada, ocupada));
-                return true;
-            }
-            return false;
+            if (buscarPorId(id) != nullptr) return false;
+            repositorio->Add(gcnew EstacionTrabajoModel(id, tipoPiezaAceptada, ocupada));
+            guardarArchivo();
+            return true;
         }
 
         // READ - por ID
         EstacionTrabajoModel^ buscarPorId(int id) {
-            for each (EstacionTrabajoModel ^ e in repositorio) {
-                if (e->getId() == id) return e;
-            }
+            for each (EstacionTrabajoModel ^ e in repositorio)
+                if (e->Id == id) return e;
             return nullptr;
         }
 
@@ -40,35 +37,32 @@ namespace GemeloDigitalController {
             return repositorio;
         }
 
-        // UPDATE - T: tipoPiezaAceptada | O: ocupada
-        bool modificar(int id, String^ opcion, String^ valor) {
+        // UPDATE - reemplaza todos los atributos modificables
+        bool modificar(int id, String^ tipoPiezaAceptada, bool ocupada) {
             EstacionTrabajoModel^ e = buscarPorId(id);
-            if (e != nullptr) {
-                if (opcion->Equals("T"))      e->setTipoPiezaAceptada(valor);
-                else if (opcion->Equals("O")) e->setOcupada(valor->Equals("true"));
-                else return false;
-                return true;
-            }
-            return false;
+            if (e == nullptr) return false;
+            e->TipoPiezaAceptada = tipoPiezaAceptada;
+            e->Ocupada = ocupada;
+            guardarArchivo();
+            return true;
         }
 
         // DELETE
         bool eliminar(int id) {
             EstacionTrabajoModel^ e = buscarPorId(id);
-            if (e != nullptr) {
-                repositorio->Remove(e);
-                return true;
-            }
-            return false;
+            if (e == nullptr) return false;
+            repositorio->Remove(e);
+            guardarArchivo();
+            return true;
         }
 
-		// ── Persistencia ─────────────────────────────────────────
+        // Formato: id|tipoPiezaAceptada|ocupada
         void guardarArchivo() {
             Directory::CreateDirectory("datos");
             StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
-            for each(EstacionTrabajoModel ^ e in repositorio)
+            for each (EstacionTrabajoModel ^ e in repositorio)
                 sw->WriteLine(String::Format("{0}|{1}|{2}",
-                    e->getId(), e->getTipoPiezaAceptada(), (e->getOcupada() ? 1 : 0)));
+                    e->Id, e->TipoPiezaAceptada, (e->Ocupada ? 1 : 0)));
             sw->Close();
         }
 

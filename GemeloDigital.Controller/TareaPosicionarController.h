@@ -5,10 +5,6 @@ using namespace System::IO;
 using namespace GemeloDigitalModel;
 
 namespace GemeloDigitalController {
-    // ============================================================
-    // TareaPosicionarController
-    // Formato: id|estado|posicionObjetivo|tolerancia
-    // ============================================================
 
     public ref class TareaPosicionarController {
     private:
@@ -18,23 +14,21 @@ namespace GemeloDigitalController {
     public:
         TareaPosicionarController() {
             repositorio = gcnew List<TareaPosicionarModel^>();
+            cargarArchivo();
         }
 
         // CREATE
         bool agregar(int id, double posicionObjetivo, double tolerancia) {
-            TareaPosicionarModel^ t = buscarPorId(id);
-            if (t == nullptr) {
-                repositorio ->Add(gcnew TareaPosicionarModel(id, posicionObjetivo, tolerancia));
-                return true;
-            }
-            return false;
+            if (buscarPorId(id) != nullptr) return false;
+            repositorio->Add(gcnew TareaPosicionarModel(id, posicionObjetivo, tolerancia));
+            guardarArchivo();
+            return true;
         }
 
         // READ - por ID
         TareaPosicionarModel^ buscarPorId(int id) {
-            for each (TareaPosicionarModel ^ t in repositorio) {
-                if (t->getId() == id) return t;
-            }
+            for each (TareaPosicionarModel ^ t in repositorio)
+                if (t->Id == id) return t;
             return nullptr;
         }
 
@@ -43,36 +37,34 @@ namespace GemeloDigitalController {
             return repositorio;
         }
 
-        // UPDATE - E: estado | PO: posicionObjetivo | T: tolerancia
-        bool modificar(int id, String^ opcion, String^ valor) {
+        // UPDATE - reemplaza todos los atributos modificables
+        bool modificar(int id, String^ estado,
+            double posicionObjetivo, double tolerancia) {
             TareaPosicionarModel^ t = buscarPorId(id);
-            if (t != nullptr) {
-                if (opcion->Equals("E"))       t->setEstado(valor);
-                else if (opcion->Equals("PO")) t->setPosicionObjetivo(Convert::ToDouble(valor));
-                else if (opcion->Equals("T"))  t->setTolerancia(Convert::ToDouble(valor));
-                else return false;
-                return true;
-            }
-            return false;
+            if (t == nullptr) return false;
+            t->Estado = estado;
+            t->PosicionObjetivo = posicionObjetivo;
+            t->Tolerancia = tolerancia;
+            guardarArchivo();
+            return true;
         }
 
         // DELETE
         bool eliminar(int id) {
             TareaPosicionarModel^ t = buscarPorId(id);
-            if (t != nullptr) {
-                repositorio->Remove(t);
-                return true;
-            }
-            return false;
+            if (t == nullptr) return false;
+            repositorio->Remove(t);
+            guardarArchivo();
+            return true;
         }
 
-		// ── Persistencia ─────────────────────────────────────────
+        // Formato: id|estado|posicionObjetivo|tolerancia
         void guardarArchivo() {
             Directory::CreateDirectory("datos");
             StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
-            for each(TareaPosicionarModel ^ t in repositorio)
+            for each (TareaPosicionarModel ^ t in repositorio)
                 sw->WriteLine(String::Format("{0}|{1}|{2}|{3}",
-                    t->getId(), t->getEstado(), t->getPosicionObjetivo(), t->getTolerancia()));
+                    t->Id, t->Estado, t->PosicionObjetivo, t->Tolerancia));
             sw->Close();
         }
 
@@ -86,7 +78,7 @@ namespace GemeloDigitalController {
                 array<String^>^ c = linea->Split('|');
                 TareaPosicionarModel^ t = gcnew TareaPosicionarModel(
                     Int32::Parse(c[0]), Double::Parse(c[2]), Double::Parse(c[3]));
-                t->setEstado(c[1]);
+                t->Estado = c[1];
                 repositorio->Add(t);
             }
             sr->Close();

@@ -6,11 +6,11 @@ using namespace GemeloDigitalModel;
 
 namespace GemeloDigitalController {
 
-    // ReporteCostos se define aqui directamente — no es una clase del Model
+    // ReporteCostos — clase auxiliar del Controller, no tiene Model
     public ref class ReporteCostos {
     private:
-        int id;
-        int ciclosCompletados;
+        int    id;
+        int    ciclosCompletados;
         double tiempoOperativo;
         double costoPorCiclo;
 
@@ -23,23 +23,34 @@ namespace GemeloDigitalController {
             this->costoPorCiclo = costoPorCiclo;
         }
 
-        int getId() { return id; }
-        int getCiclosCompletados() { return ciclosCompletados; }
-        double getTiempoOperativo() { return tiempoOperativo; }
-        double getCostoPorCiclo() { return costoPorCiclo; }
+        property int Id {
+            int get() { return id; }
+        }
 
-        void setCiclosCompletados(int c) { ciclosCompletados = c; }
-        void setTiempoOperativo(double t) { tiempoOperativo = t; }
-        void setCostoPorCiclo(double c) { costoPorCiclo = c; }
+        property int CiclosCompletados {
+            int  get() { return ciclosCompletados; }
+            void set(int value) { ciclosCompletados = value; }
+        }
 
+        property double TiempoOperativo {
+            double get() { return tiempoOperativo; }
+            void   set(double value) { tiempoOperativo = value; }
+        }
+
+        property double CostoPorCiclo {
+            double get() { return costoPorCiclo; }
+            void   set(double value) { costoPorCiclo = value; }
+        }
+
+        // Calculado dinamicamente — no se almacena
         double calcularCostoTotal() { return ciclosCompletados * costoPorCiclo; }
 
         void dataReport() {
             Console::WriteLine("=== REPORTE DE COSTOS ===");
-            Console::WriteLine("ID: " + id);
-            Console::WriteLine("|Ciclos: " + ciclosCompletados);
-            Console::WriteLine("|Tiempo operativo: " + tiempoOperativo + " hrs");
-            Console::WriteLine("|Costo/ciclo: $" + costoPorCiclo);
+            Console::WriteLine("ID: " + Id);
+            Console::WriteLine("|Ciclos: " + CiclosCompletados);
+            Console::WriteLine("|Tiempo operativo: " + TiempoOperativo + " hrs");
+            Console::WriteLine("|Costo/ciclo: $" + CostoPorCiclo);
             Console::WriteLine("|COSTO TOTAL: $" + calcularCostoTotal());
         }
     };
@@ -52,23 +63,21 @@ namespace GemeloDigitalController {
     public:
         ReporteController() {
             repositorio = gcnew List<ReporteCostos^>();
+            cargarArchivo();
         }
 
         // CREATE
         bool agregar(int id, int ciclos, double tiempo, double costoCiclo) {
-            ReporteCostos^ r = buscarPorId(id);
-            if (r == nullptr) {
-                repositorio->Add(gcnew ReporteCostos(id, ciclos, tiempo, costoCiclo));
-                return true;
-            }
-            return false;
+            if (buscarPorId(id) != nullptr) return false;
+            repositorio->Add(gcnew ReporteCostos(id, ciclos, tiempo, costoCiclo));
+            guardarArchivo();
+            return true;
         }
 
         // READ - por ID
         ReporteCostos^ buscarPorId(int id) {
-            for each (ReporteCostos ^ r in repositorio) {
-                if (r->getId() == id) return r;
-            }
+            for each (ReporteCostos ^ r in repositorio)
+                if (r->Id == id) return r;
             return nullptr;
         }
 
@@ -77,42 +86,38 @@ namespace GemeloDigitalController {
             return repositorio;
         }
 
-        // UPDATE - C: ciclos | T: tiempoOperativo | P: costoPorCiclo
-        bool modificar(int id, String^ opcion, String^ valor) {
+        // UPDATE - reemplaza todos los atributos modificables
+        bool modificar(int id, int ciclosCompletados,
+            double tiempoOperativo, double costoPorCiclo) {
             ReporteCostos^ r = buscarPorId(id);
-            if (r != nullptr) {
-                if (opcion->Equals("C"))      r->setCiclosCompletados(Convert::ToInt32(valor));
-                else if (opcion->Equals("T")) r->setTiempoOperativo(Convert::ToDouble(valor));
-                else if (opcion->Equals("P")) r->setCostoPorCiclo(Convert::ToDouble(valor));
-                else return false;
-                return true;
-            }
-            return false;
+            if (r == nullptr) return false;
+            r->CiclosCompletados = ciclosCompletados;
+            r->TiempoOperativo = tiempoOperativo;
+            r->CostoPorCiclo = costoPorCiclo;
+            guardarArchivo();
+            return true;
         }
 
         // DELETE
         bool eliminar(int id) {
             ReporteCostos^ r = buscarPorId(id);
-            if (r != nullptr) {
-                repositorio->Remove(r);
-                return true;
-            }
-            return false;
+            if (r == nullptr) return false;
+            repositorio->Remove(r);
+            guardarArchivo();
+            return true;
         }
 
-        // PERSIST - guardar
-// Formato: id|ciclosCompletados|tiempoOperativo|costoPorCiclo
+        // Formato: id|ciclosCompletados|tiempoOperativo|costoPorCiclo
         void guardarArchivo() {
             Directory::CreateDirectory("datos");
             StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
             for each (ReporteCostos ^ r in repositorio)
                 sw->WriteLine(String::Format("{0}|{1}|{2}|{3}",
-                    r->getId(), r->getCiclosCompletados(),
-                    r->getTiempoOperativo(), r->getCostoPorCiclo()));
+                    r->Id, r->CiclosCompletados,
+                    r->TiempoOperativo, r->CostoPorCiclo));
             sw->Close();
         }
 
-        // PERSIST - cargar
         void cargarArchivo() {
             if (!File::Exists(RUTA)) return;
             repositorio->Clear();
@@ -122,10 +127,8 @@ namespace GemeloDigitalController {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
                 repositorio->Add(gcnew ReporteCostos(
-                    Int32::Parse(c[0]),
-                    Int32::Parse(c[1]),
-                    Double::Parse(c[2]),
-                    Double::Parse(c[3])));
+                    Int32::Parse(c[0]), Int32::Parse(c[1]),
+                    Double::Parse(c[2]), Double::Parse(c[3])));
             }
             sr->Close();
         }
