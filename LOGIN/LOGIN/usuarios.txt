@@ -3,3 +3,4 @@ jefe,123,Jefe
 operador,123,Operador
 faf,214,Operador,Mañana
 MIjarq,1245,Admin,Tarde
+chicho,1234,Gestor,Noche

@@ -1,4 +1,4 @@
-#pragma once
+/**/#pragma once
 #include "Enumeraciones.h"
 using namespace System;
 
