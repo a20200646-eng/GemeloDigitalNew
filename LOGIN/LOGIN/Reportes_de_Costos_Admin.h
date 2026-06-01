@@ -399,6 +399,7 @@ private: System::Void Reportes_de_Costos_Admin_Load(System::Object^ sender, Syst
 		// 5. Activamos las etiquetas para que el monto exacto en dólares se vea flotando arriba de cada barra
 		this->chart1->Series[nombreSerie]->IsValueShownAsLabel = true;
 		this->chart1->Series[nombreSerie]->LabelFormat = "$#,##0.00"; // Formato monetario profesional
+		//Agregado
 
 	}
 	catch (Exception^ ex) {
