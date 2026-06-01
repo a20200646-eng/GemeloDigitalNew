@@ -34,7 +34,7 @@ namespace LOGIN {
 				delete components;
 			}
 		}
-	private: System::Windows::Forms::Label^ label1;
+
 	protected:
 	private: System::Windows::Forms::Label^ label2;
 
@@ -62,6 +62,7 @@ namespace LOGIN {
 	private: System::Windows::Forms::PictureBox^ pictureBox3;
 	private: System::Windows::Forms::PictureBox^ pictureBox2;
 	private: System::Windows::Forms::PictureBox^ pictureBox1;
+	private: System::Windows::Forms::Label^ label5;
 
 	protected:
 
@@ -86,10 +87,19 @@ namespace LOGIN {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
+			this->panel2 = (gcnew System::Windows::Forms::Panel());
+			this->pictureBox3 = (gcnew System::Windows::Forms::PictureBox());
+			this->pictureBox2 = (gcnew System::Windows::Forms::PictureBox());
+			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
+			this->checkBox6 = (gcnew System::Windows::Forms::CheckBox());
+			this->checkBox5 = (gcnew System::Windows::Forms::CheckBox());
+			this->checkBox4 = (gcnew System::Windows::Forms::CheckBox());
+			this->checkBox3 = (gcnew System::Windows::Forms::CheckBox());
+			this->checkBox2 = (gcnew System::Windows::Forms::CheckBox());
+			this->checkBox1 = (gcnew System::Windows::Forms::CheckBox());
 			this->label4 = (gcnew System::Windows::Forms::Label());
 			this->button6 = (gcnew System::Windows::Forms::Button());
 			this->button5 = (gcnew System::Windows::Forms::Button());
@@ -97,32 +107,13 @@ namespace LOGIN {
 			this->button3 = (gcnew System::Windows::Forms::Button());
 			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->button1 = (gcnew System::Windows::Forms::Button());
-			this->checkBox1 = (gcnew System::Windows::Forms::CheckBox());
-			this->panel2 = (gcnew System::Windows::Forms::Panel());
-			this->checkBox2 = (gcnew System::Windows::Forms::CheckBox());
-			this->checkBox3 = (gcnew System::Windows::Forms::CheckBox());
-			this->checkBox4 = (gcnew System::Windows::Forms::CheckBox());
-			this->checkBox5 = (gcnew System::Windows::Forms::CheckBox());
-			this->checkBox6 = (gcnew System::Windows::Forms::CheckBox());
-			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
-			this->pictureBox2 = (gcnew System::Windows::Forms::PictureBox());
-			this->pictureBox3 = (gcnew System::Windows::Forms::PictureBox());
+			this->label5 = (gcnew System::Windows::Forms::Label());
 			this->panel1->SuspendLayout();
 			this->panel2->SuspendLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox3))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			this->SuspendLayout();
-			// 
-			// label1
-			// 
-			this->label1->AutoSize = true;
-			this->label1->ForeColor = System::Drawing::Color::White;
-			this->label1->Location = System::Drawing::Point(44, 38);
-			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(248, 16);
-			this->label1->TabIndex = 0;
-			this->label1->Text = L"Control de Estación - Ciclo de Operación";
 			// 
 			// label2
 			// 
@@ -138,7 +129,7 @@ namespace LOGIN {
 			// 
 			this->label3->AutoSize = true;
 			this->label3->ForeColor = System::Drawing::Color::White;
-			this->label3->Location = System::Drawing::Point(44, 138);
+			this->label3->Location = System::Drawing::Point(45, 187);
 			this->label3->Name = L"label3";
 			this->label3->Size = System::Drawing::Size(105, 16);
 			this->label3->TabIndex = 4;
@@ -148,6 +139,7 @@ namespace LOGIN {
 			// 
 			this->panel1->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(40)),
 				static_cast<System::Int32>(static_cast<System::Byte>(58)));
+			this->panel1->Controls->Add(this->label5);
 			this->panel1->Controls->Add(this->panel2);
 			this->panel1->Controls->Add(this->checkBox1);
 			this->panel1->Controls->Add(this->label4);
@@ -159,13 +151,119 @@ namespace LOGIN {
 			this->panel1->Controls->Add(this->button1);
 			this->panel1->Controls->Add(this->label3);
 			this->panel1->Controls->Add(this->label2);
-			this->panel1->Controls->Add(this->label1);
 			this->panel1->Dock = System::Windows::Forms::DockStyle::Left;
 			this->panel1->Location = System::Drawing::Point(0, 0);
 			this->panel1->Name = L"panel1";
 			this->panel1->Size = System::Drawing::Size(1101, 730);
 			this->panel1->TabIndex = 1;
 			this->panel1->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Estacion_ciclo::panel1_Paint);
+			// 
+			// panel2
+			// 
+			this->panel2->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(22)), static_cast<System::Int32>(static_cast<System::Byte>(32)),
+				static_cast<System::Int32>(static_cast<System::Byte>(50)));
+			this->panel2->Controls->Add(this->pictureBox3);
+			this->panel2->Controls->Add(this->pictureBox2);
+			this->panel2->Controls->Add(this->pictureBox1);
+			this->panel2->Controls->Add(this->checkBox6);
+			this->panel2->Controls->Add(this->checkBox5);
+			this->panel2->Controls->Add(this->checkBox4);
+			this->panel2->Controls->Add(this->checkBox3);
+			this->panel2->Controls->Add(this->checkBox2);
+			this->panel2->Location = System::Drawing::Point(45, 341);
+			this->panel2->Name = L"panel2";
+			this->panel2->Size = System::Drawing::Size(930, 354);
+			this->panel2->TabIndex = 13;
+			// 
+			// pictureBox3
+			// 
+			this->pictureBox3->Location = System::Drawing::Point(644, 17);
+			this->pictureBox3->Name = L"pictureBox3";
+			this->pictureBox3->Size = System::Drawing::Size(242, 262);
+			this->pictureBox3->TabIndex = 21;
+			this->pictureBox3->TabStop = false;
+			// 
+			// pictureBox2
+			// 
+			this->pictureBox2->Location = System::Drawing::Point(334, 17);
+			this->pictureBox2->Name = L"pictureBox2";
+			this->pictureBox2->Size = System::Drawing::Size(242, 262);
+			this->pictureBox2->TabIndex = 20;
+			this->pictureBox2->TabStop = false;
+			// 
+			// pictureBox1
+			// 
+			this->pictureBox1->Location = System::Drawing::Point(38, 17);
+			this->pictureBox1->Name = L"pictureBox1";
+			this->pictureBox1->Size = System::Drawing::Size(242, 262);
+			this->pictureBox1->TabIndex = 19;
+			this->pictureBox1->TabStop = false;
+			// 
+			// checkBox6
+			// 
+			this->checkBox6->AutoSize = true;
+			this->checkBox6->ForeColor = System::Drawing::Color::White;
+			this->checkBox6->Location = System::Drawing::Point(761, 321);
+			this->checkBox6->Name = L"checkBox6";
+			this->checkBox6->Size = System::Drawing::Size(75, 20);
+			this->checkBox6->TabIndex = 18;
+			this->checkBox6->Text = L"PAUSA";
+			this->checkBox6->UseVisualStyleBackColor = true;
+			// 
+			// checkBox5
+			// 
+			this->checkBox5->AutoSize = true;
+			this->checkBox5->ForeColor = System::Drawing::Color::White;
+			this->checkBox5->Location = System::Drawing::Point(588, 321);
+			this->checkBox5->Name = L"checkBox5";
+			this->checkBox5->Size = System::Drawing::Size(78, 20);
+			this->checkBox5->TabIndex = 17;
+			this->checkBox5->Text = L"ERROR";
+			this->checkBox5->UseVisualStyleBackColor = true;
+			// 
+			// checkBox4
+			// 
+			this->checkBox4->AutoSize = true;
+			this->checkBox4->ForeColor = System::Drawing::Color::White;
+			this->checkBox4->Location = System::Drawing::Point(394, 321);
+			this->checkBox4->Name = L"checkBox4";
+			this->checkBox4->Size = System::Drawing::Size(104, 20);
+			this->checkBox4->TabIndex = 16;
+			this->checkBox4->Text = L"SOLDANDO";
+			this->checkBox4->UseVisualStyleBackColor = true;
+			// 
+			// checkBox3
+			// 
+			this->checkBox3->AutoSize = true;
+			this->checkBox3->ForeColor = System::Drawing::Color::White;
+			this->checkBox3->Location = System::Drawing::Point(184, 321);
+			this->checkBox3->Name = L"checkBox3";
+			this->checkBox3->Size = System::Drawing::Size(131, 20);
+			this->checkBox3->TabIndex = 15;
+			this->checkBox3->Text = L"POSICIONANDO";
+			this->checkBox3->UseVisualStyleBackColor = true;
+			// 
+			// checkBox2
+			// 
+			this->checkBox2->AutoSize = true;
+			this->checkBox2->ForeColor = System::Drawing::Color::White;
+			this->checkBox2->Location = System::Drawing::Point(19, 321);
+			this->checkBox2->Name = L"checkBox2";
+			this->checkBox2->Size = System::Drawing::Size(86, 20);
+			this->checkBox2->TabIndex = 14;
+			this->checkBox2->Text = L"REPOSO";
+			this->checkBox2->UseVisualStyleBackColor = true;
+			// 
+			// checkBox1
+			// 
+			this->checkBox1->AutoSize = true;
+			this->checkBox1->ForeColor = System::Drawing::Color::White;
+			this->checkBox1->Location = System::Drawing::Point(247, 85);
+			this->checkBox1->Name = L"checkBox1";
+			this->checkBox1->Size = System::Drawing::Size(156, 20);
+			this->checkBox1->TabIndex = 12;
+			this->checkBox1->Text = L"Secuencia aprobada";
+			this->checkBox1->UseVisualStyleBackColor = true;
 			// 
 			// label4
 			// 
@@ -175,7 +273,7 @@ namespace LOGIN {
 			this->label4->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->label4->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->label4->ForeColor = System::Drawing::Color::Lime;
-			this->label4->Location = System::Drawing::Point(174, 138);
+			this->label4->Location = System::Drawing::Point(136, 83);
 			this->label4->Name = L"label4";
 			this->label4->Size = System::Drawing::Size(87, 18);
 			this->label4->TabIndex = 11;
@@ -273,112 +371,19 @@ namespace LOGIN {
 			this->button1->Text = L"1. Iniciar ciclo";
 			this->button1->UseVisualStyleBackColor = false;
 			// 
-			// checkBox1
+			// label5
 			// 
-			this->checkBox1->AutoSize = true;
-			this->checkBox1->ForeColor = System::Drawing::Color::White;
-			this->checkBox1->Location = System::Drawing::Point(45, 277);
-			this->checkBox1->Name = L"checkBox1";
-			this->checkBox1->Size = System::Drawing::Size(156, 20);
-			this->checkBox1->TabIndex = 12;
-			this->checkBox1->Text = L"Secuencia aprobada";
-			this->checkBox1->UseVisualStyleBackColor = true;
-			// 
-			// panel2
-			// 
-			this->panel2->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(22)), static_cast<System::Int32>(static_cast<System::Byte>(32)),
-				static_cast<System::Int32>(static_cast<System::Byte>(50)));
-			this->panel2->Controls->Add(this->pictureBox3);
-			this->panel2->Controls->Add(this->pictureBox2);
-			this->panel2->Controls->Add(this->pictureBox1);
-			this->panel2->Controls->Add(this->checkBox6);
-			this->panel2->Controls->Add(this->checkBox5);
-			this->panel2->Controls->Add(this->checkBox4);
-			this->panel2->Controls->Add(this->checkBox3);
-			this->panel2->Controls->Add(this->checkBox2);
-			this->panel2->Location = System::Drawing::Point(45, 341);
-			this->panel2->Name = L"panel2";
-			this->panel2->Size = System::Drawing::Size(930, 354);
-			this->panel2->TabIndex = 13;
-			// 
-			// checkBox2
-			// 
-			this->checkBox2->AutoSize = true;
-			this->checkBox2->ForeColor = System::Drawing::Color::White;
-			this->checkBox2->Location = System::Drawing::Point(19, 321);
-			this->checkBox2->Name = L"checkBox2";
-			this->checkBox2->Size = System::Drawing::Size(86, 20);
-			this->checkBox2->TabIndex = 14;
-			this->checkBox2->Text = L"REPOSO";
-			this->checkBox2->UseVisualStyleBackColor = true;
-			// 
-			// checkBox3
-			// 
-			this->checkBox3->AutoSize = true;
-			this->checkBox3->ForeColor = System::Drawing::Color::White;
-			this->checkBox3->Location = System::Drawing::Point(184, 321);
-			this->checkBox3->Name = L"checkBox3";
-			this->checkBox3->Size = System::Drawing::Size(131, 20);
-			this->checkBox3->TabIndex = 15;
-			this->checkBox3->Text = L"POSICIONANDO";
-			this->checkBox3->UseVisualStyleBackColor = true;
-			// 
-			// checkBox4
-			// 
-			this->checkBox4->AutoSize = true;
-			this->checkBox4->ForeColor = System::Drawing::Color::White;
-			this->checkBox4->Location = System::Drawing::Point(394, 321);
-			this->checkBox4->Name = L"checkBox4";
-			this->checkBox4->Size = System::Drawing::Size(104, 20);
-			this->checkBox4->TabIndex = 16;
-			this->checkBox4->Text = L"SOLDANDO";
-			this->checkBox4->UseVisualStyleBackColor = true;
-			// 
-			// checkBox5
-			// 
-			this->checkBox5->AutoSize = true;
-			this->checkBox5->ForeColor = System::Drawing::Color::White;
-			this->checkBox5->Location = System::Drawing::Point(588, 321);
-			this->checkBox5->Name = L"checkBox5";
-			this->checkBox5->Size = System::Drawing::Size(78, 20);
-			this->checkBox5->TabIndex = 17;
-			this->checkBox5->Text = L"ERROR";
-			this->checkBox5->UseVisualStyleBackColor = true;
-			// 
-			// checkBox6
-			// 
-			this->checkBox6->AutoSize = true;
-			this->checkBox6->ForeColor = System::Drawing::Color::White;
-			this->checkBox6->Location = System::Drawing::Point(761, 321);
-			this->checkBox6->Name = L"checkBox6";
-			this->checkBox6->Size = System::Drawing::Size(75, 20);
-			this->checkBox6->TabIndex = 18;
-			this->checkBox6->Text = L"PAUSA";
-			this->checkBox6->UseVisualStyleBackColor = true;
-			// 
-			// pictureBox1
-			// 
-			this->pictureBox1->Location = System::Drawing::Point(38, 17);
-			this->pictureBox1->Name = L"pictureBox1";
-			this->pictureBox1->Size = System::Drawing::Size(242, 262);
-			this->pictureBox1->TabIndex = 19;
-			this->pictureBox1->TabStop = false;
-			// 
-			// pictureBox2
-			// 
-			this->pictureBox2->Location = System::Drawing::Point(334, 17);
-			this->pictureBox2->Name = L"pictureBox2";
-			this->pictureBox2->Size = System::Drawing::Size(242, 262);
-			this->pictureBox2->TabIndex = 20;
-			this->pictureBox2->TabStop = false;
-			// 
-			// pictureBox3
-			// 
-			this->pictureBox3->Location = System::Drawing::Point(644, 17);
-			this->pictureBox3->Name = L"pictureBox3";
-			this->pictureBox3->Size = System::Drawing::Size(242, 262);
-			this->pictureBox3->TabIndex = 21;
-			this->pictureBox3->TabStop = false;
+			this->label5->AutoSize = true;
+			this->label5->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label5->ForeColor = System::Drawing::Color::White;
+			this->label5->Location = System::Drawing::Point(44, 31);
+			this->label5->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label5->Name = L"label5";
+			this->label5->RightToLeft = System::Windows::Forms::RightToLeft::No;
+			this->label5->Size = System::Drawing::Size(397, 22);
+			this->label5->TabIndex = 14;
+			this->label5->Text = L"Control de Estación - Ciclo de Operación";
 			// 
 			// Estacion_ciclo
 			// 
@@ -392,9 +397,9 @@ namespace LOGIN {
 			this->panel1->PerformLayout();
 			this->panel2->ResumeLayout(false);
 			this->panel2->PerformLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox3))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
 			this->ResumeLayout(false);
 
 		}

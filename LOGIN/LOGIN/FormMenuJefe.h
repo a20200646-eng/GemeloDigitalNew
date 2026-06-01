@@ -70,7 +70,7 @@ namespace LOGIN {
 
 
 	private: System::Windows::Forms::Panel^ panel12;
-	private: System::Windows::Forms::PictureBox^ pictureBox2;
+
 	private: System::Windows::Forms::Label^ label13;
 	private: System::Windows::Forms::PictureBox^ pictureBox3;
 	private: System::Windows::Forms::Label^ label14;
@@ -85,6 +85,20 @@ namespace LOGIN {
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Rol;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column2;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column3;
+
+
+
+
+	private: System::Windows::Forms::Panel^ panel10;
+	private: System::Windows::Forms::PictureBox^ pictureBox1;
+	private: System::Windows::Forms::Label^ label21;
+	private: System::Windows::Forms::Label^ label5;
+	private: System::Windows::Forms::Label^ label4;
+	private: System::Windows::Forms::Label^ label22;
+
+
+
+
 
 
 
@@ -111,7 +125,7 @@ namespace LOGIN {
 		void InitializeComponent(void)
 		{
 			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(FormMenuJefe::typeid));
-			System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle1 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
+			System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle2 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->label3 = (gcnew System::Windows::Forms::Label());
@@ -131,7 +145,7 @@ namespace LOGIN {
 			this->label12 = (gcnew System::Windows::Forms::Label());
 			this->panel9 = (gcnew System::Windows::Forms::Panel());
 			this->panel12 = (gcnew System::Windows::Forms::Panel());
-			this->pictureBox2 = (gcnew System::Windows::Forms::PictureBox());
+			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
 			this->label13 = (gcnew System::Windows::Forms::Label());
 			this->pictureBox3 = (gcnew System::Windows::Forms::PictureBox());
 			this->label14 = (gcnew System::Windows::Forms::Label());
@@ -146,14 +160,20 @@ namespace LOGIN {
 			this->label18 = (gcnew System::Windows::Forms::Label());
 			this->label19 = (gcnew System::Windows::Forms::Label());
 			this->label20 = (gcnew System::Windows::Forms::Label());
+			this->panel10 = (gcnew System::Windows::Forms::Panel());
+			this->label22 = (gcnew System::Windows::Forms::Label());
+			this->label21 = (gcnew System::Windows::Forms::Label());
+			this->label5 = (gcnew System::Windows::Forms::Label());
+			this->label4 = (gcnew System::Windows::Forms::Label());
 			this->panel6->SuspendLayout();
 			this->panel7->SuspendLayout();
 			this->panel3->SuspendLayout();
 			this->panel5->SuspendLayout();
 			this->panel12->SuspendLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox3))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->BeginInit();
+			this->panel10->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// label1
@@ -166,9 +186,9 @@ namespace LOGIN {
 			this->label1->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label1->Name = L"label1";
 			this->label1->RightToLeft = System::Windows::Forms::RightToLeft::No;
-			this->label1->Size = System::Drawing::Size(293, 22);
+			this->label1->Size = System::Drawing::Size(111, 22);
 			this->label1->TabIndex = 0;
-			this->label1->Text = L"MENÚ JEFE DE OPERACIONES";
+			this->label1->Text = L"Dashboard";
 			// 
 			// label2
 			// 
@@ -226,26 +246,30 @@ namespace LOGIN {
 			// 
 			// panel6
 			// 
+			this->panel6->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(14)), static_cast<System::Int32>(static_cast<System::Byte>(22)),
+				static_cast<System::Int32>(static_cast<System::Byte>(40)));
 			this->panel6->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->panel6->Controls->Add(this->label2);
 			this->panel6->Controls->Add(this->label6);
 			this->panel6->ForeColor = System::Drawing::SystemColors::ActiveCaptionText;
-			this->panel6->Location = System::Drawing::Point(164, 106);
+			this->panel6->Location = System::Drawing::Point(162, 106);
 			this->panel6->Margin = System::Windows::Forms::Padding(2);
 			this->panel6->Name = L"panel6";
-			this->panel6->Size = System::Drawing::Size(168, 67);
+			this->panel6->Size = System::Drawing::Size(174, 68);
 			this->panel6->TabIndex = 8;
 			// 
 			// panel7
 			// 
+			this->panel7->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(14)), static_cast<System::Int32>(static_cast<System::Byte>(22)),
+				static_cast<System::Int32>(static_cast<System::Byte>(40)));
 			this->panel7->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->panel7->Controls->Add(this->label7);
 			this->panel7->Controls->Add(this->label8);
 			this->panel7->ForeColor = System::Drawing::SystemColors::ActiveCaptionText;
-			this->panel7->Location = System::Drawing::Point(356, 106);
+			this->panel7->Location = System::Drawing::Point(353, 106);
 			this->panel7->Margin = System::Windows::Forms::Padding(2);
 			this->panel7->Name = L"panel7";
-			this->panel7->Size = System::Drawing::Size(168, 67);
+			this->panel7->Size = System::Drawing::Size(174, 68);
 			this->panel7->TabIndex = 12;
 			// 
 			// label7
@@ -289,14 +313,16 @@ namespace LOGIN {
 			// 
 			// panel3
 			// 
+			this->panel3->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(14)), static_cast<System::Int32>(static_cast<System::Byte>(22)),
+				static_cast<System::Int32>(static_cast<System::Byte>(40)));
 			this->panel3->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->panel3->Controls->Add(this->label9);
 			this->panel3->Controls->Add(this->label10);
 			this->panel3->ForeColor = System::Drawing::SystemColors::ActiveCaptionText;
-			this->panel3->Location = System::Drawing::Point(546, 106);
+			this->panel3->Location = System::Drawing::Point(543, 106);
 			this->panel3->Margin = System::Windows::Forms::Padding(2);
 			this->panel3->Name = L"panel3";
-			this->panel3->Size = System::Drawing::Size(168, 67);
+			this->panel3->Size = System::Drawing::Size(174, 68);
 			this->panel3->TabIndex = 14;
 			// 
 			// label9
@@ -308,9 +334,9 @@ namespace LOGIN {
 			this->label9->Location = System::Drawing::Point(2, 47);
 			this->label9->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label9->Name = L"label9";
-			this->label9->Size = System::Drawing::Size(91, 15);
+			this->label9->Size = System::Drawing::Size(117, 15);
 			this->label9->TabIndex = 4;
-			this->label9->Text = L"Eventos Totales";
+			this->label9->Text = L"Eventos Registrados";
 			// 
 			// label10
 			// 
@@ -340,14 +366,16 @@ namespace LOGIN {
 			// 
 			// panel5
 			// 
+			this->panel5->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(14)), static_cast<System::Int32>(static_cast<System::Byte>(22)),
+				static_cast<System::Int32>(static_cast<System::Byte>(40)));
 			this->panel5->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->panel5->Controls->Add(this->label11);
 			this->panel5->Controls->Add(this->label12);
 			this->panel5->ForeColor = System::Drawing::SystemColors::ActiveCaptionText;
-			this->panel5->Location = System::Drawing::Point(732, 106);
+			this->panel5->Location = System::Drawing::Point(730, 106);
 			this->panel5->Margin = System::Windows::Forms::Padding(2);
 			this->panel5->Name = L"panel5";
-			this->panel5->Size = System::Drawing::Size(168, 67);
+			this->panel5->Size = System::Drawing::Size(174, 68);
 			this->panel5->TabIndex = 10;
 			// 
 			// label11
@@ -359,9 +387,9 @@ namespace LOGIN {
 			this->label11->Location = System::Drawing::Point(2, 47);
 			this->label11->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label11->Name = L"label11";
-			this->label11->Size = System::Drawing::Size(118, 15);
+			this->label11->Size = System::Drawing::Size(102, 15);
 			this->label11->TabIndex = 4;
-			this->label11->Text = L"Piezas en inventario";
+			this->label11->Text = L"Ciclos Completos";
 			// 
 			// label12
 			// 
@@ -375,7 +403,7 @@ namespace LOGIN {
 			this->label12->Name = L"label12";
 			this->label12->Size = System::Drawing::Size(22, 22);
 			this->label12->TabIndex = 11;
-			this->label12->Text = L"8";
+			this->label12->Text = L"2";
 			// 
 			// panel9
 			// 
@@ -391,10 +419,10 @@ namespace LOGIN {
 			// 
 			// panel12
 			// 
-			this->panel12->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(22)), static_cast<System::Int32>(static_cast<System::Byte>(32)),
-				static_cast<System::Int32>(static_cast<System::Byte>(50)));
+			this->panel12->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(14)), static_cast<System::Int32>(static_cast<System::Byte>(22)),
+				static_cast<System::Int32>(static_cast<System::Byte>(40)));
 			this->panel12->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->panel12->Controls->Add(this->pictureBox2);
+			this->panel12->Controls->Add(this->pictureBox1);
 			this->panel12->Controls->Add(this->label13);
 			this->panel12->Controls->Add(this->pictureBox3);
 			this->panel12->Location = System::Drawing::Point(162, 235);
@@ -402,17 +430,17 @@ namespace LOGIN {
 			this->panel12->Size = System::Drawing::Size(223, 102);
 			this->panel12->TabIndex = 15;
 			// 
-			// pictureBox2
+			// pictureBox1
 			// 
-			this->pictureBox2->BackColor = System::Drawing::Color::Transparent;
-			this->pictureBox2->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"pictureBox2.BackgroundImage")));
-			this->pictureBox2->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-			this->pictureBox2->Location = System::Drawing::Point(8, 11);
-			this->pictureBox2->Margin = System::Windows::Forms::Padding(2);
-			this->pictureBox2->Name = L"pictureBox2";
-			this->pictureBox2->Size = System::Drawing::Size(77, 82);
-			this->pictureBox2->TabIndex = 16;
-			this->pictureBox2->TabStop = false;
+			this->pictureBox1->BackColor = System::Drawing::Color::Transparent;
+			this->pictureBox1->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"pictureBox1.BackgroundImage")));
+			this->pictureBox1->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+			this->pictureBox1->Location = System::Drawing::Point(8, 11);
+			this->pictureBox1->Margin = System::Windows::Forms::Padding(2);
+			this->pictureBox1->Name = L"pictureBox1";
+			this->pictureBox1->Size = System::Drawing::Size(77, 82);
+			this->pictureBox1->TabIndex = 16;
+			this->pictureBox1->TabStop = false;
 			// 
 			// label13
 			// 
@@ -469,16 +497,16 @@ namespace LOGIN {
 			this->dataGridView1->Location = System::Drawing::Point(165, 369);
 			this->dataGridView1->Name = L"dataGridView1";
 			this->dataGridView1->RowHeadersBorderStyle = System::Windows::Forms::DataGridViewHeaderBorderStyle::Single;
-			dataGridViewCellStyle1->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
-			dataGridViewCellStyle1->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(58)),
+			dataGridViewCellStyle2->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
+			dataGridViewCellStyle2->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(58)),
 				static_cast<System::Int32>(static_cast<System::Byte>(95)));
-			dataGridViewCellStyle1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			dataGridViewCellStyle2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			dataGridViewCellStyle1->ForeColor = System::Drawing::SystemColors::WindowText;
-			dataGridViewCellStyle1->SelectionBackColor = System::Drawing::SystemColors::Highlight;
-			dataGridViewCellStyle1->SelectionForeColor = System::Drawing::SystemColors::HighlightText;
-			dataGridViewCellStyle1->WrapMode = System::Windows::Forms::DataGridViewTriState::True;
-			this->dataGridView1->RowHeadersDefaultCellStyle = dataGridViewCellStyle1;
+			dataGridViewCellStyle2->ForeColor = System::Drawing::SystemColors::WindowText;
+			dataGridViewCellStyle2->SelectionBackColor = System::Drawing::SystemColors::Highlight;
+			dataGridViewCellStyle2->SelectionForeColor = System::Drawing::SystemColors::HighlightText;
+			dataGridViewCellStyle2->WrapMode = System::Windows::Forms::DataGridViewTriState::True;
+			this->dataGridView1->RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
 			this->dataGridView1->RowHeadersVisible = false;
 			this->dataGridView1->RowHeadersWidth = 51;
 			this->dataGridView1->RowTemplate->Height = 24;
@@ -587,6 +615,72 @@ namespace LOGIN {
 			this->label20->TabIndex = 22;
 			this->label20->Text = L"Eventos registrados:";
 			// 
+			// panel10
+			// 
+			this->panel10->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(14)), static_cast<System::Int32>(static_cast<System::Byte>(22)),
+				static_cast<System::Int32>(static_cast<System::Byte>(40)));
+			this->panel10->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->panel10->Controls->Add(this->label22);
+			this->panel10->Controls->Add(this->label21);
+			this->panel10->Controls->Add(this->label5);
+			this->panel10->Location = System::Drawing::Point(433, 235);
+			this->panel10->Name = L"panel10";
+			this->panel10->Size = System::Drawing::Size(284, 102);
+			this->panel10->TabIndex = 19;
+			// 
+			// label22
+			// 
+			this->label22->AutoSize = true;
+			this->label22->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(24)), static_cast<System::Int32>(static_cast<System::Byte>(138)),
+				static_cast<System::Int32>(static_cast<System::Byte>(71)));
+			this->label22->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->label22->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->label22->ForeColor = System::Drawing::Color::Lime;
+			this->label22->Location = System::Drawing::Point(159, 24);
+			this->label22->Name = L"label22";
+			this->label22->Size = System::Drawing::Size(84, 18);
+			this->label22->TabIndex = 27;
+			this->label22->Text = L"APROBADA";
+			// 
+			// label21
+			// 
+			this->label21->AutoSize = true;
+			this->label21->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label21->ForeColor = System::Drawing::Color::White;
+			this->label21->Location = System::Drawing::Point(20, 64);
+			this->label21->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label21->Name = L"label21";
+			this->label21->Size = System::Drawing::Size(120, 16);
+			this->label21->TabIndex = 26;
+			this->label21->Text = L"Piezas en cola: 4";
+			// 
+			// label5
+			// 
+			this->label5->AutoSize = true;
+			this->label5->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label5->ForeColor = System::Drawing::Color::White;
+			this->label5->Location = System::Drawing::Point(20, 24);
+			this->label5->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label5->Name = L"label5";
+			this->label5->Size = System::Drawing::Size(81, 16);
+			this->label5->TabIndex = 25;
+			this->label5->Text = L"Secuencia:";
+			// 
+			// label4
+			// 
+			this->label4->AutoSize = true;
+			this->label4->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label4->ForeColor = System::Drawing::Color::White;
+			this->label4->Location = System::Drawing::Point(436, 194);
+			this->label4->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label4->Name = L"label4";
+			this->label4->Size = System::Drawing::Size(140, 16);
+			this->label4->TabIndex = 24;
+			this->label4->Text = L"Línea de ensamblaje";
+			// 
 			// FormMenuJefe
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
@@ -594,6 +688,8 @@ namespace LOGIN {
 			this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(40)),
 				static_cast<System::Int32>(static_cast<System::Byte>(58)));
 			this->ClientSize = System::Drawing::Size(1200, 671);
+			this->Controls->Add(this->label4);
+			this->Controls->Add(this->panel10);
 			this->Controls->Add(this->label19);
 			this->Controls->Add(this->label20);
 			this->Controls->Add(this->label17);
@@ -627,9 +723,11 @@ namespace LOGIN {
 			this->panel5->PerformLayout();
 			this->panel12->ResumeLayout(false);
 			this->panel12->PerformLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox3))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->EndInit();
+			this->panel10->ResumeLayout(false);
+			this->panel10->PerformLayout();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -643,8 +741,7 @@ namespace LOGIN {
 	}
 private: System::Void label2_Click(System::Object^ sender, System::EventArgs^ e) {
 }
-private: System::Void label4_Click(System::Object^ sender, System::EventArgs^ e) {
-}
+
 private: System::Void label6_Click(System::Object^ sender, System::EventArgs^ e) {
 }
 };

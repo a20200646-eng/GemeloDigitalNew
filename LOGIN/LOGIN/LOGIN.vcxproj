@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -131,25 +131,54 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Brazos_Operador.cpp" />
+    <ClCompile Include="Dashboard_admin.cpp" />
+    <ClCompile Include="Dashboard_Inventario.cpp" />
+    <ClCompile Include="Dashboard_Operador.cpp" />
+    <ClCompile Include="Estaciones_de_Trabajo_Inventario.cpp" />
     <ClCompile Include="Estacion_ciclo.cpp" />
     <ClCompile Include="EventosOperador.cpp" />
+    <ClCompile Include="Eventos_JefeOperaciones.cpp" />
     <ClCompile Include="FormMenuAdmin.cpp" />
     <ClCompile Include="FormMenuControlador.cpp" />
     <ClCompile Include="FormMenuJefe.cpp" />
     <ClCompile Include="FormMenuOperador.cpp" />
     <ClCompile Include="FormRegistro.cpp" />
+    <ClCompile Include="Historial_de_Eventos.cpp" />
     <ClCompile Include="Interfaz.cpp" />
+    <ClCompile Include="Linea_de_Ensamblaje.cpp" />
+    <ClCompile Include="Linea_de_Ensamblaje1.cpp" />
     <ClCompile Include="MyForm.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="Reportes.cpp" />
+    <ClCompile Include="Reportes_de_Costos.cpp" />
+    <ClCompile Include="Reportes_de_Costos_Admin.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Administrador.h" />
+    <ClInclude Include="Brazos_Operador.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="ControladorPiezas.h" />
+    <ClInclude Include="Dashboard_admin.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="Dashboard_Inventario.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="Dashboard_Operador.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="Estaciones_de_Trabajo_Inventario.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="Estacion_ciclo.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="EventosOperador.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="Eventos_JefeOperaciones.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="FormMenuAdmin.h">
@@ -164,12 +193,27 @@
     <ClInclude Include="FormMenuOperador.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="Historial_de_Eventos.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="Interfaz.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="JefeOperaciones.h" />
+    <ClInclude Include="Linea_de_Ensamblaje.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="Linea_de_Ensamblaje1.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="Operador.h" />
     <ClInclude Include="Reportes.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="Reportes_de_Costos.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="Reportes_de_Costos_Admin.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="Usuario.h" />
@@ -178,11 +222,29 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Brazos_Operador.resx">
+      <DependentUpon>Brazos_Operador.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dashboard_admin.resx">
+      <DependentUpon>Dashboard_admin.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dashboard_Inventario.resx">
+      <DependentUpon>Dashboard_Inventario.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dashboard_Operador.resx">
+      <DependentUpon>Dashboard_Operador.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Estaciones_de_Trabajo_Inventario.resx">
+      <DependentUpon>Estaciones_de_Trabajo_Inventario.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Estacion_ciclo.resx">
       <DependentUpon>Estacion_ciclo.h</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EventosOperador.resx">
       <DependentUpon>EventosOperador.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Eventos_JefeOperaciones.resx">
+      <DependentUpon>Eventos_JefeOperaciones.h</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormMenuAdmin.resx">
       <DependentUpon>FormMenuAdmin.h</DependentUpon>
@@ -196,14 +258,29 @@
     <EmbeddedResource Include="FormMenuOperador.resx">
       <DependentUpon>FormMenuOperador.h</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Historial_de_Eventos.resx">
+      <DependentUpon>Historial_de_Eventos.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Interfaz.resx">
       <DependentUpon>Interfaz.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Linea_de_Ensamblaje.resx">
+      <DependentUpon>Linea_de_Ensamblaje.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Linea_de_Ensamblaje1.resx">
+      <DependentUpon>Linea_de_Ensamblaje1.h</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MyForm.resx">
       <DependentUpon>MyForm.h</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes.resx">
       <DependentUpon>Reportes.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reportes_de_Costos.resx">
+      <DependentUpon>Reportes_de_Costos.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reportes_de_Costos_Admin.resx">
+      <DependentUpon>Reportes_de_Costos_Admin.h</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

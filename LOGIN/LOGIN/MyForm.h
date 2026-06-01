@@ -425,8 +425,8 @@ namespace LOGIN {
 		}
 		else if (user == "admin" && pass == "123") {
 			Principal->label1->Text = "Administrador";
-			Principal->button1->Text = "Usuarios";
-			Principal->button2->Text = "Inventario";
+			Principal->button1->Text = "Dashboard";
+			Principal->button2->Text = "Usuarios";
 			Principal->button3->Text = "Eventos";
 			Principal->button4->Text = "Reportes";
 			Principal->button6->Text = "Salir";

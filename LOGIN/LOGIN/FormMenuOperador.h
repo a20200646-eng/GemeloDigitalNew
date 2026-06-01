@@ -53,6 +53,19 @@ namespace LOGIN {
 	private: System::Windows::Forms::Panel^ panel2;
 	private: System::Windows::Forms::Label^ label5;
 	private: System::Windows::Forms::Panel^ panel1;
+	private: System::Windows::Forms::Panel^ panel7;
+	private: System::Windows::Forms::Panel^ panel8;
+	private: System::Windows::Forms::Label^ label7;
+	private: System::Windows::Forms::Label^ label1;
+	private: System::Windows::Forms::Panel^ panel3;
+	private: System::Windows::Forms::Panel^ panel4;
+	private: System::Windows::Forms::Panel^ panel5;
+	private: System::Windows::Forms::Label^ label2;
+	private: System::Windows::Forms::Label^ label8;
+	private: System::Windows::Forms::Label^ label9;
+	private: System::Windows::Forms::Label^ label3;
+	private: System::Windows::Forms::Label^ label10;
+	private: System::Windows::Forms::Label^ label4;
 	protected:
 
 
@@ -98,9 +111,27 @@ namespace LOGIN {
 			this->panel2 = (gcnew System::Windows::Forms::Panel());
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
 			this->label5 = (gcnew System::Windows::Forms::Label());
+			this->panel7 = (gcnew System::Windows::Forms::Panel());
+			this->panel8 = (gcnew System::Windows::Forms::Panel());
+			this->label7 = (gcnew System::Windows::Forms::Label());
+			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->panel3 = (gcnew System::Windows::Forms::Panel());
+			this->panel4 = (gcnew System::Windows::Forms::Panel());
+			this->panel5 = (gcnew System::Windows::Forms::Panel());
+			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->label3 = (gcnew System::Windows::Forms::Label());
+			this->label4 = (gcnew System::Windows::Forms::Label());
+			this->label8 = (gcnew System::Windows::Forms::Label());
+			this->label9 = (gcnew System::Windows::Forms::Label());
+			this->label10 = (gcnew System::Windows::Forms::Label());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->BeginInit();
 			this->panel2->SuspendLayout();
 			this->panel1->SuspendLayout();
+			this->panel7->SuspendLayout();
+			this->panel8->SuspendLayout();
+			this->panel3->SuspendLayout();
+			this->panel4->SuspendLayout();
+			this->panel5->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// label6
@@ -363,13 +394,171 @@ namespace LOGIN {
 			this->label5->TabIndex = 0;
 			this->label5->Text = L" Tarea Coordinada activa: todos los brazos deben confirmar antes de soldar.";
 			// 
+			// panel7
+			// 
+			this->panel7->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(49)), static_cast<System::Int32>(static_cast<System::Byte>(108)),
+				static_cast<System::Int32>(static_cast<System::Byte>(205)));
+			this->panel7->Controls->Add(this->panel8);
+			this->panel7->Location = System::Drawing::Point(61, 681);
+			this->panel7->Name = L"panel7";
+			this->panel7->Size = System::Drawing::Size(920, 47);
+			this->panel7->TabIndex = 33;
+			// 
+			// panel8
+			// 
+			this->panel8->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(15)), static_cast<System::Int32>(static_cast<System::Byte>(23)),
+				static_cast<System::Int32>(static_cast<System::Byte>(42)));
+			this->panel8->Controls->Add(this->label7);
+			this->panel8->Location = System::Drawing::Point(3, 3);
+			this->panel8->Name = L"panel8";
+			this->panel8->Size = System::Drawing::Size(914, 41);
+			this->panel8->TabIndex = 30;
+			// 
+			// label7
+			// 
+			this->label7->AutoSize = true;
+			this->label7->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(49)), static_cast<System::Int32>(static_cast<System::Byte>(108)),
+				static_cast<System::Int32>(static_cast<System::Byte>(205)));
+			this->label7->Location = System::Drawing::Point(3, 14);
+			this->label7->Name = L"label7";
+			this->label7->Size = System::Drawing::Size(719, 16);
+			this->label7->TabIndex = 30;
+			this->label7->Text = L" Tabs Posicionar, Sostener y Coordinada siguen la misma estructura. Cada tab tien"
+				L"e su propio grid y botones de acción.";
+			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label1->ForeColor = System::Drawing::Color::White;
+			this->label1->Location = System::Drawing::Point(62, 759);
+			this->label1->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(176, 16);
+			this->label1->TabIndex = 34;
+			this->label1->Text = L"Vista previa — otros tabs";
+			// 
+			// panel3
+			// 
+			this->panel3->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(15)), static_cast<System::Int32>(static_cast<System::Byte>(23)),
+				static_cast<System::Int32>(static_cast<System::Byte>(42)));
+			this->panel3->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->panel3->Controls->Add(this->label8);
+			this->panel3->Controls->Add(this->label2);
+			this->panel3->Location = System::Drawing::Point(64, 805);
+			this->panel3->Name = L"panel3";
+			this->panel3->Size = System::Drawing::Size(337, 80);
+			this->panel3->TabIndex = 35;
+			// 
+			// panel4
+			// 
+			this->panel4->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(15)), static_cast<System::Int32>(static_cast<System::Byte>(23)),
+				static_cast<System::Int32>(static_cast<System::Byte>(42)));
+			this->panel4->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->panel4->Controls->Add(this->label9);
+			this->panel4->Controls->Add(this->label3);
+			this->panel4->Location = System::Drawing::Point(409, 805);
+			this->panel4->Name = L"panel4";
+			this->panel4->Size = System::Drawing::Size(344, 80);
+			this->panel4->TabIndex = 36;
+			// 
+			// panel5
+			// 
+			this->panel5->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(15)), static_cast<System::Int32>(static_cast<System::Byte>(23)),
+				static_cast<System::Int32>(static_cast<System::Byte>(42)));
+			this->panel5->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->panel5->Controls->Add(this->label10);
+			this->panel5->Controls->Add(this->label4);
+			this->panel5->Location = System::Drawing::Point(761, 805);
+			this->panel5->Name = L"panel5";
+			this->panel5->Size = System::Drawing::Size(366, 80);
+			this->panel5->TabIndex = 36;
+			// 
+			// label2
+			// 
+			this->label2->AutoSize = true;
+			this->label2->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
+				static_cast<System::Int32>(static_cast<System::Byte>(11)));
+			this->label2->Location = System::Drawing::Point(3, 15);
+			this->label2->Name = L"label2";
+			this->label2->Size = System::Drawing::Size(71, 16);
+			this->label2->TabIndex = 40;
+			this->label2->Text = L"Posicionar";
+			// 
+			// label3
+			// 
+			this->label3->AutoSize = true;
+			this->label3->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
+				static_cast<System::Int32>(static_cast<System::Byte>(11)));
+			this->label3->Location = System::Drawing::Point(3, 15);
+			this->label3->Name = L"label3";
+			this->label3->Size = System::Drawing::Size(61, 16);
+			this->label3->TabIndex = 41;
+			this->label3->Text = L"Sostener";
+			// 
+			// label4
+			// 
+			this->label4->AutoSize = true;
+			this->label4->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
+				static_cast<System::Int32>(static_cast<System::Byte>(11)));
+			this->label4->Location = System::Drawing::Point(3, 15);
+			this->label4->Name = L"label4";
+			this->label4->Size = System::Drawing::Size(78, 16);
+			this->label4->TabIndex = 42;
+			this->label4->Text = L"Coordinada";
+			// 
+			// label8
+			// 
+			this->label8->AutoSize = true;
+			this->label8->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label8->ForeColor = System::Drawing::Color::White;
+			this->label8->Location = System::Drawing::Point(6, 46);
+			this->label8->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label8->Name = L"label8";
+			this->label8->Size = System::Drawing::Size(317, 16);
+			this->label8->TabIndex = 37;
+			this->label8->Text = L"PosObjetivo + Tolerancia + Marcar completada";
+			// 
+			// label9
+			// 
+			this->label9->AutoSize = true;
+			this->label9->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label9->ForeColor = System::Drawing::Color::White;
+			this->label9->Location = System::Drawing::Point(3, 46);
+			this->label9->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label9->Name = L"label9";
+			this->label9->Size = System::Drawing::Size(318, 16);
+			this->label9->TabIndex = 41;
+			this->label9->Text = L"FuerzaSosten + Duración + Marcar completada";
+			// 
+			// label10
+			// 
+			this->label10->AutoSize = true;
+			this->label10->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label10->ForeColor = System::Drawing::Color::White;
+			this->label10->Location = System::Drawing::Point(3, 46);
+			this->label10->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label10->Name = L"label10";
+			this->label10->Size = System::Drawing::Size(350, 16);
+			this->label10->TabIndex = 42;
+			this->label10->Text = L"TotalConfirmado / TotalRequerido + Confirmar brazo";
+			// 
 			// FormMenuOperador
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(40)),
 				static_cast<System::Int32>(static_cast<System::Byte>(58)));
-			this->ClientSize = System::Drawing::Size(1107, 693);
+			this->ClientSize = System::Drawing::Size(1395, 946);
+			this->Controls->Add(this->panel5);
+			this->Controls->Add(this->panel4);
+			this->Controls->Add(this->panel3);
+			this->Controls->Add(this->label1);
+			this->Controls->Add(this->panel7);
 			this->Controls->Add(this->panel2);
 			this->Controls->Add(this->button7);
 			this->Controls->Add(this->button6);
@@ -386,10 +575,20 @@ namespace LOGIN {
 			this->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
 			this->Name = L"FormMenuOperador";
 			this->Text = L"FormMenuOperador";
+			this->Load += gcnew System::EventHandler(this, &FormMenuOperador::FormMenuOperador_Load);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->EndInit();
 			this->panel2->ResumeLayout(false);
 			this->panel1->ResumeLayout(false);
 			this->panel1->PerformLayout();
+			this->panel7->ResumeLayout(false);
+			this->panel8->ResumeLayout(false);
+			this->panel8->PerformLayout();
+			this->panel3->ResumeLayout(false);
+			this->panel3->PerformLayout();
+			this->panel4->ResumeLayout(false);
+			this->panel4->PerformLayout();
+			this->panel5->ResumeLayout(false);
+			this->panel5->PerformLayout();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -397,5 +596,7 @@ namespace LOGIN {
 #pragma endregion
 	private: System::Void label1_Click(System::Object^ sender, System::EventArgs^ e) {
 	}
-	};
+	private: System::Void FormMenuOperador_Load(System::Object^ sender, System::EventArgs^ e) {
+	}
+};
 }

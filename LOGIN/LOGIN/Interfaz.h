@@ -1,11 +1,32 @@
 #pragma once
-#include "FormMenuJefe.h"
-#include "FormMenuControlador.h"
-#include "FormMenuAdmin.h"
-#include "FormMenuOperador.h"
-#include "Estacion_ciclo.h"
-#include "EventosOperador.h"
-#include "Reportes.h"
+
+//Include de los formularios del jefe 
+#include "FormMenuJefe.h" //Corresponde al Dashboard del jefe de operaciones
+#include "Estacion_ciclo.h" //Corresponde a la sección de estación/ciclo del jefe de operaciones
+#include "Linea_de_Ensamblaje.h" //Corresponde a la sección de línea de ensamblaje del jefe de operaciones
+#include "Eventos_JefeOperaciones.h" //Corresponde a la sección de eventos del jefe de operaciones
+#include "Reportes_de_Costos.h" //Corresponde a la sección de reportes del jefe de operaciones
+
+
+//inlcude del Administrador
+#include "Dashboard_admin.h" //Corresponde al Dashboard del administrador
+#include "FormMenuAdmin.h" //Corresponde a la sección de usuarios del administrador
+#include "Historial_de_Eventos.h" //Corresponde a la sección de eventos del administrador
+#include "Reportes_de_Costos_Admin.h" //Corresponde a la sección de reportes del administrador
+
+//include del operador
+#include "Dashboard_Operador.h" //Corresponde al Dashboard del operador
+#include "FormMenuOperador.h" //Corresponde a las tareas del operador
+#include "Brazos_Operador.h" //Corresponde a la sección de brazos del operador
+#include "EventosOperador.h" //Corresponde a la sección de eventos del operador
+
+//include del controlador de piezas
+#include "Dashboard_Inventario.h" //Corresponde al Dashboard del controlador de piezas
+#include "FormMenuControlador.h" //Corresponde a la sección de inventario del controlador de piezas
+#include "Estaciones_de_Trabajo_Inventario.h" //Corresponde a la sección de estaciones de trabajo del controlador de piezas
+#include "Linea_de_Ensamblaje1.h" //corresponde a la sección de línea de ensamblaje del controlador de piezas
+
+
 
 namespace LOGIN {
 
@@ -270,6 +291,7 @@ namespace LOGIN {
 			this->button3->Text = L"Línea de ensamblaje";
 			this->button3->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
 			this->button3->UseVisualStyleBackColor = true;
+			this->button3->Click += gcnew System::EventHandler(this, &Interfaz::button3_Click);
 			// 
 			// button4
 			// 
@@ -306,6 +328,7 @@ namespace LOGIN {
 			this->button5->Text = L"Reportes";
 			this->button5->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
 			this->button5->UseVisualStyleBackColor = true;
+			this->button5->Click += gcnew System::EventHandler(this, &Interfaz::button5_Click);
 			// 
 			// panel2
 			// 
@@ -360,25 +383,56 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
 	if (label1->Text == "Jefe de Operaciones") {
 		AbrirFormHijo(gcnew FormMenuJefe());
-
+	} else if (label1->Text == "Operador") {
+		AbrirFormHijo(gcnew Dashboard_Operador());
+	}
+	else if (label1->Text == "Controlador de piezas") {
+		AbrirFormHijo(gcnew Dashboard_Inventario());
+	}
+	else if (label1->Text == "Administrador") {
+		AbrirFormHijo(gcnew Dashboard_admin());
 	}
 	
 }
 private: System::Void button4_Click(System::Object^ sender, System::EventArgs^ e) {
 
-	if (label1->Text == "Operador") {
+	if (label1->Text == "Jefe de Operaciones") {
+		AbrirFormHijo(gcnew Eventos_JefeOperaciones());
+	}
+	else if (label1->Text == "Operador") {
 		AbrirFormHijo(gcnew EventosOperador());
-
+	}
+	else if (label1->Text == "Controlador de piezas") {
+		AbrirFormHijo(gcnew Linea_de_Ensamblaje1());
 	}
 	else if (label1->Text == "Administrador") {
-		AbrirFormHijo(gcnew Reportes());
-
+		AbrirFormHijo(gcnew Reportes_de_Costos_Admin());
 	}
 
 }
 private: System::Void button6_Click(System::Object^ sender, System::EventArgs^ e) {
 	this->Close();
 
+}
+private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e) {
+	if (label1->Text == "Jefe de Operaciones") {
+		AbrirFormHijo(gcnew Linea_de_Ensamblaje());
+	}
+	else if (label1->Text == "Operador") {
+		AbrirFormHijo(gcnew Brazos_Operador());
+	}
+	else if (label1->Text == "Controlador de piezas") {
+		AbrirFormHijo(gcnew Estaciones_de_Trabajo_Inventario());
+	}
+	else if (label1->Text == "Administrador") {
+		AbrirFormHijo(gcnew Historial_de_Eventos());
+	}
+
+}
+private: System::Void button5_Click(System::Object^ sender, System::EventArgs^ e) {
+	if (label1->Text == "Jefe de Operaciones") {
+		AbrirFormHijo(gcnew Reportes_de_Costos());
+	}
 }
 };
 }

@@ -50,13 +50,14 @@ namespace LOGIN {
 	private: System::Windows::Forms::Label^ label2;
 	private: System::Windows::Forms::Label^ label1;
 
-	private: System::Windows::Forms::DataVisualization::Charting::Chart^ chart1;
+
 	private: System::Windows::Forms::Button^ button3;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column1;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Rol;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column2;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column3;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column4;
+	private: System::Windows::Forms::DataVisualization::Charting::Chart^ chart1;
 	protected:
 
 	private:
@@ -72,13 +73,19 @@ namespace LOGIN {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle1 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
+			System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle2 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
 			System::Windows::Forms::DataVisualization::Charting::ChartArea^ chartArea1 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
+			System::Windows::Forms::DataVisualization::Charting::Legend^ legend1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
 			System::Windows::Forms::DataVisualization::Charting::Series^ series1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
-			System::Windows::Forms::DataVisualization::Charting::Title^ title1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Title());
 			this->label6 = (gcnew System::Windows::Forms::Label());
 			this->dataGridView1 = (gcnew System::Windows::Forms::DataGridView());
+			this->Column1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->Rol = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->Column2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->Column3 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->Column4 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
+			this->button3 = (gcnew System::Windows::Forms::Button());
 			this->textBox3 = (gcnew System::Windows::Forms::TextBox());
 			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
 			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
@@ -86,12 +93,6 @@ namespace LOGIN {
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->chart1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Chart());
-			this->button3 = (gcnew System::Windows::Forms::Button());
-			this->Column1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->Rol = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->Column2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->Column3 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->Column4 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->BeginInit();
 			this->panel1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->BeginInit();
@@ -128,21 +129,51 @@ namespace LOGIN {
 			this->dataGridView1->Location = System::Drawing::Point(107, 108);
 			this->dataGridView1->Name = L"dataGridView1";
 			this->dataGridView1->RowHeadersBorderStyle = System::Windows::Forms::DataGridViewHeaderBorderStyle::Single;
-			dataGridViewCellStyle1->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
-			dataGridViewCellStyle1->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(58)),
+			dataGridViewCellStyle2->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
+			dataGridViewCellStyle2->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(58)),
 				static_cast<System::Int32>(static_cast<System::Byte>(95)));
-			dataGridViewCellStyle1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			dataGridViewCellStyle2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			dataGridViewCellStyle1->ForeColor = System::Drawing::SystemColors::WindowText;
-			dataGridViewCellStyle1->SelectionBackColor = System::Drawing::SystemColors::Highlight;
-			dataGridViewCellStyle1->SelectionForeColor = System::Drawing::SystemColors::HighlightText;
-			dataGridViewCellStyle1->WrapMode = System::Windows::Forms::DataGridViewTriState::True;
-			this->dataGridView1->RowHeadersDefaultCellStyle = dataGridViewCellStyle1;
+			dataGridViewCellStyle2->ForeColor = System::Drawing::SystemColors::WindowText;
+			dataGridViewCellStyle2->SelectionBackColor = System::Drawing::SystemColors::Highlight;
+			dataGridViewCellStyle2->SelectionForeColor = System::Drawing::SystemColors::HighlightText;
+			dataGridViewCellStyle2->WrapMode = System::Windows::Forms::DataGridViewTriState::True;
+			this->dataGridView1->RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
 			this->dataGridView1->RowHeadersVisible = false;
 			this->dataGridView1->RowHeadersWidth = 51;
 			this->dataGridView1->RowTemplate->Height = 24;
 			this->dataGridView1->Size = System::Drawing::Size(910, 169);
 			this->dataGridView1->TabIndex = 19;
+			// 
+			// Column1
+			// 
+			this->Column1->HeaderText = L"ID";
+			this->Column1->MinimumWidth = 6;
+			this->Column1->Name = L"Column1";
+			// 
+			// Rol
+			// 
+			this->Rol->HeaderText = L"N° Ciclo";
+			this->Rol->MinimumWidth = 6;
+			this->Rol->Name = L"Rol";
+			// 
+			// Column2
+			// 
+			this->Column2->HeaderText = L"Horas Trab.";
+			this->Column2->MinimumWidth = 6;
+			this->Column2->Name = L"Column2";
+			// 
+			// Column3
+			// 
+			this->Column3->HeaderText = L"Costo/Ciclo";
+			this->Column3->MinimumWidth = 6;
+			this->Column3->Name = L"Column3";
+			// 
+			// Column4
+			// 
+			this->Column4->HeaderText = L"Costo Total";
+			this->Column4->MinimumWidth = 6;
+			this->Column4->Name = L"Column4";
 			// 
 			// panel1
 			// 
@@ -160,6 +191,22 @@ namespace LOGIN {
 			this->panel1->Name = L"panel1";
 			this->panel1->Size = System::Drawing::Size(910, 73);
 			this->panel1->TabIndex = 22;
+			// 
+			// button3
+			// 
+			this->button3->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
+				static_cast<System::Int32>(static_cast<System::Byte>(11)));
+			this->button3->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+			this->button3->FlatAppearance->BorderColor = System::Drawing::Color::White;
+			this->button3->FlatAppearance->BorderSize = 0;
+			this->button3->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
+			this->button3->ForeColor = System::Drawing::Color::Black;
+			this->button3->Location = System::Drawing::Point(688, 16);
+			this->button3->Name = L"button3";
+			this->button3->Size = System::Drawing::Size(202, 41);
+			this->button3->TabIndex = 27;
+			this->button3->Text = L"Agregar reporte";
+			this->button3->UseVisualStyleBackColor = false;
 			// 
 			// textBox3
 			// 
@@ -235,76 +282,19 @@ namespace LOGIN {
 			// 
 			// chart1
 			// 
-			this->chart1->BackColor = System::Drawing::Color::Gray;
-			this->chart1->BorderlineColor = System::Drawing::Color::Black;
-			this->chart1->BorderlineDashStyle = System::Windows::Forms::DataVisualization::Charting::ChartDashStyle::Solid;
-			this->chart1->BorderSkin->PageColor = System::Drawing::Color::Transparent;
-			chartArea1->Area3DStyle->Enable3D = true;
-			chartArea1->AxisX->MajorGrid->Enabled = false;
-			chartArea1->AxisY->MajorGrid->Enabled = false;
-			chartArea1->BackColor = System::Drawing::Color::DimGray;
 			chartArea1->Name = L"ChartArea1";
 			this->chart1->ChartAreas->Add(chartArea1);
-			this->chart1->Location = System::Drawing::Point(107, 438);
+			legend1->Name = L"Legend1";
+			this->chart1->Legends->Add(legend1);
+			this->chart1->Location = System::Drawing::Point(107, 448);
 			this->chart1->Name = L"chart1";
-			this->chart1->Palette = System::Windows::Forms::DataVisualization::Charting::ChartColorPalette::Excel;
 			series1->ChartArea = L"ChartArea1";
-			series1->IsXValueIndexed = true;
+			series1->Legend = L"Legend1";
 			series1->Name = L"Series1";
 			this->chart1->Series->Add(series1);
-			this->chart1->Size = System::Drawing::Size(915, 203);
-			this->chart1->TabIndex = 24;
+			this->chart1->Size = System::Drawing::Size(910, 214);
+			this->chart1->TabIndex = 37;
 			this->chart1->Text = L"chart1";
-			title1->Name = L"Title1";
-			title1->Text = L"Gráfico de costos por ciclo :";
-			this->chart1->Titles->Add(title1);
-			this->chart1->Click += gcnew System::EventHandler(this, &Reportes::chart1_Click);
-			// 
-			// button3
-			// 
-			this->button3->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
-				static_cast<System::Int32>(static_cast<System::Byte>(11)));
-			this->button3->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-			this->button3->FlatAppearance->BorderColor = System::Drawing::Color::White;
-			this->button3->FlatAppearance->BorderSize = 0;
-			this->button3->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
-			this->button3->ForeColor = System::Drawing::Color::Black;
-			this->button3->Location = System::Drawing::Point(688, 16);
-			this->button3->Name = L"button3";
-			this->button3->Size = System::Drawing::Size(202, 41);
-			this->button3->TabIndex = 27;
-			this->button3->Text = L"Agregar reporte";
-			this->button3->UseVisualStyleBackColor = false;
-			// 
-			// Column1
-			// 
-			this->Column1->HeaderText = L"ID";
-			this->Column1->MinimumWidth = 6;
-			this->Column1->Name = L"Column1";
-			// 
-			// Rol
-			// 
-			this->Rol->HeaderText = L"N° Ciclo";
-			this->Rol->MinimumWidth = 6;
-			this->Rol->Name = L"Rol";
-			// 
-			// Column2
-			// 
-			this->Column2->HeaderText = L"Horas Trab.";
-			this->Column2->MinimumWidth = 6;
-			this->Column2->Name = L"Column2";
-			// 
-			// Column3
-			// 
-			this->Column3->HeaderText = L"Costo/Ciclo";
-			this->Column3->MinimumWidth = 6;
-			this->Column3->Name = L"Column3";
-			// 
-			// Column4
-			// 
-			this->Column4->HeaderText = L"Costo Total";
-			this->Column4->MinimumWidth = 6;
-			this->Column4->Name = L"Column4";
 			// 
 			// Reportes
 			// 
