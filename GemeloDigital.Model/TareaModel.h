@@ -5,7 +5,7 @@ namespace GemeloDigitalModel {
 
     public ref class TareaModel abstract {
     protected:
-        int id;
+        int     id;
         String^ estado;
 
     public:
@@ -14,9 +14,14 @@ namespace GemeloDigitalModel {
             this->estado = estado;
         }
 
-        int getId() { return id; }
-        String^ getEstado() { return estado; }
-        void setEstado(String^ e) { estado = e; }
+        property int Id {
+            int get() { return id; }
+        }
+
+        property String^ Estado {
+            String^ get() { return estado; }
+            void    set(String^ value) { estado = value; }
+        }
 
         virtual void dataReport() = 0;
     };

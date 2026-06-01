@@ -2,12 +2,11 @@
 #include "ActuadorModel.h"
 using namespace System;
 
-
 namespace GemeloDigitalModel {
 
     public ref class ServomotorModel : public ActuadorModel {
     private:
-        int pulsosPWM;
+        int    pulsosPWM;
         double torqueMaximo;
         double velocidadGiro;
 
@@ -20,22 +19,27 @@ namespace GemeloDigitalModel {
             this->velocidadGiro = velocidadGiro;
         }
 
-        // Getters
-        int getPulsosPWM() { return pulsosPWM; }
-        double getTorqueMaximo() { return torqueMaximo; }
-        double getVelocidadGiro() { return velocidadGiro; }
+        property int PulsosPWM {
+            int  get() { return pulsosPWM; }
+            void set(int value) { pulsosPWM = value; }
+        }
 
-        // Setters
-        void setPulsosPWM(int p) { pulsosPWM = p; }
-        void setTorqueMaximo(double t) { torqueMaximo = t; }
-        void setVelocidadGiro(double v) { velocidadGiro = v; }
+        property double TorqueMaximo {
+            double get() { return torqueMaximo; }
+            void   set(double value) { torqueMaximo = value; }
+        }
+
+        property double VelocidadGiro {
+            double get() { return velocidadGiro; }
+            void   set(double value) { velocidadGiro = value; }
+        }
 
         virtual void dataReport() override {
-            Console::WriteLine("  [Servomotor] ID: " + id + " | Nombre: " + nombre);
-            Console::WriteLine("  |Activo: " + activo);
-            Console::WriteLine("  |Pulsos PWM: " + pulsosPWM);
-            Console::WriteLine("  |Torque Maximo: " + torqueMaximo);
-            Console::WriteLine("  |Velocidad Giro: " + velocidadGiro);
+            Console::WriteLine("  [Servomotor] ID: " + Id + " | Nombre: " + Nombre);
+            Console::WriteLine("  |Activo: " + Activo);
+            Console::WriteLine("  |Pulsos PWM: " + PulsosPWM);
+            Console::WriteLine("  |Torque Maximo: " + TorqueMaximo);
+            Console::WriteLine("  |Velocidad Giro: " + VelocidadGiro);
         }
     };
 }

@@ -1,6 +1,7 @@
 #pragma once
 using namespace System;
 using namespace System::Collections::Generic;
+using namespace System::IO;
 using namespace GemeloDigitalModel;
 
 namespace GemeloDigitalController {
@@ -8,27 +9,26 @@ namespace GemeloDigitalController {
     public ref class GestorInventarioController {
     private:
         List<GestorInventarioModel^>^ repositorio;
+        static String^ RUTA = "datos\\gestores.dat";
 
     public:
         GestorInventarioController() {
             repositorio = gcnew List<GestorInventarioModel^>();
+            cargarArchivo();
         }
 
         // CREATE
         bool agregar(int id, String^ nombre, String^ contrasena) {
-            GestorInventarioModel^ g = buscarPorId(id);
-            if (g == nullptr) {
-                repositorio->Add(gcnew GestorInventarioModel(id, nombre, contrasena));
-                return true;
-            }
-            return false;
+            if (buscarPorId(id) != nullptr) return false;
+            repositorio->Add(gcnew GestorInventarioModel(id, nombre, contrasena));
+            guardarArchivo();
+            return true;
         }
 
         // READ - por ID
         GestorInventarioModel^ buscarPorId(int id) {
-            for each (GestorInventarioModel ^ g in repositorio) {
-                if (g->getId() == id) return g;
-            }
+            for each (GestorInventarioModel ^ g in repositorio)
+                if (g->Id == id) return g;
             return nullptr;
         }
 
@@ -37,27 +37,50 @@ namespace GemeloDigitalController {
             return repositorio;
         }
 
-        // UPDATE - N: nombre | C: contrasena | T: totalPiezasGestionadas
-        bool modificar(int id, String^ opcion, String^ valor) {
+        // UPDATE - reemplaza todos los atributos modificables
+        bool modificar(int id, String^ nombre, String^ contrasena, int totalPiezasGestionadas) {
             GestorInventarioModel^ g = buscarPorId(id);
-            if (g != nullptr) {
-                if (opcion->Equals("N"))      g->setNombre(valor);
-                else if (opcion->Equals("C")) g->setContrasena(valor);
-                else if (opcion->Equals("T")) g->setTotalPiezasGestionadas(Convert::ToInt32(valor));
-                else return false;
-                return true;
-            }
-            return false;
+            if (g == nullptr) return false;
+            g->Nombre = nombre;
+            g->Contrasena = contrasena;
+            g->TotalPiezasGestionadas = totalPiezasGestionadas;
+            guardarArchivo();
+            return true;
         }
 
         // DELETE
         bool eliminar(int id) {
             GestorInventarioModel^ g = buscarPorId(id);
-            if (g != nullptr) {
-                repositorio->Remove(g);
-                return true;
+            if (g == nullptr) return false;
+            repositorio->Remove(g);
+            guardarArchivo();
+            return true;
+        }
+
+        // Formato: id|nombre|contrasena|totalPiezasGestionadas
+        void guardarArchivo() {
+            Directory::CreateDirectory("datos");
+            StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
+            for each (GestorInventarioModel ^ g in repositorio)
+                sw->WriteLine(String::Format("{0}|{1}|{2}|{3}",
+                    g->Id, g->Nombre, g->Contrasena, g->TotalPiezasGestionadas));
+            sw->Close();
+        }
+
+        void cargarArchivo() {
+            if (!File::Exists(RUTA)) return;
+            repositorio->Clear();
+            StreamReader^ sr = gcnew StreamReader(RUTA, Text::Encoding::UTF8);
+            String^ linea;
+            while ((linea = sr->ReadLine()) != nullptr) {
+                if (linea->Trim()->Length == 0) continue;
+                array<String^>^ c = linea->Split('|');
+                GestorInventarioModel^ g = gcnew GestorInventarioModel(
+                    Int32::Parse(c[0]), c[1], c[2]);
+                g->TotalPiezasGestionadas = Int32::Parse(c[3]);
+                repositorio->Add(g);
             }
-            return false;
+            sr->Close();
         }
     };
 }

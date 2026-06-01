@@ -14,15 +14,17 @@ namespace GemeloDigitalModel {
             this->totalPiezasGestionadas = 0;
         }
 
-        int getTotalPiezasGestionadas() { return totalPiezasGestionadas; }
-        void setTotalPiezasGestionadas(int t) { totalPiezasGestionadas = t; }
+        property int TotalPiezasGestionadas {
+            int  get() { return totalPiezasGestionadas; }
+            void set(int value) { totalPiezasGestionadas = value; }
+        }
 
         virtual void dataReport() override {
             Console::WriteLine("=== GESTOR DE INVENTARIO ===");
-            Console::WriteLine("ID: " + id);
-            Console::WriteLine("|Nombre: " + nombre);
-            Console::WriteLine("|Rol: " + rol.ToString());
-            Console::WriteLine("|Piezas gestionadas: " + totalPiezasGestionadas);
+            Console::WriteLine("ID: " + Id);
+            Console::WriteLine("|Nombre: " + Nombre);
+            Console::WriteLine("|Rol: " + Rol.ToString());
+            Console::WriteLine("|Piezas gestionadas: " + TotalPiezasGestionadas);
         }
     };
 }
