@@ -393,7 +393,7 @@ namespace LOGIN {
 			// El eje X muestra el ciclo evaluado y el eje Y muestra el Costo Total en dólares
 			this->chart1->Series[nombreSerie]->Points->AddXY("Ciclo 01 (BodyFraming)", 60.0);   // 0.5 hrs * $120
 			this->chart1->Series[nombreSerie]->Points->AddXY("Ciclo 02 (Soldadura)", 180.0);   // 1.5 hrs * $120
-			this->chart1->Series[nombreSerie]->Points->AddXY("Ciclo 03 (Pintura)", 120.0);     // 1.0 hrs * $120
+			this->chart1->Series[nombreSerie]->Points->AddXY("Ciclo 03 (Materiales)", 120.0);     // 1.0 hrs * $120
 			this->chart1->Series[nombreSerie]->Points->AddXY("Ciclo 04 (Ensamblaje)", 240.0);  // 2.0 hrs * $120
 
 			// 5. Activamos las etiquetas para que el monto exacto en dólares se vea flotando arriba de cada barra
