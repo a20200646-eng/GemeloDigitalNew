@@ -14,15 +14,17 @@ namespace GemeloDigitalModel {
             this->nivelAcceso = nivelAcceso;
         }
 
-        int getNivelAcceso() { return nivelAcceso; }
-        void setNivelAcceso(int n) { nivelAcceso = n; }
+        property int NivelAcceso {
+            int  get() { return nivelAcceso; }
+            void set(int value) { nivelAcceso = value; }
+        }
 
         virtual void dataReport() override {
             Console::WriteLine("=== ADMINISTRADOR ===");
-            Console::WriteLine("ID: " + id);
-            Console::WriteLine("|Nombre: " + nombre);
-            Console::WriteLine("|Rol: " + rol.ToString());
-            Console::WriteLine("|Nivel Acceso: " + nivelAcceso);
+            Console::WriteLine("ID: " + Id);
+            Console::WriteLine("|Nombre: " + Nombre);
+            Console::WriteLine("|Rol: " + Rol.ToString());
+            Console::WriteLine("|Nivel Acceso: " + NivelAcceso);
         }
     };
 }

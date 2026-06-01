@@ -7,7 +7,7 @@ namespace GemeloDigitalModel {
     public ref class PanelLateralModel : public PiezaModel {
     private:
         LadoPanel lado;
-        int puntosAnclaje;
+        int       puntosAnclaje;
 
     public:
         PanelLateralModel(int id, String^ material, double peso,
@@ -17,19 +17,24 @@ namespace GemeloDigitalModel {
             this->puntosAnclaje = puntosAnclaje;
         }
 
-        LadoPanel getLado() { return lado; }
-        int getPuntosAnclaje() { return puntosAnclaje; }
-        void setLado(LadoPanel l) { lado = l; }
-        void setPuntosAnclaje(int p) { puntosAnclaje = p; }
+        property LadoPanel Lado {
+            LadoPanel get() { return lado; }
+            void      set(LadoPanel value) { lado = value; }
+        }
+
+        property int PuntosAnclaje {
+            int  get() { return puntosAnclaje; }
+            void set(int value) { puntosAnclaje = value; }
+        }
 
         virtual void dataReport() override {
             Console::WriteLine("=== PANEL LATERAL ===");
-            Console::WriteLine("ID: " + id);
-            Console::WriteLine("|Material: " + material);
-            Console::WriteLine("|Peso: " + peso + " kg");
-            Console::WriteLine("|Lado: " + lado.ToString());
-            Console::WriteLine("|Puntos de Anclaje: " + puntosAnclaje);
-            Console::WriteLine("|Estado: " + estado.ToString());
+            Console::WriteLine("ID: " + Id);
+            Console::WriteLine("|Material: " + Material);
+            Console::WriteLine("|Peso: " + Peso + " kg");
+            Console::WriteLine("|Lado: " + Lado.ToString());
+            Console::WriteLine("|Puntos de Anclaje: " + PuntosAnclaje);
+            Console::WriteLine("|Estado: " + Estado.ToString());
         }
     };
 }

@@ -16,16 +16,21 @@ namespace GemeloDigitalModel {
             this->tolerancia = tolerancia;
         }
 
-        double getPosicionObjetivo() { return posicionObjetivo; }
-        double getTolerancia() { return tolerancia; }
-        void setPosicionObjetivo(double p) { posicionObjetivo = p; }
-        void setTolerancia(double t) { tolerancia = t; }
+        property double PosicionObjetivo {
+            double get() { return posicionObjetivo; }
+            void   set(double value) { posicionObjetivo = value; }
+        }
+
+        property double Tolerancia {
+            double get() { return tolerancia; }
+            void   set(double value) { tolerancia = value; }
+        }
 
         virtual void dataReport() override {
             Console::WriteLine("=== TAREA: POSICIONAR ===");
-            Console::WriteLine("ID: " + id + " | Estado: " + estado);
-            Console::WriteLine("|Posicion Objetivo: " + posicionObjetivo);
-            Console::WriteLine("|Tolerancia: " + tolerancia);
+            Console::WriteLine("ID: " + Id + " | Estado: " + Estado);
+            Console::WriteLine("|Posicion Objetivo: " + PosicionObjetivo);
+            Console::WriteLine("|Tolerancia: " + Tolerancia);
         }
     };
 }

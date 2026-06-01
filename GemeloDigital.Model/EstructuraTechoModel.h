@@ -6,7 +6,7 @@ namespace GemeloDigitalModel {
 
     public ref class EstructuraTechoModel : public PiezaModel {
     private:
-        int puntosUnion;
+        int    puntosUnion;
         double anchura;
 
     public:
@@ -17,19 +17,24 @@ namespace GemeloDigitalModel {
             this->anchura = anchura;
         }
 
-        int getPuntosUnion() { return puntosUnion; }
-        double getAnchura() { return anchura; }
-        void setPuntosUnion(int p) { puntosUnion = p; }
-        void setAnchura(double a) { anchura = a; }
+        property int PuntosUnion {
+            int  get() { return puntosUnion; }
+            void set(int value) { puntosUnion = value; }
+        }
+
+        property double Anchura {
+            double get() { return anchura; }
+            void   set(double value) { anchura = value; }
+        }
 
         virtual void dataReport() override {
             Console::WriteLine("=== ESTRUCTURA TECHO ===");
-            Console::WriteLine("ID: " + id);
-            Console::WriteLine("|Material: " + material);
-            Console::WriteLine("|Peso: " + peso + " kg");
-            Console::WriteLine("|Puntos de Union: " + puntosUnion);
-            Console::WriteLine("|Anchura: " + anchura + " m");
-            Console::WriteLine("|Estado: " + estado.ToString());
+            Console::WriteLine("ID: " + Id);
+            Console::WriteLine("|Material: " + Material);
+            Console::WriteLine("|Peso: " + Peso + " kg");
+            Console::WriteLine("|Puntos de Union: " + PuntosUnion);
+            Console::WriteLine("|Anchura: " + Anchura + " m");
+            Console::WriteLine("|Estado: " + Estado.ToString());
         }
     };
 }
