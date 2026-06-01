@@ -1,5 +1,8 @@
 #pragma once
 
+#include <dwmapi.h>
+#pragma comment(lib,"dwmapi.lib")
+
 //Include de los formularios del jefe 
 #include "FormMenuJefe.h" //Corresponde al Dashboard del jefe de operaciones
 #include "Estacion_ciclo.h" //Corresponde a la sección de estación/ciclo del jefe de operaciones
@@ -42,10 +45,14 @@ namespace LOGIN {
 	/// </summary>
 	public ref class Interfaz : public System::Windows::Forms::Form
 	{
+
+	private:
+		Form^ Login; //Guardar al form login
 	public:
-		Interfaz(void)
+		Interfaz(Form^ PadreLogin)
 		{
 			InitializeComponent();
+			Login = PadreLogin;
 			//
 			//TODO: agregar código de constructor aquí
 			//
@@ -62,6 +69,7 @@ namespace LOGIN {
 				delete components;
 			}
 		}
+	
 	private: System::Windows::Forms::Panel^ panel1;
 	protected:
 	private: System::Windows::Forms::Panel^ panel11;
@@ -153,7 +161,7 @@ namespace LOGIN {
 			this->panel1->Dock = System::Windows::Forms::DockStyle::Left;
 			this->panel1->Location = System::Drawing::Point(0, 0);
 			this->panel1->Name = L"panel1";
-			this->panel1->Size = System::Drawing::Size(303, 740);
+			this->panel1->Size = System::Drawing::Size(303, 861);
 			this->panel1->TabIndex = 7;
 			// 
 			// panel11
@@ -332,21 +340,23 @@ namespace LOGIN {
 			// 
 			// panel2
 			// 
+			this->panel2->BackColor = System::Drawing::Color::Transparent;
 			this->panel2->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->panel2->Location = System::Drawing::Point(303, 0);
 			this->panel2->Name = L"panel2";
-			this->panel2->Size = System::Drawing::Size(924, 740);
+			this->panel2->Size = System::Drawing::Size(1148, 861);
 			this->panel2->TabIndex = 8;
 			// 
 			// Interfaz
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(1227, 740);
+			this->ClientSize = System::Drawing::Size(1451, 861);
 			this->Controls->Add(this->panel2);
 			this->Controls->Add(this->panel1);
 			this->Name = L"Interfaz";
-			this->Text = L"Interfaz";
+			this->ShowIcon = false;
+			this->FormClosing += gcnew System::Windows::Forms::FormClosingEventHandler(this, &Interfaz::Interfaz_FormClosing);
 			this->Load += gcnew System::EventHandler(this, &Interfaz::Interfaz_Load);
 			this->panel1->ResumeLayout(false);
 			this->panel11->ResumeLayout(false);
@@ -358,6 +368,9 @@ namespace LOGIN {
 		}
 #pragma endregion
 	private: System::Void Interfaz_Load(System::Object^ sender, System::EventArgs^ e) {
+		HWND hwnd = (HWND)this->Handle.ToPointer();
+		BOOL modooscuro = true;
+		DwmSetWindowAttribute(hwnd, 20, &modooscuro, sizeof(modooscuro));
 	}
 
 
@@ -432,6 +445,11 @@ private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e
 private: System::Void button5_Click(System::Object^ sender, System::EventArgs^ e) {
 	if (label1->Text == "Jefe de Operaciones") {
 		AbrirFormHijo(gcnew Reportes_de_Costos());
+	}
+}
+private: System::Void Interfaz_FormClosing(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e) {
+	if (Login != nullptr) {
+		Login->Show();
 	}
 }
 };
