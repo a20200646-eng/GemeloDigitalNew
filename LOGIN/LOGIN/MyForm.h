@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Interfaz.h"
+using namespace GemeloDigitalController;
 
 using namespace LOGIN;
 
@@ -382,6 +383,31 @@ namespace LOGIN {
 		String^ user = txtUsuario->Text;
 		String^ pass = txtPassword->Text;
 		Interfaz^ Principal = gcnew Interfaz(this);
+
+		JefeOperacionesController^ jc = gcnew JefeOperacionesController();
+		OperadorController^ oc = gcnew OperadorController();
+		GestorInventarioController^ cpc = gcnew GestorInventarioController();
+		AdministradorController^ ac = gcnew AdministradorController();
+
+
+		//valida el login con cada controller, si encuentra un match, muestra la interfaz correspondiente al rol
+		//Jefe Operaciones
+		if (jc->buscarPorCredenciales(txtUsuario->Text, txtPassword->Text) != nullptr) {
+			Principal->label1->Text = "Jefe de Operaciones";
+			Principal->button1->Text = "Dashboard";
+			Principal->button2->Text = "Estación / Ciclo";
+			Principal->button3->Text = "Línea Ensamblaje";
+			Principal->button4->Text = "Eventos";
+			Principal->button5->Text = "Reportes";
+			Principal->button6->Text = "Cerrar sesión";
+			Principal->Show();
+			this->Hide();
+			Principal->Show();
+		}
+
+		//Hacer lo mismo de aca arriba para los demas roles
+		//Crear la funcion buscar por credenciales en cada controller y usarla para validar el login
+
 
 
 		if (user == "jefe" && pass == "123") {
