@@ -1,4 +1,4 @@
-#pragma once
+Ã¯Â»Â¿#pragma once
 
 namespace LOGIN {
 
@@ -19,13 +19,13 @@ namespace LOGIN {
 		{
 			InitializeComponent();
 			//
-			//TODO: agregar código de constructor aquí
+			//TODO: agregar cÃƒÂ³digo de constructor aquÃƒÂ­
 			//
 		}
 
 	protected:
 		/// <summary>
-		/// Limpiar los recursos que se estén usando.
+		/// Limpiar los recursos que se estÃƒÂ©n usando.
 		/// </summary>
 		~Reportes_de_Costos_Admin()
 		{
@@ -58,14 +58,14 @@ namespace LOGIN {
 
 	private:
 		/// <summary>
-		/// Variable del diseñador necesaria.
+		/// Variable del diseÃƒÂ±ador necesaria.
 		/// </summary>
 		System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
-		/// Método necesario para admitir el Diseñador. No se puede modificar
-		/// el contenido de este método con el editor de código.
+		/// MÃƒÂ©todo necesario para admitir el DiseÃƒÂ±ador. No se puede modificar
+		/// el contenido de este mÃƒÂ©todo con el editor de cÃƒÂ³digo.
 		/// </summary>
 		void InitializeComponent(void)
 		{
@@ -123,7 +123,7 @@ namespace LOGIN {
 			this->label1->Name = L"label1";
 			this->label1->Size = System::Drawing::Size(207, 16);
 			this->label1->TabIndex = 41;
-			this->label1->Text = L"Gráfico de costos por ciclo (GDI+)";
+			this->label1->Text = L"GrÃƒÂ¡fico de costos por ciclo (GDI+)";
 			// 
 			// dataGridView2
 			// 
@@ -166,7 +166,7 @@ namespace LOGIN {
 			// 
 			// dataGridViewTextBoxColumn2
 			// 
-			this->dataGridViewTextBoxColumn2->HeaderText = L"N° Ciclo";
+			this->dataGridViewTextBoxColumn2->HeaderText = L"NÃ‚Â° Ciclo";
 			this->dataGridViewTextBoxColumn2->MinimumWidth = 6;
 			this->dataGridViewTextBoxColumn2->Name = L"dataGridViewTextBoxColumn2";
 			// 
@@ -331,7 +331,7 @@ namespace LOGIN {
 			this->label6->Name = L"label6";
 			this->label6->Size = System::Drawing::Size(59, 16);
 			this->label6->TabIndex = 20;
-			this->label6->Text = L"N° Ciclo";
+			this->label6->Text = L"NÃ‚Â° Ciclo";
 			// 
 			// label7
 			// 
@@ -374,12 +374,12 @@ namespace LOGIN {
 #pragma endregion
 	private: System::Void Reportes_de_Costos_Admin_Load(System::Object^ sender, System::EventArgs^ e) {
 		try {
-			// 1. Limpiamos cualquier rastro o diseño previo de la gráfica
+			// 1. Limpiamos cualquier rastro o diseÃ±o previo de la grÃ¡fica
 			this->chart1->Series->Clear();
 			this->chart1->Titles->Clear();
 
-			// 2. Le damos el título corporativo y financiero a la sección
-			this->chart1->Titles->Add("Análisis de Costo Total por Ciclo de Producción ($)");
+			// 2. Le damos el tÃ­tulo corporativo y financiero a la secciÃ³n
+			this->chart1->Titles->Add("AnÃ¡lisis de Costo Total por Ciclo de ProducciÃ³n ($)");
 
 			// 3. Creamos la serie de columnas/barras ideal para comparar montos de dinero
 			String^ nombreSerie = "CostosTotales";
@@ -390,19 +390,19 @@ namespace LOGIN {
 			this->chart1->Series[nombreSerie]->Color = System::Drawing::Color::Orange;
 
 			// 4. Inyectamos los datos reales simulados de los costos de la planta
-			// El eje X muestra el ciclo evaluado y el eje Y muestra el Costo Total en dólares
+			// El eje X muestra el ciclo evaluado y el eje Y muestra el Costo Total en dÃ³lares
 			this->chart1->Series[nombreSerie]->Points->AddXY("Ciclo 01 (BodyFraming)", 60.0);   // 0.5 hrs * $120
 			this->chart1->Series[nombreSerie]->Points->AddXY("Ciclo 02 (Soldadura)", 180.0);   // 1.5 hrs * $120
 			this->chart1->Series[nombreSerie]->Points->AddXY("Ciclo 03 (Materiales)", 120.0);     // 1.0 hrs * $120
 			this->chart1->Series[nombreSerie]->Points->AddXY("Ciclo 04 (Ensamblaje)", 240.0);  // 2.0 hrs * $120
 
-			// 5. Activamos las etiquetas para que el monto exacto en dólares se vea flotando arriba de cada barra
+			// 5. Activamos las etiquetas para que el monto exacto en dÃ³lares se vea flotando arriba de cada barra
 			this->chart1->Series[nombreSerie]->IsValueShownAsLabel = true;
 			this->chart1->Series[nombreSerie]->LabelFormat = "$#,##0.00"; // Formato monetario profesional
 
 		}
 		catch (Exception^ ex) {
-			MessageBox::Show("Error al generar la gráfica de costos: " + ex->Message, "Aviso del Sistema");
+			MessageBox::Show("Error al generar la grÃ¡fica de costos: " + ex->Message, "Aviso del Sistema");
 		}
 	}
 };
