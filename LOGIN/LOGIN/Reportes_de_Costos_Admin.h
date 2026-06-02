@@ -19,13 +19,13 @@ namespace LOGIN {
 		{
 			InitializeComponent();
 			//
-			//TODO: agregar c�digo de constructor aqu�
+			//TODO: agregar cÃ³digo de constructor aquÃ­
 			//
 		}
 
 	protected:
 		/// <summary>
-		/// Limpiar los recursos que se est�n usando.
+		/// Limpiar los recursos que se estÃ©n usando.
 		/// </summary>
 		~Reportes_de_Costos_Admin()
 		{
@@ -58,14 +58,14 @@ namespace LOGIN {
 
 	private:
 		/// <summary>
-		/// Variable del dise�ador necesaria.
+		/// Variable del diseÃ±ador necesaria.
 		/// </summary>
 		System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
-		/// M�todo necesario para admitir el Dise�ador. No se puede modificar
-		/// el contenido de este m�todo con el editor de c�digo.
+		/// MÃ©todo necesario para admitir el DiseÃ±ador. No se puede modificar
+		/// el contenido de este mÃ©todo con el editor de cÃ³digo.
 		/// </summary>
 		void InitializeComponent(void)
 		{
@@ -123,7 +123,7 @@ namespace LOGIN {
 			this->label1->Name = L"label1";
 			this->label1->Size = System::Drawing::Size(207, 16);
 			this->label1->TabIndex = 41;
-			this->label1->Text = L"Gr�fico de costos por ciclo (GDI+)";
+			this->label1->Text = L"GrÃ¡fico de costos por ciclo (GDI+)";
 			// 
 			// dataGridView2
 			// 
@@ -166,7 +166,7 @@ namespace LOGIN {
 			// 
 			// dataGridViewTextBoxColumn2
 			// 
-			this->dataGridViewTextBoxColumn2->HeaderText = L"N� Ciclo";
+			this->dataGridViewTextBoxColumn2->HeaderText = L"NÂ° Ciclo";
 			this->dataGridViewTextBoxColumn2->MinimumWidth = 6;
 			this->dataGridViewTextBoxColumn2->Name = L"dataGridViewTextBoxColumn2";
 			// 
@@ -331,7 +331,7 @@ namespace LOGIN {
 			this->label6->Name = L"label6";
 			this->label6->Size = System::Drawing::Size(59, 16);
 			this->label6->TabIndex = 20;
-			this->label6->Text = L"N� Ciclo";
+			this->label6->Text = L"NÂ° Ciclo";
 			// 
 			// label7
 			// 
@@ -362,6 +362,7 @@ namespace LOGIN {
 			this->Controls->Add(this->label8);
 			this->Name = L"Reportes_de_Costos_Admin";
 			this->Text = L"Reportes_de_Costos_Admin";
+			this->Load += gcnew System::EventHandler(this, &Reportes_de_Costos_Admin::Reportes_de_Costos_Admin_Load);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView2))->EndInit();
 			this->panel1->ResumeLayout(false);
@@ -371,5 +372,38 @@ namespace LOGIN {
 
 		}
 #pragma endregion
-	};
+	private: System::Void Reportes_de_Costos_Admin_Load(System::Object^ sender, System::EventArgs^ e) {
+		try {
+			// 1. Limpiamos cualquier rastro o diseño previo de la gráfica
+			this->chart1->Series->Clear();
+			this->chart1->Titles->Clear();
+
+			// 2. Le damos el título corporativo y financiero a la sección
+			this->chart1->Titles->Add("Análisis de Costo Total por Ciclo de Producción ($)");
+
+			// 3. Creamos la serie de columnas/barras ideal para comparar montos de dinero
+			String^ nombreSerie = "CostosTotales";
+			this->chart1->Series->Add(nombreSerie);
+			this->chart1->Series[nombreSerie]->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Column;
+
+			// Cambiamos el color a un tono naranja moderno para que combine con tu interfaz
+			this->chart1->Series[nombreSerie]->Color = System::Drawing::Color::Orange;
+
+			// 4. Inyectamos los datos reales simulados de los costos de la planta
+			// El eje X muestra el ciclo evaluado y el eje Y muestra el Costo Total en dólares
+			this->chart1->Series[nombreSerie]->Points->AddXY("Ciclo 01 (BodyFraming)", 60.0);   // 0.5 hrs * $120
+			this->chart1->Series[nombreSerie]->Points->AddXY("Ciclo 02 (Soldadura)", 180.0);   // 1.5 hrs * $120
+			this->chart1->Series[nombreSerie]->Points->AddXY("Ciclo 03 (Materiales)", 120.0);     // 1.0 hrs * $120
+			this->chart1->Series[nombreSerie]->Points->AddXY("Ciclo 04 (Ensamblaje)", 240.0);  // 2.0 hrs * $120
+
+			// 5. Activamos las etiquetas para que el monto exacto en dólares se vea flotando arriba de cada barra
+			this->chart1->Series[nombreSerie]->IsValueShownAsLabel = true;
+			this->chart1->Series[nombreSerie]->LabelFormat = "$#,##0.00"; // Formato monetario profesional
+
+		}
+		catch (Exception^ ex) {
+			MessageBox::Show("Error al generar la gráfica de costos: " + ex->Message, "Aviso del Sistema");
+		}
+	}
+};
 }
