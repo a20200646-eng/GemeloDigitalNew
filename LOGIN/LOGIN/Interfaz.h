@@ -30,6 +30,7 @@
 #include "Linea_de_Ensamblaje1.h" //corresponde a la sección de línea de ensamblaje del controlador de piezas
 
 
+using namespace GemeloDigitalController; //Para acceder a los controladores desde los formularios hijos
 
 namespace LOGIN {
 
@@ -160,8 +161,9 @@ namespace LOGIN {
 			this->panel1->Controls->Add(this->panel10);
 			this->panel1->Dock = System::Windows::Forms::DockStyle::Left;
 			this->panel1->Location = System::Drawing::Point(0, 0);
+			this->panel1->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->panel1->Name = L"panel1";
-			this->panel1->Size = System::Drawing::Size(303, 861);
+			this->panel1->Size = System::Drawing::Size(228, 700);
 			this->panel1->TabIndex = 7;
 			// 
 			// panel11
@@ -172,7 +174,7 @@ namespace LOGIN {
 			this->panel11->Location = System::Drawing::Point(1, 2);
 			this->panel11->Margin = System::Windows::Forms::Padding(2);
 			this->panel11->Name = L"panel11";
-			this->panel11->Size = System::Drawing::Size(302, 94);
+			this->panel11->Size = System::Drawing::Size(226, 76);
 			this->panel11->TabIndex = 16;
 			// 
 			// pictureBox1
@@ -180,36 +182,36 @@ namespace LOGIN {
 			this->pictureBox1->BackColor = System::Drawing::Color::Transparent;
 			this->pictureBox1->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"pictureBox1.BackgroundImage")));
 			this->pictureBox1->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-			this->pictureBox1->Location = System::Drawing::Point(25, 18);
+			this->pictureBox1->Location = System::Drawing::Point(19, 15);
 			this->pictureBox1->Margin = System::Windows::Forms::Padding(2);
 			this->pictureBox1->Name = L"pictureBox1";
-			this->pictureBox1->Size = System::Drawing::Size(52, 55);
+			this->pictureBox1->Size = System::Drawing::Size(39, 45);
 			this->pictureBox1->TabIndex = 10;
 			this->pictureBox1->TabStop = false;
 			// 
 			// label4
 			// 
 			this->label4->AutoSize = true;
-			this->label4->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->label4->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label4->ForeColor = System::Drawing::SystemColors::ButtonFace;
-			this->label4->Location = System::Drawing::Point(81, 28);
+			this->label4->Location = System::Drawing::Point(61, 23);
 			this->label4->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label4->Name = L"label4";
-			this->label4->Size = System::Drawing::Size(127, 16);
+			this->label4->Size = System::Drawing::Size(98, 13);
 			this->label4->TabIndex = 8;
 			this->label4->Text = L"Usuario Sistema";
 			// 
 			// label1
 			// 
 			this->label1->AutoSize = true;
-			this->label1->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->label1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label1->ForeColor = System::Drawing::Color::Cyan;
-			this->label1->Location = System::Drawing::Point(81, 49);
+			this->label1->Location = System::Drawing::Point(61, 40);
 			this->label1->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(160, 16);
+			this->label1->Size = System::Drawing::Size(124, 13);
 			this->label1->TabIndex = 9;
 			this->label1->Text = L"Jefe de Operaciones";
 			// 
@@ -220,13 +222,13 @@ namespace LOGIN {
 			this->button6->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
 			this->button6->FlatAppearance->BorderSize = 0;
 			this->button6->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			this->button6->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->button6->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->button6->ForeColor = System::Drawing::Color::Transparent;
-			this->button6->Location = System::Drawing::Point(68, 650);
+			this->button6->Location = System::Drawing::Point(51, 528);
 			this->button6->Margin = System::Windows::Forms::Padding(2);
 			this->button6->Name = L"button6";
-			this->button6->Size = System::Drawing::Size(174, 30);
+			this->button6->Size = System::Drawing::Size(130, 24);
 			this->button6->TabIndex = 11;
 			this->button6->Text = L"Cerrar Sesión";
 			this->button6->UseVisualStyleBackColor = false;
@@ -240,10 +242,10 @@ namespace LOGIN {
 			this->panel10->Controls->Add(this->button4);
 			this->panel10->Controls->Add(this->button5);
 			this->panel10->ForeColor = System::Drawing::Color::White;
-			this->panel10->Location = System::Drawing::Point(1, 99);
+			this->panel10->Location = System::Drawing::Point(1, 80);
 			this->panel10->Margin = System::Windows::Forms::Padding(2);
 			this->panel10->Name = L"panel10";
-			this->panel10->Size = System::Drawing::Size(300, 241);
+			this->panel10->Size = System::Drawing::Size(225, 196);
 			this->panel10->TabIndex = 15;
 			// 
 			// button1
@@ -251,14 +253,14 @@ namespace LOGIN {
 			this->button1->FlatAppearance->BorderColor = System::Drawing::Color::Black;
 			this->button1->FlatAppearance->MouseDownBackColor = System::Drawing::Color::DarkSlateGray;
 			this->button1->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			this->button1->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->button1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->button1->ForeColor = System::Drawing::Color::Transparent;
 			this->button1->ImageAlign = System::Drawing::ContentAlignment::TopLeft;
 			this->button1->Location = System::Drawing::Point(0, 0);
 			this->button1->Margin = System::Windows::Forms::Padding(2);
 			this->button1->Name = L"button1";
-			this->button1->Size = System::Drawing::Size(302, 37);
+			this->button1->Size = System::Drawing::Size(226, 30);
 			this->button1->TabIndex = 7;
 			this->button1->Text = L"Dashboard";
 			this->button1->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
@@ -270,13 +272,13 @@ namespace LOGIN {
 			this->button2->FlatAppearance->BorderColor = System::Drawing::Color::Black;
 			this->button2->FlatAppearance->MouseDownBackColor = System::Drawing::Color::DarkSlateGray;
 			this->button2->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			this->button2->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->button2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->button2->ForeColor = System::Drawing::Color::Transparent;
-			this->button2->Location = System::Drawing::Point(0, 37);
+			this->button2->Location = System::Drawing::Point(0, 30);
 			this->button2->Margin = System::Windows::Forms::Padding(2);
 			this->button2->Name = L"button2";
-			this->button2->Size = System::Drawing::Size(302, 40);
+			this->button2->Size = System::Drawing::Size(226, 32);
 			this->button2->TabIndex = 4;
 			this->button2->Text = L"Estación/Ciclo";
 			this->button2->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
@@ -288,13 +290,13 @@ namespace LOGIN {
 			this->button3->FlatAppearance->BorderColor = System::Drawing::Color::Black;
 			this->button3->FlatAppearance->MouseDownBackColor = System::Drawing::Color::DarkSlateGray;
 			this->button3->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			this->button3->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->button3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->button3->ForeColor = System::Drawing::Color::Transparent;
-			this->button3->Location = System::Drawing::Point(0, 77);
+			this->button3->Location = System::Drawing::Point(0, 63);
 			this->button3->Margin = System::Windows::Forms::Padding(2);
 			this->button3->Name = L"button3";
-			this->button3->Size = System::Drawing::Size(302, 40);
+			this->button3->Size = System::Drawing::Size(226, 32);
 			this->button3->TabIndex = 3;
 			this->button3->Text = L"Línea de ensamblaje";
 			this->button3->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
@@ -306,13 +308,13 @@ namespace LOGIN {
 			this->button4->FlatAppearance->BorderColor = System::Drawing::Color::Black;
 			this->button4->FlatAppearance->MouseDownBackColor = System::Drawing::Color::DarkSlateGray;
 			this->button4->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			this->button4->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->button4->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->button4->ForeColor = System::Drawing::Color::Transparent;
-			this->button4->Location = System::Drawing::Point(0, 117);
+			this->button4->Location = System::Drawing::Point(0, 95);
 			this->button4->Margin = System::Windows::Forms::Padding(2);
 			this->button4->Name = L"button4";
-			this->button4->Size = System::Drawing::Size(302, 38);
+			this->button4->Size = System::Drawing::Size(226, 31);
 			this->button4->TabIndex = 1;
 			this->button4->Text = L"Eventos";
 			this->button4->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
@@ -325,13 +327,13 @@ namespace LOGIN {
 			this->button5->FlatAppearance->BorderColor = System::Drawing::Color::Black;
 			this->button5->FlatAppearance->MouseDownBackColor = System::Drawing::Color::DarkSlateGray;
 			this->button5->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			this->button5->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->button5->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->button5->ForeColor = System::Drawing::Color::Transparent;
-			this->button5->Location = System::Drawing::Point(0, 155);
+			this->button5->Location = System::Drawing::Point(0, 126);
 			this->button5->Margin = System::Windows::Forms::Padding(2);
 			this->button5->Name = L"button5";
-			this->button5->Size = System::Drawing::Size(302, 38);
+			this->button5->Size = System::Drawing::Size(226, 31);
 			this->button5->TabIndex = 2;
 			this->button5->Text = L"Reportes";
 			this->button5->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
@@ -342,18 +344,21 @@ namespace LOGIN {
 			// 
 			this->panel2->BackColor = System::Drawing::Color::Transparent;
 			this->panel2->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->panel2->Location = System::Drawing::Point(303, 0);
+			this->panel2->Location = System::Drawing::Point(228, 0);
+			this->panel2->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->panel2->Name = L"panel2";
-			this->panel2->Size = System::Drawing::Size(1148, 861);
+			this->panel2->Size = System::Drawing::Size(860, 700);
 			this->panel2->TabIndex = 8;
+			this->panel2->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Interfaz::panel2_Paint);
 			// 
 			// Interfaz
 			// 
-			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(1451, 861);
+			this->ClientSize = System::Drawing::Size(1088, 700);
 			this->Controls->Add(this->panel2);
 			this->Controls->Add(this->panel1);
+			this->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->Name = L"Interfaz";
 			this->ShowIcon = false;
 			this->FormClosing += gcnew System::Windows::Forms::FormClosingEventHandler(this, &Interfaz::Interfaz_FormClosing);
@@ -451,6 +456,8 @@ private: System::Void Interfaz_FormClosing(System::Object^ sender, System::Windo
 	if (Login != nullptr) {
 		Login->Show();
 	}
+}
+private: System::Void panel2_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {
 }
 };
 }
