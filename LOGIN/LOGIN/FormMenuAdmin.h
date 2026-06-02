@@ -20,13 +20,13 @@ namespace LOGIN {
 		{
 			InitializeComponent();
 			//
-			//TODO: agregar código de constructor aquí
+			//TODO: agregar cÃ³digo de constructor aquÃ­
 			//
 		}
 
 	protected:
 		/// <summary>
-		/// Limpiar los recursos que se estén usando.
+		/// Limpiar los recursos que se estÃ©n usando.
 		/// </summary>
 		~FormMenuAdmin()
 		{
@@ -100,14 +100,14 @@ namespace LOGIN {
 
 	private:
 		/// <summary>
-		/// Variable del diseñador necesaria.
+		/// Variable del diseÃ±ador necesaria.
 		/// </summary>
 		System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
-		/// Método necesario para admitir el Diseñador. No se puede modificar
-		/// el contenido de este método con el editor de código.
+		/// MÃ©todo necesario para admitir el DiseÃ±ador. No se puede modificar
+		/// el contenido de este mÃ©todo con el editor de cÃ³digo.
 		/// </summary>
 		void InitializeComponent(void)
 		{
@@ -156,7 +156,7 @@ namespace LOGIN {
 			this->label6->RightToLeft = System::Windows::Forms::RightToLeft::No;
 			this->label6->Size = System::Drawing::Size(200, 22);
 			this->label6->TabIndex = 12;
-			this->label6->Text = L"Gestión de Usuarios";
+			this->label6->Text = L"GestiÃ³n de Usuarios";
 			// 
 			// button1
 			// 
@@ -281,7 +281,7 @@ namespace LOGIN {
 			// 
 			// Column2
 			// 
-			this->Column2->HeaderText = L"Contraseña";
+			this->Column2->HeaderText = L"ContraseÃ±a";
 			this->Column2->MinimumWidth = 6;
 			this->Column2->Name = L"Column2";
 			// 
@@ -329,7 +329,7 @@ namespace LOGIN {
 			this->button8->Name = L"button8";
 			this->button8->Size = System::Drawing::Size(202, 50);
 			this->button8->TabIndex = 32;
-			this->button8->Text = L"Modificar Contraseña";
+			this->button8->Text = L"Modificar ContraseÃ±a";
 			this->button8->UseVisualStyleBackColor = false;
 			this->button8->Click += gcnew System::EventHandler(this, &FormMenuAdmin::button8_Click);
 			// 
@@ -523,7 +523,7 @@ namespace LOGIN {
 			this->label5->Name = L"label5";
 			this->label5->Size = System::Drawing::Size(302, 16);
 			this->label5->TabIndex = 0;
-			this->label5->Text = L" El administrador no puede eliminarse a sí mismo.";
+			this->label5->Text = L" El administrador no puede eliminarse a sÃ­ mismo.";
 			// 
 			// FormMenuAdmin
 			// 
@@ -566,13 +566,13 @@ namespace LOGIN {
 
 		   // === EVENTO DE CARGA DE LA INTERFAZ ===
 	private: System::Void FormMenuAdmin_Load(System::Object^ sender, System::EventArgs^ e) {
-		// Por defecto, carga los Administradores al abrir
 		button1_Click(this->button1, nullptr);
 	}
 
-		   // === BOTONES SUPERIORES DE FILTRADO ===
+		   // === BOTONES SUPERIORES DE FILTRADO (Configuran el Tag y el tÃ­tulo) ===
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) { // Administradores
 		this->label3->Text = "AGREGAR NUEVO ADMINISTRADOR";
+		this->label4->Text = "Turno (MaÃ±ana/Tarde/Noche):";
 		this->textBox1->Clear(); this->textBox2->Clear(); this->textBox3->Clear();
 		this->button5->Tag = "1"; // Nivel 1 = Admin
 		CargarUsuariosPorRol(1);
@@ -580,6 +580,7 @@ namespace LOGIN {
 
 	private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) { // Jefe de Operaciones
 		this->label3->Text = "AGREGAR NUEVO JEFE DE OPERACIONES";
+		this->label4->Text = "Turno (MaÃ±ana/Tarde/Noche):";
 		this->textBox1->Clear(); this->textBox2->Clear(); this->textBox3->Clear();
 		this->button5->Tag = "2"; // Nivel 2 = Jefe
 		CargarUsuariosPorRol(2);
@@ -592,49 +593,63 @@ namespace LOGIN {
 		CargarUsuariosPorRol(3);
 	}
 
-	private: System::Void button4_Click(System::Object^ sender, System::EventArgs^ e) { // Gestores (¡El tuyo!)
+	private: System::Void button4_Click(System::Object^ sender, System::EventArgs^ e) { // Gestores (Â¡El tuyo!)
 		this->label3->Text = "AGREGAR NUEVO GESTOR";
 		this->textBox1->Clear(); this->textBox2->Clear(); this->textBox3->Clear();
 		this->button5->Tag = "4"; // Nivel 4 = Gestor
+
 		CargarUsuariosPorRol(4);
 	}
 
-		   // === BOTÓN ACCIÓN: AGREGAR / GUARDAR USUARIO ===
+		   // === BOTÃ“N ACCIÃ“N: AGREGAR / GUARDAR USUARIO ===
 	private: System::Void button5_Click(System::Object^ sender, System::EventArgs^ e) {
 		String^ usuario = this->textBox1->Text->Trim();
 		String^ password = this->textBox2->Text->Trim();
 
 		if (usuario == "" || password == "") {
-			MessageBox::Show("Por favor, rellene los campos de Nombre y Contraseña.", "Campos Vacíos", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+			MessageBox::Show("Por favor, rellene los campos de Nombre y ContraseÃ±a.", "Campos VacÃ­os", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+
+		String^ turno = this->textBox3->Text->Trim(); // Nota: Guardaremos el turno temporalmente o puedes omitirlo si el modelo no lo tiene
+			return;
+		}
+		if (usuario->Length < 4 || password->Length < 4) {
+			MessageBox::Show("El Nombre y la ContraseÃ±a deben tener al menos 4 caracteres.", "Seguridad", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+			return;
+		}
+		if (usuario->Contains("|") || password->Contains("|")) {
+			MessageBox::Show("No se permite el uso del carÃ¡cter pipe ( | ).", "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
+
 			return;
 		}
 
 		try {
-			// Instanciamos el controlador del equipo
+
+			// Usamos el controlador de tus compaÃ±eros
 			GemeloDigitalController::AdministradorController^ contr = gcnew GemeloDigitalController::AdministradorController();
 
-			// Obtenemos el nivel de acceso desde el Tag que configuramos en los botones superiores
+			// Obtenemos el nivel de acceso desde el Tag del botÃ³n
 			int nivelAcceso = (this->button5->Tag != nullptr) ? Int32::Parse(this->button5->Tag->ToString()) : 1;
 
-			// Autogeneramos un ID sumando 1 al tamaño actual de la lista
+			// Autogeneramos un ID secuencial
 			int nuevoId = contr->obtenerTodos()->Count + 1;
 
 			// Guardamos directamente en la persistencia real del equipo (.dat)
 			if (contr->agregar(nuevoId, usuario, password, nivelAcceso)) {
-				MessageBox::Show("¡Usuario '" + usuario + "' registrado con éxito en el sistema!", "Éxito", MessageBoxButtons::OK, MessageBoxIcon::Information);
+				MessageBox::Show("Â¡Usuario '" + usuario + "' registrado con Ã©xito en el sistema!", "Ã‰xito", MessageBoxButtons::OK, MessageBoxIcon::Information);
 				this->textBox1->Clear(); this->textBox2->Clear(); this->textBox3->Clear();
-				CargarUsuariosPorRol(nivelAcceso); // Refrescar la tabla
+
+				CargarUsuariosPorRol(nivelAcceso);
 			}
 			else {
 				MessageBox::Show("No se pudo registrar el usuario. El ID ya existe.", "Error");
 			}
 		}
 		catch (Exception^ ex) {
-			MessageBox::Show("Error al guardar: " + ex->Message, "Error Crítico");
+			MessageBox::Show("Error al guardar: " + ex->Message, "Error CrÃ­tico");
 		}
 	}
 
-		   // === FUNCIÓN AUXILIAR: CARGAR Y FILTRAR TABLA DESDE EL CONTROLADOR ===
+		   // === FUNCIÃ“N AUXILIAR: CARGAR Y FILTRAR TABLA DESDE EL CONTROLADOR ===
 	private: void CargarUsuariosPorRol(int nivelFiltrar) {
 		try {
 			this->dataGridView1->Rows->Clear();
@@ -644,7 +659,6 @@ namespace LOGIN {
 			for each (GemeloDigitalModel::AdministradorModel ^ u in lista) {
 				if (u->NivelAcceso == nivelFiltrar) {
 					String^ idSimulado = "U00" + u->Id;
-					// Añadimos a tu DataGridView: ID, Nombre, Contraseña, Nivel
 					this->dataGridView1->Rows->Add(idSimulado, u->Nombre, u->Contrasena, "Nivel " + nivelFiltrar);
 				}
 			}
@@ -662,30 +676,7 @@ namespace LOGIN {
 		}
 	}
 
-		   // === BOTÓN: ELIMINAR USUARIO ===
-	private: System::Void button6_Click(System::Object^ sender, System::EventArgs^ e) {
-		String^ usuarioAEliminar = this->textBox1->Text->Trim();
-		if (usuarioAEliminar == "" || usuarioAEliminar->ToLower() == "admin") return;
-
-		try {
-			GemeloDigitalController::AdministradorController^ contr = gcnew GemeloDigitalController::AdministradorController();
-			int nivelAcceso = (this->button5->Tag != nullptr) ? Int32::Parse(this->button5->Tag->ToString()) : 1;
-
-			for each (GemeloDigitalModel::AdministradorModel ^ u in contr->obtenerTodos()) {
-				if (u->Nombre->Trim()->Equals(usuarioAEliminar, StringComparison::OrdinalIgnoreCase)) {
-					if (MessageBox::Show("¿Eliminar permanentemente a " + usuarioAEliminar + "?", "Confirmar", MessageBoxButtons::YesNo, MessageBoxIcon::Question) == System::Windows::Forms::DialogResult::Yes) {
-						contr->eliminar(u->Id);
-						this->textBox1->Clear(); this->textBox2->Clear();
-						CargarUsuariosPorRol(nivelAcceso);
-					}
-					break;
-				}
-			}
-		}
-		catch (Exception^ ex) { MessageBox::Show("Error al eliminar: " + ex->Message); }
-	}
-
-		   // === BOTÓN: MODIFICAR NOMBRE ===
+		   // === BOTÃ“N 7: MODIFICAR NOMBRE ===
 	private: System::Void button7_Click(System::Object^ sender, System::EventArgs^ e) {
 		if (this->dataGridView1->CurrentRow == nullptr) return;
 
@@ -696,10 +687,11 @@ namespace LOGIN {
 			String^ passActual = this->textBox2->Text->Trim();
 			int nivelAcceso = (this->button5->Tag != nullptr) ? Int32::Parse(this->button5->Tag->ToString()) : 1;
 
+			// Buscamos el ID original
 			for each (GemeloDigitalModel::AdministradorModel ^ u in contr->obtenerTodos()) {
 				if (u->Nombre->Trim()->Equals(nombreViejo, StringComparison::OrdinalIgnoreCase)) {
 					contr->modificar(u->Id, nombreNuevo, passActual, nivelAcceso);
-					MessageBox::Show("Nombre modificado con éxito.", "Éxito");
+					MessageBox::Show("Nombre modificado con Ã©xito.", "Ã‰xito");
 					break;
 				}
 			}
@@ -708,7 +700,7 @@ namespace LOGIN {
 		catch (Exception^ ex) { MessageBox::Show("Error: " + ex->Message); }
 	}
 
-		   // === BOTÓN: MODIFICAR CONTRASEÑA ===
+		   // === BOTÃ“N 8: MODIFICAR CONTRASEÃ‘A ===
 	private: System::Void button8_Click(System::Object^ sender, System::EventArgs^ e) {
 		String^ usuario = this->textBox1->Text->Trim();
 		String^ nuevaPassword = this->textBox2->Text->Trim();
@@ -719,13 +711,36 @@ namespace LOGIN {
 			for each (GemeloDigitalModel::AdministradorModel ^ u in contr->obtenerTodos()) {
 				if (u->Nombre->Trim()->Equals(usuario, StringComparison::OrdinalIgnoreCase)) {
 					contr->modificar(u->Id, u->Nombre, nuevaPassword, nivelAcceso);
-					MessageBox::Show("Contraseña actualizada con éxito.", "Éxito");
+					MessageBox::Show("ContraseÃ±a actualizada.", "Ã‰xito");
 					break;
 				}
 			}
 			CargarUsuariosPorRol(nivelAcceso);
 		}
 		catch (Exception^ ex) { MessageBox::Show("Error: " + ex->Message); }
+	}
+
+		   // === BOTÃ“N 6: ELIMINAR USUARIO ===
+	private: System::Void button6_Click(System::Object^ sender, System::EventArgs^ e) {
+		String^ usuarioAEliminar = this->textBox1->Text->Trim();
+		if (usuarioAEliminar == "" || usuarioAEliminar->ToLower() == "admin") return;
+
+		try {
+			GemeloDigitalController::AdministradorController^ contr = gcnew GemeloDigitalController::AdministradorController();
+			int nivelAcceso = (this->button5->Tag != nullptr) ? Int32::Parse(this->button5->Tag->ToString()) : 1;
+
+			for each (GemeloDigitalModel::AdministradorModel ^ u in contr->obtenerTodos()) {
+				if (u->Nombre->Trim()->Equals(usuarioAEliminar, StringComparison::OrdinalIgnoreCase)) {
+					if (MessageBox::Show("Â¿Eliminar permanentemente?", "Confirmar", MessageBoxButtons::YesNo) == System::Windows::Forms::DialogResult::Yes) {
+						contr->eliminar(u->Id);
+						this->textBox1->Clear(); this->textBox2->Clear();
+						CargarUsuariosPorRol(nivelAcceso);
+					}
+					break;
+				}
+			}
+		}
+		catch (Exception^ ex) { MessageBox::Show("Error al eliminar: " + ex->Message); }
 	}
 };
 }
