@@ -56,6 +56,21 @@ namespace GemeloDigitalController {
             guardarArchivo();
             return true;
         }
+		//=============================================================================================
+		//BUSCAR POR CREDENCIALES
+        JefeOperacionesModel^ buscarPorCredenciales(String^ nombre, String^ contrasena) {
+            for each(JefeOperacionesModel ^ j in repositorio) {
+				if (j->Nombre == nombre && j->Contrasena == contrasena) {
+					return j;
+				}
+
+            }
+            return nullptr;
+        }
+        //=============================================================================================
+
+
+
 
         // Formato: id|nombre|contrasena|nivelAutorizacion
         void guardarArchivo() {

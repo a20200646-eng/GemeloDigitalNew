@@ -1,5 +1,6 @@
 #pragma once
-
+using namespace GemeloDigitalController;
+using namespace GemeloDigitalModel;
 namespace LOGIN {
 
 	using namespace System;
@@ -19,8 +20,13 @@ namespace LOGIN {
 		{
 			InitializeComponent();
 			//
-			//TODO: agregar código de constructor aquí
+			//TODO: agre	gar código de constructor aquí
 			//
+			ctrl_brazo1 = gcnew BrazoRoboticoController();
+			for each (BrazoRoboticoModel ^ b in ctrl_brazo1->obtenerTodos()) {
+				comboBox1->Items->Add(b->Id.ToString());
+			}
+			
 		}
 
 	protected:
@@ -74,6 +80,7 @@ namespace LOGIN {
 		/// Variable del diseñador necesaria.
 		/// </summary>
 		System::ComponentModel::Container ^components;
+		BrazoRoboticoController^ ctrl_brazo1;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -91,28 +98,28 @@ namespace LOGIN {
 			this->comboBox1 = (gcnew System::Windows::Forms::ComboBox());
 			this->label5 = (gcnew System::Windows::Forms::Label());
 			this->dataGridView2 = (gcnew System::Windows::Forms::DataGridView());
-			this->dataGridView1 = (gcnew System::Windows::Forms::DataGridView());
-			this->label4 = (gcnew System::Windows::Forms::Label());
-			this->dataGridView3 = (gcnew System::Windows::Forms::DataGridView());
-			this->label6 = (gcnew System::Windows::Forms::Label());
 			this->dataGridViewTextBoxColumn1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->dataGridViewTextBoxColumn2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->dataGridViewTextBoxColumn3 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Column3 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Column1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Column2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->dataGridView1 = (gcnew System::Windows::Forms::DataGridView());
 			this->dataGridViewTextBoxColumn4 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->dataGridViewTextBoxColumn5 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Column5 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->dataGridViewTextBoxColumn6 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->dataGridViewTextBoxColumn7 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Column4 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->label4 = (gcnew System::Windows::Forms::Label());
+			this->dataGridView3 = (gcnew System::Windows::Forms::DataGridView());
 			this->dataGridViewTextBoxColumn8 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->dataGridViewTextBoxColumn9 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->dataGridViewTextBoxColumn10 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->dataGridViewTextBoxColumn11 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Column6 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Column7 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->label6 = (gcnew System::Windows::Forms::Label());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView2))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView3))->BeginInit();
@@ -121,59 +128,62 @@ namespace LOGIN {
 			// label2
 			// 
 			this->label2->AutoSize = true;
-			this->label2->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->label2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label2->ForeColor = System::Drawing::Color::White;
-			this->label2->Location = System::Drawing::Point(53, 40);
+			this->label2->Location = System::Drawing::Point(40, 32);
 			this->label2->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label2->Name = L"label2";
 			this->label2->RightToLeft = System::Windows::Forms::RightToLeft::No;
-			this->label2->Size = System::Drawing::Size(276, 22);
+			this->label2->Size = System::Drawing::Size(206, 16);
 			this->label2->TabIndex = 26;
 			this->label2->Text = L"Detalle de Brazos Robóticos";
 			// 
 			// label3
 			// 
 			this->label3->AutoSize = true;
-			this->label3->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label3->ForeColor = System::Drawing::Color::White;
-			this->label3->Location = System::Drawing::Point(54, 77);
+			this->label3->Location = System::Drawing::Point(40, 63);
 			this->label3->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(254, 16);
+			this->label3->Size = System::Drawing::Size(178, 13);
 			this->label3->TabIndex = 27;
 			this->label3->Text = L"Componentes internos — solo lectura";
 			// 
 			// label1
 			// 
 			this->label1->AutoSize = true;
-			this->label1->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label1->ForeColor = System::Drawing::Color::White;
-			this->label1->Location = System::Drawing::Point(54, 112);
+			this->label1->Location = System::Drawing::Point(40, 91);
 			this->label1->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(130, 16);
+			this->label1->Size = System::Drawing::Size(95, 13);
 			this->label1->TabIndex = 28;
 			this->label1->Text = L"Seleccionar brazo:";
 			// 
 			// comboBox1
 			// 
 			this->comboBox1->FormattingEnabled = true;
-			this->comboBox1->Location = System::Drawing::Point(208, 112);
+			this->comboBox1->Location = System::Drawing::Point(156, 91);
+			this->comboBox1->Margin = System::Windows::Forms::Padding(2);
 			this->comboBox1->Name = L"comboBox1";
-			this->comboBox1->Size = System::Drawing::Size(121, 24);
+			this->comboBox1->Size = System::Drawing::Size(92, 21);
 			this->comboBox1->TabIndex = 29;
+			this->comboBox1->SelectedIndexChanged += gcnew System::EventHandler(this, &Brazos_Operador::comboBox1_SelectedIndexChanged);
 			// 
 			// label5
 			// 
 			this->label5->AutoSize = true;
 			this->label5->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
 				static_cast<System::Int32>(static_cast<System::Byte>(11)));
-			this->label5->Location = System::Drawing::Point(54, 163);
+			this->label5->Location = System::Drawing::Point(40, 132);
+			this->label5->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label5->Name = L"label5";
-			this->label5->Size = System::Drawing::Size(91, 16);
+			this->label5->Size = System::Drawing::Size(73, 13);
 			this->label5->TabIndex = 31;
 			this->label5->Text = L"Articulaciones";
 			// 
@@ -191,7 +201,8 @@ namespace LOGIN {
 			this->dataGridView2->Cursor = System::Windows::Forms::Cursors::Default;
 			this->dataGridView2->EnableHeadersVisualStyles = false;
 			this->dataGridView2->GridColor = System::Drawing::SystemColors::ActiveCaptionText;
-			this->dataGridView2->Location = System::Drawing::Point(57, 198);
+			this->dataGridView2->Location = System::Drawing::Point(43, 161);
+			this->dataGridView2->Margin = System::Windows::Forms::Padding(2);
 			this->dataGridView2->Name = L"dataGridView2";
 			this->dataGridView2->RowHeadersBorderStyle = System::Windows::Forms::DataGridViewHeaderBorderStyle::Single;
 			dataGridViewCellStyle1->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
@@ -207,96 +218,8 @@ namespace LOGIN {
 			this->dataGridView2->RowHeadersVisible = false;
 			this->dataGridView2->RowHeadersWidth = 51;
 			this->dataGridView2->RowTemplate->Height = 24;
-			this->dataGridView2->Size = System::Drawing::Size(872, 133);
+			this->dataGridView2->Size = System::Drawing::Size(654, 108);
 			this->dataGridView2->TabIndex = 36;
-			// 
-			// dataGridView1
-			// 
-			this->dataGridView1->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::Fill;
-			this->dataGridView1->BackgroundColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(15)),
-				static_cast<System::Int32>(static_cast<System::Byte>(23)), static_cast<System::Int32>(static_cast<System::Byte>(42)));
-			this->dataGridView1->ColumnHeadersBorderStyle = System::Windows::Forms::DataGridViewHeaderBorderStyle::Single;
-			this->dataGridView1->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->dataGridView1->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(6) {
-				this->dataGridViewTextBoxColumn4,
-					this->dataGridViewTextBoxColumn5, this->Column5, this->dataGridViewTextBoxColumn6, this->dataGridViewTextBoxColumn7, this->Column4
-			});
-			this->dataGridView1->Cursor = System::Windows::Forms::Cursors::Default;
-			this->dataGridView1->EnableHeadersVisualStyles = false;
-			this->dataGridView1->GridColor = System::Drawing::SystemColors::ActiveCaptionText;
-			this->dataGridView1->Location = System::Drawing::Point(57, 382);
-			this->dataGridView1->Name = L"dataGridView1";
-			this->dataGridView1->RowHeadersBorderStyle = System::Windows::Forms::DataGridViewHeaderBorderStyle::Single;
-			dataGridViewCellStyle2->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
-			dataGridViewCellStyle2->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(58)),
-				static_cast<System::Int32>(static_cast<System::Byte>(95)));
-			dataGridViewCellStyle2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			dataGridViewCellStyle2->ForeColor = System::Drawing::SystemColors::WindowText;
-			dataGridViewCellStyle2->SelectionBackColor = System::Drawing::SystemColors::Highlight;
-			dataGridViewCellStyle2->SelectionForeColor = System::Drawing::SystemColors::HighlightText;
-			dataGridViewCellStyle2->WrapMode = System::Windows::Forms::DataGridViewTriState::True;
-			this->dataGridView1->RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
-			this->dataGridView1->RowHeadersVisible = false;
-			this->dataGridView1->RowHeadersWidth = 51;
-			this->dataGridView1->RowTemplate->Height = 24;
-			this->dataGridView1->Size = System::Drawing::Size(872, 133);
-			this->dataGridView1->TabIndex = 38;
-			// 
-			// label4
-			// 
-			this->label4->AutoSize = true;
-			this->label4->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
-				static_cast<System::Int32>(static_cast<System::Byte>(11)));
-			this->label4->Location = System::Drawing::Point(54, 347);
-			this->label4->Name = L"label4";
-			this->label4->Size = System::Drawing::Size(52, 16);
-			this->label4->TabIndex = 37;
-			this->label4->Text = L"Gripper";
-			// 
-			// dataGridView3
-			// 
-			this->dataGridView3->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::Fill;
-			this->dataGridView3->BackgroundColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(15)),
-				static_cast<System::Int32>(static_cast<System::Byte>(23)), static_cast<System::Int32>(static_cast<System::Byte>(42)));
-			this->dataGridView3->ColumnHeadersBorderStyle = System::Windows::Forms::DataGridViewHeaderBorderStyle::Single;
-			this->dataGridView3->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->dataGridView3->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(6) {
-				this->dataGridViewTextBoxColumn8,
-					this->dataGridViewTextBoxColumn9, this->dataGridViewTextBoxColumn10, this->dataGridViewTextBoxColumn11, this->Column6, this->Column7
-			});
-			this->dataGridView3->Cursor = System::Windows::Forms::Cursors::Default;
-			this->dataGridView3->EnableHeadersVisualStyles = false;
-			this->dataGridView3->GridColor = System::Drawing::SystemColors::ActiveCaptionText;
-			this->dataGridView3->Location = System::Drawing::Point(57, 576);
-			this->dataGridView3->Name = L"dataGridView3";
-			this->dataGridView3->RowHeadersBorderStyle = System::Windows::Forms::DataGridViewHeaderBorderStyle::Single;
-			dataGridViewCellStyle3->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
-			dataGridViewCellStyle3->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(58)),
-				static_cast<System::Int32>(static_cast<System::Byte>(95)));
-			dataGridViewCellStyle3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			dataGridViewCellStyle3->ForeColor = System::Drawing::SystemColors::WindowText;
-			dataGridViewCellStyle3->SelectionBackColor = System::Drawing::SystemColors::Highlight;
-			dataGridViewCellStyle3->SelectionForeColor = System::Drawing::SystemColors::HighlightText;
-			dataGridViewCellStyle3->WrapMode = System::Windows::Forms::DataGridViewTriState::True;
-			this->dataGridView3->RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
-			this->dataGridView3->RowHeadersVisible = false;
-			this->dataGridView3->RowHeadersWidth = 51;
-			this->dataGridView3->RowTemplate->Height = 24;
-			this->dataGridView3->Size = System::Drawing::Size(872, 133);
-			this->dataGridView3->TabIndex = 40;
-			// 
-			// label6
-			// 
-			this->label6->AutoSize = true;
-			this->label6->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
-				static_cast<System::Int32>(static_cast<System::Byte>(11)));
-			this->label6->Location = System::Drawing::Point(54, 541);
-			this->label6->Name = L"label6";
-			this->label6->Size = System::Drawing::Size(65, 16);
-			this->label6->TabIndex = 39;
-			this->label6->Text = L"Sensores";
 			// 
 			// dataGridViewTextBoxColumn1
 			// 
@@ -334,6 +257,40 @@ namespace LOGIN {
 			this->Column2->MinimumWidth = 6;
 			this->Column2->Name = L"Column2";
 			// 
+			// dataGridView1
+			// 
+			this->dataGridView1->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::Fill;
+			this->dataGridView1->BackgroundColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(15)),
+				static_cast<System::Int32>(static_cast<System::Byte>(23)), static_cast<System::Int32>(static_cast<System::Byte>(42)));
+			this->dataGridView1->ColumnHeadersBorderStyle = System::Windows::Forms::DataGridViewHeaderBorderStyle::Single;
+			this->dataGridView1->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
+			this->dataGridView1->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(6) {
+				this->dataGridViewTextBoxColumn4,
+					this->dataGridViewTextBoxColumn5, this->Column5, this->dataGridViewTextBoxColumn6, this->dataGridViewTextBoxColumn7, this->Column4
+			});
+			this->dataGridView1->Cursor = System::Windows::Forms::Cursors::Default;
+			this->dataGridView1->EnableHeadersVisualStyles = false;
+			this->dataGridView1->GridColor = System::Drawing::SystemColors::ActiveCaptionText;
+			this->dataGridView1->Location = System::Drawing::Point(43, 310);
+			this->dataGridView1->Margin = System::Windows::Forms::Padding(2);
+			this->dataGridView1->Name = L"dataGridView1";
+			this->dataGridView1->RowHeadersBorderStyle = System::Windows::Forms::DataGridViewHeaderBorderStyle::Single;
+			dataGridViewCellStyle2->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
+			dataGridViewCellStyle2->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(58)),
+				static_cast<System::Int32>(static_cast<System::Byte>(95)));
+			dataGridViewCellStyle2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			dataGridViewCellStyle2->ForeColor = System::Drawing::SystemColors::WindowText;
+			dataGridViewCellStyle2->SelectionBackColor = System::Drawing::SystemColors::Highlight;
+			dataGridViewCellStyle2->SelectionForeColor = System::Drawing::SystemColors::HighlightText;
+			dataGridViewCellStyle2->WrapMode = System::Windows::Forms::DataGridViewTriState::True;
+			this->dataGridView1->RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
+			this->dataGridView1->RowHeadersVisible = false;
+			this->dataGridView1->RowHeadersWidth = 51;
+			this->dataGridView1->RowTemplate->Height = 24;
+			this->dataGridView1->Size = System::Drawing::Size(654, 108);
+			this->dataGridView1->TabIndex = 38;
+			// 
 			// dataGridViewTextBoxColumn4
 			// 
 			this->dataGridViewTextBoxColumn4->HeaderText = L"ID";
@@ -369,6 +326,52 @@ namespace LOGIN {
 			this->Column4->HeaderText = L"Activo";
 			this->Column4->MinimumWidth = 6;
 			this->Column4->Name = L"Column4";
+			// 
+			// label4
+			// 
+			this->label4->AutoSize = true;
+			this->label4->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
+				static_cast<System::Int32>(static_cast<System::Byte>(11)));
+			this->label4->Location = System::Drawing::Point(40, 282);
+			this->label4->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label4->Name = L"label4";
+			this->label4->Size = System::Drawing::Size(41, 13);
+			this->label4->TabIndex = 37;
+			this->label4->Text = L"Gripper";
+			// 
+			// dataGridView3
+			// 
+			this->dataGridView3->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::Fill;
+			this->dataGridView3->BackgroundColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(15)),
+				static_cast<System::Int32>(static_cast<System::Byte>(23)), static_cast<System::Int32>(static_cast<System::Byte>(42)));
+			this->dataGridView3->ColumnHeadersBorderStyle = System::Windows::Forms::DataGridViewHeaderBorderStyle::Single;
+			this->dataGridView3->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
+			this->dataGridView3->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(6) {
+				this->dataGridViewTextBoxColumn8,
+					this->dataGridViewTextBoxColumn9, this->dataGridViewTextBoxColumn10, this->dataGridViewTextBoxColumn11, this->Column6, this->Column7
+			});
+			this->dataGridView3->Cursor = System::Windows::Forms::Cursors::Default;
+			this->dataGridView3->EnableHeadersVisualStyles = false;
+			this->dataGridView3->GridColor = System::Drawing::SystemColors::ActiveCaptionText;
+			this->dataGridView3->Location = System::Drawing::Point(43, 468);
+			this->dataGridView3->Margin = System::Windows::Forms::Padding(2);
+			this->dataGridView3->Name = L"dataGridView3";
+			this->dataGridView3->RowHeadersBorderStyle = System::Windows::Forms::DataGridViewHeaderBorderStyle::Single;
+			dataGridViewCellStyle3->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
+			dataGridViewCellStyle3->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(58)),
+				static_cast<System::Int32>(static_cast<System::Byte>(95)));
+			dataGridViewCellStyle3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			dataGridViewCellStyle3->ForeColor = System::Drawing::SystemColors::WindowText;
+			dataGridViewCellStyle3->SelectionBackColor = System::Drawing::SystemColors::Highlight;
+			dataGridViewCellStyle3->SelectionForeColor = System::Drawing::SystemColors::HighlightText;
+			dataGridViewCellStyle3->WrapMode = System::Windows::Forms::DataGridViewTriState::True;
+			this->dataGridView3->RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+			this->dataGridView3->RowHeadersVisible = false;
+			this->dataGridView3->RowHeadersWidth = 51;
+			this->dataGridView3->RowTemplate->Height = 24;
+			this->dataGridView3->Size = System::Drawing::Size(654, 108);
+			this->dataGridView3->TabIndex = 40;
 			// 
 			// dataGridViewTextBoxColumn8
 			// 
@@ -406,13 +409,25 @@ namespace LOGIN {
 			this->Column7->MinimumWidth = 6;
 			this->Column7->Name = L"Column7";
 			// 
+			// label6
+			// 
+			this->label6->AutoSize = true;
+			this->label6->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
+				static_cast<System::Int32>(static_cast<System::Byte>(11)));
+			this->label6->Location = System::Drawing::Point(40, 440);
+			this->label6->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label6->Name = L"label6";
+			this->label6->Size = System::Drawing::Size(51, 13);
+			this->label6->TabIndex = 39;
+			this->label6->Text = L"Sensores";
+			// 
 			// Brazos_Operador
 			// 
-			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(40)),
 				static_cast<System::Int32>(static_cast<System::Byte>(58)));
-			this->ClientSize = System::Drawing::Size(993, 838);
+			this->ClientSize = System::Drawing::Size(745, 681);
 			this->Controls->Add(this->dataGridView3);
 			this->Controls->Add(this->label6);
 			this->Controls->Add(this->dataGridView1);
@@ -423,8 +438,10 @@ namespace LOGIN {
 			this->Controls->Add(this->label1);
 			this->Controls->Add(this->label3);
 			this->Controls->Add(this->label2);
+			this->Margin = System::Windows::Forms::Padding(2);
 			this->Name = L"Brazos_Operador";
 			this->Text = L"Brazos_Operador";
+			this->Load += gcnew System::EventHandler(this, &Brazos_Operador::Brazos_Operador_Load);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView2))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView3))->EndInit();
@@ -433,5 +450,45 @@ namespace LOGIN {
 
 		}
 #pragma endregion
-	};
+	private: System::Void comboBox1_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
+
+		//MessageBox::Show("Seleccionaste el brazo con ID: " + comboBox1->SelectedItem->ToString());
+		//Buscamos el brazo por id en el combo box
+		for each (BrazoRoboticoModel ^ b in ctrl_brazo1->obtenerTodos()) {
+			if (b->Id.ToString() == comboBox1->SelectedItem->ToString()) {
+				//MessageBox::Show("Encontrado el brazo: " + b->Id.ToString());
+				BrazoRoboticoModel^ brazoSeleccionado = b;
+				//Limpiamos los datagridviews
+				dataGridView2->Rows->Clear();
+				dataGridView1->Rows->Clear();
+				dataGridView3->Rows->Clear();
+				//Mostramos las articulaciones		
+				
+				for each (ArticulacionModel ^ a in brazoSeleccionado->Articulaciones) {
+					dataGridView2->Rows->Add(a->Id, a->Nombre, a->Activo, a->AnguloActual, a->AnguloMinimo, a->AnguloMaximo);
+				}
+
+				GripperModel^ gripper = brazoSeleccionado->Gripper;
+				dataGridView1->Rows->Add(gripper->Id, gripper->Nombre, gripper->Apertura, gripper->FuerzaAgarre, gripper->Abierto, gripper->Activo);
+
+				for each (SensorModel ^ s in brazoSeleccionado->Sensores) {
+					SensorFuerzaModel^ sf = dynamic_cast<SensorFuerzaModel^>(s);
+					SensorPosicionModel^ sp = dynamic_cast<SensorPosicionModel^>(s);
+					if (sf) {
+						dataGridView3->Rows->Add(sf->Id, sf->Nombre,"Fuerza", sf->FuerzaActual, sf->FuerzaMaxima, sf->Activo);
+					}
+					else if (sp) {
+						dataGridView3->Rows->Add(sp->Id, sp->Nombre,"Posicion", sp->AnguloMedido, sp->Tolerancia, sp->Activo);
+					}
+				}
+				
+			}
+
+		}
+
+		
+	}
+private: System::Void Brazos_Operador_Load(System::Object^ sender, System::EventArgs^ e) {
+}
+};
 }

@@ -19,13 +19,13 @@ namespace LOGIN {
 		{
 			InitializeComponent();
 			//
-			//TODO: agregar c�digo de constructor aqu�
+			//TODO: agregar código de constructor aquí
 			//
 		}
 
 	protected:
 		/// <summary>
-		/// Limpiar los recursos que se est�n usando.
+		/// Limpiar los recursos que se estén usando.
 		/// </summary>
 		~Dashboard_admin()
 		{
@@ -78,14 +78,14 @@ namespace LOGIN {
 
 	private:
 		/// <summary>
-		/// Variable del dise�ador necesaria.
+		/// Variable del diseñador necesaria.
 		/// </summary>
 		System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
-		/// M�todo necesario para admitir el Dise�ador. No se puede modificar
-		/// el contenido de este m�todo con el editor de c�digo.
+		/// Método necesario para admitir el Diseñador. No se puede modificar
+		/// el contenido de este método con el editor de código.
 		/// </summary>
 		void InitializeComponent(void)
 		{
@@ -144,7 +144,7 @@ namespace LOGIN {
 			this->label4->Name = L"label4";
 			this->label4->Size = System::Drawing::Size(125, 15);
 			this->label4->TabIndex = 45;
-			this->label4->Text = L"L�nea de ensamblaje";
+			this->label4->Text = L"Línea de ensamblaje";
 			// 
 			// label18
 			// 
@@ -205,6 +205,7 @@ namespace LOGIN {
 			this->dataGridView1->RowTemplate->Height = 24;
 			this->dataGridView1->Size = System::Drawing::Size(332, 130);
 			this->dataGridView1->TabIndex = 37;
+			this->dataGridView1->CellContentClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &Dashboard_admin::dataGridView1_CellContentClick);
 			// 
 			// Column1
 			// 
@@ -241,7 +242,7 @@ namespace LOGIN {
 			this->label14->Name = L"label14";
 			this->label14->Size = System::Drawing::Size(186, 15);
 			this->label14->TabIndex = 36;
-			this->label14->Text = L"Distribuci�n de usuarios por rol";
+			this->label14->Text = L"Distribución de usuarios por rol";
 			// 
 			// panel12
 			// 
@@ -592,6 +593,92 @@ namespace LOGIN {
 		}
 #pragma endregion
 	private: System::Void Dashboard_admin_Load(System::Object^ sender, System::EventArgs^ e) {
+		try {
+			// --- 1. CONTEO Y CARGA DE USUARIOS EN LA TABLA ---
+			String^ rutaUsuarios = "usuarios.txt";
+			int totalUsuarios = 0;
+
+			// Limpiamos la tabla primero para evitar que se dupliquen las filas al recargar
+			this->dataGridView1->Rows->Clear();
+
+			// Verificamos si el archivo existe en la carpeta del proyecto
+			if (System::IO::File::Exists(rutaUsuarios)) {
+				// Lee todas las líneas y calcula el tamaño del arreglo
+				array<String^>^ lineasUsuarios = System::IO::File::ReadAllLines(rutaUsuarios);
+				totalUsuarios = lineasUsuarios->Length;
+
+				// RECORREMOS CADA LÍNEA PARA LLENAR TU DATAGRIDVIEW1
+				for (int i = 0; i < lineasUsuarios->Length; i++) {
+					String^ linea = lineasUsuarios[i];
+
+					// Separamos los datos por la coma (Usuario, Contraseña, Rol, Turno)
+					array<String^>^ datos = linea->Split(',');
+
+					// Validamos que la línea tenga la estructura mínima correcta
+					if (datos->Length >= 3) {
+						String^ nombre = datos[0];
+						String^ rol = datos[2];
+						// Si la línea tiene el campo turno guardado lo lee, si no, pone "Mañana" por defecto
+						String^ turno = (datos->Length > 3) ? datos[3] : "Mañana";
+
+						// Creamos un formato de ID simulado correlativo (U001, U002, etc.)
+						String^ idSimulado = "U00" + (i + 1);
+
+						// Insertamos la fila mapeando tus columnas: ID | Rol | Estado | Activo (Turno)
+						this->dataGridView1->Rows->Add(idSimulado, rol, "Activo", turno);
+					}
+				}
+			}
+			else {
+				// Si no existe el archivo, creamos uno de prueba para que no empiece vacío
+				array<String^>^ usuariosPrueba = {
+					"admin,123,Admin,Mañana",
+					"jefe,123,Jefe,Tarde",
+					"operador,123,Operador,Noche"
+					"gestor,123,Gestor,Noche"
+				};
+				System::IO::File::WriteAllLines(rutaUsuarios, usuariosPrueba);
+				totalUsuarios = usuariosPrueba->Length;
+
+				// Cargamos los de prueba en la tabla también
+				for (int i = 0; i < usuariosPrueba->Length; i++) {
+					array<String^>^ datos = usuariosPrueba[i]->Split(',');
+					String^ idSimulado = "U00" + (i + 1);
+					this->dataGridView1->Rows->Add(idSimulado, datos[2], "Activo", datos[3]);
+				}
+			}
+			// Asignamos el valor dinámico a tu Label 10
+			this->label10->Text = totalUsuarios.ToString();
+
+
+			// --- 2. CONTEO DE EVENTOS DEL SISTEMA ---
+			String^ rutaEventos = "eventos.txt";
+			int totalEventos = 0;
+
+			if (System::IO::File::Exists(rutaEventos)) {
+				array<String^>^ lineasEventos = System::IO::File::ReadAllLines(rutaEventos);
+				totalEventos = lineasEventos->Length;
+			}
+			else {
+				// Si no existe, creamos un historial simulado inicial
+				array<String^>^ eventosPrueba = {
+					"01/06/2026 09:00 - Inicio de Sistema",
+					"01/06/2026 09:15 - Brazo 1 Activo"
+				};
+				System::IO::File::WriteAllLines(rutaEventos, eventosPrueba);
+				totalEventos = eventosPrueba->Length;
+			}
+			// Asignamos el valor dinámico a tu Label 12
+			this->label12->Text = totalEventos.ToString();
+
+		}
+		catch (Exception^ ex) {
+			MessageBox::Show("Error al inicializar las métricas del Dashboard: " + ex->Message, "Error");
+		}
 	}
+private: System::Void dataGridView1_CellContentClick(System::Object^ sender, System::Windows::Forms::DataGridViewCellEventArgs^ e) {
+}
+
+
 };
 }
