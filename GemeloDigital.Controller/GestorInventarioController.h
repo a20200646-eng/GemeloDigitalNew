@@ -18,7 +18,7 @@ namespace GemeloDigitalController {
         }
 
         // CREATE
-        bool agregar(int id, String^ nombre, String^ contrasena) {
+        bool agregar(String^ id, String^ nombre, String^ contrasena) {
             if (buscarPorId(id) != nullptr) return false;
             repositorio->Add(gcnew GestorInventarioModel(id, nombre, contrasena));
             guardarArchivo();
@@ -26,9 +26,9 @@ namespace GemeloDigitalController {
         }
 
         // READ - por ID
-        GestorInventarioModel^ buscarPorId(int id) {
+        GestorInventarioModel^ buscarPorId(String^ id) {
             for each (GestorInventarioModel ^ g in repositorio)
-                if (g->Id == id) return g;
+                if (g->Id->Equals(id)) return g;
             return nullptr;
         }
 
@@ -38,7 +38,7 @@ namespace GemeloDigitalController {
         }
 
         // UPDATE - reemplaza todos los atributos modificables
-        bool modificar(int id, String^ nombre, String^ contrasena, int totalPiezasGestionadas) {
+        bool modificar(String^ id, String^ nombre, String^ contrasena, int totalPiezasGestionadas) {
             GestorInventarioModel^ g = buscarPorId(id);
             if (g == nullptr) return false;
             g->Nombre = nombre;
@@ -49,7 +49,7 @@ namespace GemeloDigitalController {
         }
 
         // DELETE
-        bool eliminar(int id) {
+        bool eliminar(String^ id) {
             GestorInventarioModel^ g = buscarPorId(id);
             if (g == nullptr) return false;
             repositorio->Remove(g);
@@ -76,7 +76,7 @@ namespace GemeloDigitalController {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
                 GestorInventarioModel^ g = gcnew GestorInventarioModel(
-                    Int32::Parse(c[0]), c[1], c[2]);
+                    c[0], c[1], c[2]);
                 g->TotalPiezasGestionadas = Int32::Parse(c[3]);
                 repositorio->Add(g);
             }

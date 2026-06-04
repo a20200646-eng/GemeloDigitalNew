@@ -10,7 +10,7 @@ namespace GemeloDigitalModel {
         double anchura;
 
     public:
-        EstructuraTechoModel(int id, String^ material, double peso,
+        EstructuraTechoModel(String^ id, String^ material, double peso,
             int puntosUnion, double anchura)
             : PiezaModel(id, "Estructura Techo", material, peso, EstadoPieza::DISPONIBLE) {
             this->puntosUnion = puntosUnion;

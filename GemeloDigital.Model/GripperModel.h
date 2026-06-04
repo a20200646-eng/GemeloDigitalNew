@@ -11,7 +11,7 @@ namespace GemeloDigitalModel {
         bool   abierto;
 
     public:
-        GripperModel(int id, String^ nombre, bool activo,
+        GripperModel(String^ id, String^ nombre, bool activo,
             double apertura, double fuerzaAgarre, bool abierto)
             : ActuadorModel(id, nombre, activo) {
             this->apertura = apertura;

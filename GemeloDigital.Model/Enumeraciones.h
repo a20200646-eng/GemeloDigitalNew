@@ -14,7 +14,7 @@ namespace GemeloDigitalModel {
         CALIBRANDO,
         POSICIONANDO,
         SOLDANDO,
-        ERROR,
+        EN_ERROR,
         PAUSA
     };
 

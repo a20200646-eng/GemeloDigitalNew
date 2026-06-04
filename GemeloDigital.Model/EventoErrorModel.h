@@ -10,7 +10,7 @@ namespace GemeloDigitalModel {
         String^ fase;
 
     public:
-        EventoErrorModel(int id, String^ timestamp, String^ descripcion,
+        EventoErrorModel(String^ id, String^ timestamp, String^ descripcion,
             String^ codigoError, String^ fase)
             : EventoModel(id, timestamp, descripcion, NivelEvento::ERROR) {
             this->codigoError = codigoError;

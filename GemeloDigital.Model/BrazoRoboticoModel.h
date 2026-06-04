@@ -10,7 +10,7 @@ namespace GemeloDigitalModel {
 
     public ref class BrazoRoboticoModel {
     private:
-        int                        id;
+        String^ id;
         List<ArticulacionModel^>^ articulaciones;
         GripperModel^ gripper;
         List<SensorModel^>^ sensores;
@@ -18,7 +18,7 @@ namespace GemeloDigitalModel {
         EstadoBrazo                estado;
 
     public:
-        BrazoRoboticoModel(int id, RolBrazo rol) {
+        BrazoRoboticoModel(String^ id, RolBrazo rol) {
             this->id = id;
             this->rol = rol;
             this->estado = EstadoBrazo::REPOSO;
@@ -27,8 +27,8 @@ namespace GemeloDigitalModel {
             sensores = gcnew List<SensorModel^>();
         }
 
-        property int Id {
-            int get() { return id; }
+        property String^ Id {
+            String^ get() { return id; }
         }
 
         property RolBrazo Rol {

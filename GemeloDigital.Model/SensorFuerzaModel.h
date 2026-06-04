@@ -11,7 +11,7 @@ namespace GemeloDigitalModel {
         double fuerzaMaxima;
 
     public:
-        SensorFuerzaModel(int id, String^ nombre, bool activo,
+        SensorFuerzaModel(String^ id, String^ nombre, bool activo,
             double fuerzaActual, double fuerzaMinima, double fuerzaMaxima)
             : SensorModel(id, nombre, activo) {
             this->fuerzaActual = fuerzaActual;

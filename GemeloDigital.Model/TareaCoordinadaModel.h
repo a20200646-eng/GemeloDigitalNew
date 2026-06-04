@@ -10,7 +10,7 @@ namespace GemeloDigitalModel {
         int totalRequerido;
 
     public:
-        TareaCoordinadaModel(int id, int totalRequerido)
+        TareaCoordinadaModel(String^ id, int totalRequerido)
             : TareaModel(id, "PENDIENTE") {
             this->totalConfirmado = 0;
             this->totalRequerido = totalRequerido;

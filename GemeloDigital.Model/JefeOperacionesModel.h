@@ -9,7 +9,7 @@ namespace GemeloDigitalModel {
         int nivelAutorizacion;
 
     public:
-        JefeOperacionesModel(int id, String^ nombre, String^ contrasena, int nivelAutorizacion)
+        JefeOperacionesModel(String^ id, String^ nombre, String^ contrasena, int nivelAutorizacion)
             : UsuarioModel(id, nombre, contrasena, RolUsuario::JEFE) {
             this->nivelAutorizacion = nivelAutorizacion;
         }

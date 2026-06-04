@@ -21,7 +21,7 @@ namespace GemeloDigitalController {
         }
 
         // CREATE
-        bool agregar(int id) {
+        bool agregar(String^ id) {
             if (buscarPorId(id) != nullptr) return false;
             repositorio->Add(gcnew LineaEnsamblajeModel(id));
             guardarArchivo();
@@ -29,9 +29,9 @@ namespace GemeloDigitalController {
         }
 
         // READ - por ID
-        LineaEnsamblajeModel^ buscarPorId(int id) {
+        LineaEnsamblajeModel^ buscarPorId(String^ id) {
             for each (LineaEnsamblajeModel ^ l in repositorio)
-                if (l->Id == id) return l;
+                if (l->Id->Equals(id)) return l;
             return nullptr;
         }
 
@@ -41,7 +41,7 @@ namespace GemeloDigitalController {
         }
 
         // UPDATE - reemplaza atributos modificables
-        bool modificar(int id, int indiceActual, bool secuenciaAprobada) {
+        bool modificar(String^ id, int indiceActual, bool secuenciaAprobada) {
             LineaEnsamblajeModel^ l = buscarPorId(id);
             if (l == nullptr) return false;
             l->IndiceActual = indiceActual;
@@ -51,7 +51,7 @@ namespace GemeloDigitalController {
         }
 
         // DELETE
-        bool eliminar(int id) {
+        bool eliminar(String^ id) {
             LineaEnsamblajeModel^ l = buscarPorId(id);
             if (l == nullptr) return false;
             repositorio->Remove(l);
@@ -60,7 +60,7 @@ namespace GemeloDigitalController {
         }
 
         // Agregar pieza a la cola de la linea
-        bool agregarPieza(int idLinea, PiezaModel^ pieza) {
+        bool agregarPieza(String^ idLinea, PiezaModel^ pieza) {
             LineaEnsamblajeModel^ l = buscarPorId(idLinea);
             if (l == nullptr || pieza == nullptr) return false;
             l->agregarPieza(pieza);
@@ -103,7 +103,7 @@ namespace GemeloDigitalController {
             while ((linea = sr->ReadLine()) != nullptr) {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
-                LineaEnsamblajeModel^ l = gcnew LineaEnsamblajeModel(Int32::Parse(c[0]));
+                LineaEnsamblajeModel^ l = gcnew LineaEnsamblajeModel(c[0]);
                 l->IndiceActual = Int32::Parse(c[1]);
                 l->SecuenciaAprobada = c[2]->Equals("1");
                 repositorio->Add(l);
@@ -116,9 +116,9 @@ namespace GemeloDigitalController {
             while ((linea = sr->ReadLine()) != nullptr) {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
-                LineaEnsamblajeModel^ l = buscarPorId(Int32::Parse(c[0]));
+                LineaEnsamblajeModel^ l = buscarPorId(c[0]);
                 int tipo = Int32::Parse(c[1]);
-                int piezaId = Int32::Parse(c[2]);
+                String^ piezaId = c[2];
                 if (l == nullptr) continue;
                 if (tipo == 0) {
                     PanelLateralModel^ p = ctrlPanel->buscarPorId(piezaId);

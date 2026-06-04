@@ -81,6 +81,9 @@
     <ClCompile Include="Eventos_JefeOperaciones.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="FormPrimerArranque.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyForm.h">
@@ -156,6 +159,9 @@
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="Eventos_JefeOperaciones.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="FormPrimerArranque.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>

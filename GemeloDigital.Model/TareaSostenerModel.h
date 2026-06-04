@@ -10,7 +10,7 @@ namespace GemeloDigitalModel {
         int    duracion;
 
     public:
-        TareaSostenerModel(int id, double fuerzaSosten, int duracion)
+        TareaSostenerModel(String^ id, double fuerzaSosten, int duracion)
             : TareaModel(id, "PENDIENTE") {
             this->fuerzaSosten = fuerzaSosten;
             this->duracion = duracion;

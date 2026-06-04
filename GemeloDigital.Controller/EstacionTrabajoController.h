@@ -18,7 +18,7 @@ namespace GemeloDigitalController {
         }
 
         // CREATE
-        bool agregar(int id, String^ tipoPiezaAceptada, bool ocupada) {
+        bool agregar(String^ id, String^ tipoPiezaAceptada, bool ocupada) {
             if (buscarPorId(id) != nullptr) return false;
             repositorio->Add(gcnew EstacionTrabajoModel(id, tipoPiezaAceptada, ocupada));
             guardarArchivo();
@@ -26,9 +26,9 @@ namespace GemeloDigitalController {
         }
 
         // READ - por ID
-        EstacionTrabajoModel^ buscarPorId(int id) {
+        EstacionTrabajoModel^ buscarPorId(String^ id) {
             for each (EstacionTrabajoModel ^ e in repositorio)
-                if (e->Id == id) return e;
+                if (e->Id->Equals(id)) return e;
             return nullptr;
         }
 
@@ -38,7 +38,7 @@ namespace GemeloDigitalController {
         }
 
         // UPDATE - reemplaza todos los atributos modificables
-        bool modificar(int id, String^ tipoPiezaAceptada, bool ocupada) {
+        bool modificar(String^ id, String^ tipoPiezaAceptada, bool ocupada) {
             EstacionTrabajoModel^ e = buscarPorId(id);
             if (e == nullptr) return false;
             e->TipoPiezaAceptada = tipoPiezaAceptada;
@@ -48,7 +48,7 @@ namespace GemeloDigitalController {
         }
 
         // DELETE
-        bool eliminar(int id) {
+        bool eliminar(String^ id) {
             EstacionTrabajoModel^ e = buscarPorId(id);
             if (e == nullptr) return false;
             repositorio->Remove(e);
@@ -75,7 +75,7 @@ namespace GemeloDigitalController {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
                 repositorio->Add(gcnew EstacionTrabajoModel(
-                    Int32::Parse(c[0]), c[1], c[2]->Equals("1")));
+                    c[0], c[1], c[2]->Equals("1")));
             }
             sr->Close();
         }

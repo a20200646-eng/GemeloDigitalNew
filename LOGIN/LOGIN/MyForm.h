@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "Interfaz.h"
-
+#include "FormPrimerArranque.h"   // <-- agregamos esta línea
 using namespace LOGIN;
 
 
@@ -375,6 +375,15 @@ namespace LOGIN {
 		}
 #pragma endregion
 	private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
+		GemeloDigitalController::AdministradorController^ ctrl =
+			gcnew GemeloDigitalController::AdministradorController();
+
+		if (ctrl->obtenerTodos()->Count == 0) {
+			this->Hide();
+			FormPrimerArranque^ fpa = gcnew FormPrimerArranque();
+			fpa->ShowDialog();
+			this->Show();
+		}
 	}
 	private: System::Void textBox1_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 	}
@@ -394,16 +403,7 @@ namespace LOGIN {
 			// 2. Obtenemos todos los usuarios de la persistencia
 			System::Collections::Generic::List<GemeloDigitalModel::AdministradorModel^>^ listaUsuarios = contrUsuario->obtenerTodos();
 
-			// === 🚨 MECANISMO SALVAVIDAS POR ARCHIVO VACÍO 🚨 ===
-			// Si la base de datos de tus compañeros no tiene registros, auto-creamos el admin base
-			if (listaUsuarios->Count == 0) {
-				// Agrega al archivo datos\administradores.dat de forma automática
-				contrUsuario->agregar(1, "admin", "123", 1);
-				// Recargamos la lista actualizada
-				listaUsuarios = contrUsuario->obtenerTodos();
-			}
-			// ====================================================
-
+			
 			GemeloDigitalModel::AdministradorModel^ usuarioEncontrado = nullptr;
 
 			// 3. Buscamos si las credenciales coinciden con algún registro

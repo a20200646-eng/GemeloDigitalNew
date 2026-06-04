@@ -18,8 +18,8 @@ namespace GemeloDigitalController {
         }
 
         // CREATE
-        bool agregar(int id, String^ timestamp, String^ descripcion,
-            int brazoId, String^ tipoAlerta) {
+        bool agregar(String^ id, String^ timestamp, String^ descripcion,
+            String^ brazoId, String^ tipoAlerta) {
             if (buscarPorId(id) != nullptr) return false;
             repositorio->Add(gcnew EventoAlertaModel(
                 id, timestamp, descripcion, brazoId, tipoAlerta));
@@ -28,9 +28,9 @@ namespace GemeloDigitalController {
         }
 
         // READ - por ID
-        EventoAlertaModel^ buscarPorId(int id) {
+        EventoAlertaModel^ buscarPorId(String^ id) {
             for each (EventoAlertaModel ^ e in repositorio)
-                if (e->Id == id) return e;
+                if (e->Id->Equals(id)) return e;
             return nullptr;
         }
 
@@ -41,7 +41,7 @@ namespace GemeloDigitalController {
 
         // UPDATE - reemplaza atributos modificables
         // Timestamp y BrazoId son inmutables — identifican el evento
-        bool modificar(int id, String^ descripcion, String^ tipoAlerta) {
+        bool modificar(String^ id, String^ descripcion, String^ tipoAlerta) {
             EventoAlertaModel^ e = buscarPorId(id);
             if (e == nullptr) return false;
             e->Descripcion = descripcion;
@@ -51,7 +51,7 @@ namespace GemeloDigitalController {
         }
 
         // DELETE
-        bool eliminar(int id) {
+        bool eliminar(String^ id) {
             EventoAlertaModel^ e = buscarPorId(id);
             if (e == nullptr) return false;
             repositorio->Remove(e);
@@ -79,7 +79,7 @@ namespace GemeloDigitalController {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
                 repositorio->Add(gcnew EventoAlertaModel(
-                    Int32::Parse(c[0]), c[1], c[2], Int32::Parse(c[3]), c[4]));
+                    c[0], c[1], c[2],c[3], c[4]));
             }
             sr->Close();
         }

@@ -10,7 +10,7 @@ namespace GemeloDigitalModel {
         int       puntosAnclaje;
 
     public:
-        PanelLateralModel(int id, String^ material, double peso,
+        PanelLateralModel(String^ id, String^ material, double peso,
             LadoPanel lado, int puntosAnclaje)
             : PiezaModel(id, "Panel Lateral", material, peso, EstadoPieza::DISPONIBLE) {
             this->lado = lado;

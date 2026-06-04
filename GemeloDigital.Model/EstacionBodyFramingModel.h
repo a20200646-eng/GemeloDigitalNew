@@ -8,19 +8,19 @@ namespace GemeloDigitalModel {
 
     public ref class EstacionBodyFramingModel {
     private:
-        int                        id;
+        String^ id;
         List<BrazoRoboticoModel^>^ brazos;
         EstadoSistema              estadoSistema;
 
     public:
-        EstacionBodyFramingModel(int id) {
+        EstacionBodyFramingModel(String^ id) {
             this->id = id;
             this->estadoSistema = EstadoSistema::INACTIVO;
             brazos = gcnew List<BrazoRoboticoModel^>();
         }
 
-        property int Id {
-            int get() { return id; }
+        property String^ Id {
+            String^ get() { return id; }
         }
 
 		property EstadoSistema EstadoSistemaActual { //EstadoSistema es un enum definido en Enumeraciones.h y EstadoSistemaActual es el nombre de la propiedad

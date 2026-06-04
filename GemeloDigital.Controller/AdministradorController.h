@@ -18,7 +18,7 @@ namespace GemeloDigitalController {
         }
 
         // CREATE
-        bool agregar(int id, String^ nombre, String^ contrasena, int nivelAcceso) {
+        bool agregar(String^ id, String^ nombre, String^ contrasena, int nivelAcceso) {
             if (buscarPorId(id) != nullptr) return false;
             repositorio->Add(gcnew AdministradorModel(id, nombre, contrasena, nivelAcceso));
             guardarArchivo();
@@ -26,9 +26,9 @@ namespace GemeloDigitalController {
         }
 
         // READ - por ID
-        AdministradorModel^ buscarPorId(int id) {
+        AdministradorModel^ buscarPorId(String^ id) {
             for each (AdministradorModel ^ a in repositorio)
-                if (a->Id == id) return a;
+                if (a->Id->Equals(id)) return a;
             return nullptr;
         }
 
@@ -38,7 +38,7 @@ namespace GemeloDigitalController {
         }
 
         // UPDATE - reemplaza todos los atributos modificables
-        bool modificar(int id, String^ nombre, String^ contrasena, int nivelAcceso) {
+        bool modificar(String^ id, String^ nombre, String^ contrasena, int nivelAcceso) {
             AdministradorModel^ a = buscarPorId(id);
             if (a == nullptr) return false;
             a->Nombre = nombre;
@@ -49,7 +49,7 @@ namespace GemeloDigitalController {
         }
 
         // DELETE
-        bool eliminar(int id) {
+        bool eliminar(String^ id) {
             AdministradorModel^ a = buscarPorId(id);
             if (a == nullptr) return false;
             repositorio->Remove(a);
@@ -78,7 +78,7 @@ namespace GemeloDigitalController {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
                 repositorio->Add(gcnew AdministradorModel(
-                    Int32::Parse(c[0]), c[1], c[2], Int32::Parse(c[3])));
+                    c[0], c[1], c[2], Int32::Parse(c[3])));
             }
             sr->Close();
         }

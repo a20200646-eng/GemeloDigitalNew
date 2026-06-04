@@ -143,6 +143,7 @@
     <ClCompile Include="FormMenuControlador.cpp" />
     <ClCompile Include="FormMenuJefe.cpp" />
     <ClCompile Include="FormMenuOperador.cpp" />
+    <ClCompile Include="FormPrimerArranque.cpp" />
     <ClCompile Include="FormRegistro.cpp" />
     <ClCompile Include="Historial_de_Eventos.cpp" />
     <ClCompile Include="Interfaz.cpp" />
@@ -191,6 +192,9 @@
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="FormMenuOperador.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="FormPrimerArranque.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="Historial_de_Eventos.h">
@@ -257,6 +261,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormMenuOperador.resx">
       <DependentUpon>FormMenuOperador.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormPrimerArranque.resx">
+      <DependentUpon>FormPrimerArranque.h</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Historial_de_Eventos.resx">
       <DependentUpon>Historial_de_Eventos.h</DependentUpon>

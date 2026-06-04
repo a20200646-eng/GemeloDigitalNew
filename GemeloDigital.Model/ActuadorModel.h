@@ -7,7 +7,7 @@ namespace GemeloDigitalModel {
 
     public ref class ActuadorModel abstract : public ComponenteRoboticoModel {
     public:
-        ActuadorModel(int id, String^ nombre, bool activo)
+        ActuadorModel(String^ id, String^ nombre, bool activo)
             : ComponenteRoboticoModel(id, nombre, activo) {
         }
 

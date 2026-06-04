@@ -18,7 +18,7 @@ namespace GemeloDigitalController {
         }
 
         // CREATE
-        bool agregar(int id, String^ material, double peso,
+        bool agregar(String^ id, String^ material, double peso,
             int puntosUnion, double anchura) {
             if (buscarPorId(id) != nullptr) return false;
             repositorio->Add(gcnew EstructuraTechoModel(
@@ -28,9 +28,9 @@ namespace GemeloDigitalController {
         }
 
         // READ - por ID
-        EstructuraTechoModel^ buscarPorId(int id) {
+        EstructuraTechoModel^ buscarPorId(String^ id) {
             for each (EstructuraTechoModel ^ e in repositorio)
-                if (e->Id == id) return e;
+                if (e->Id->Equals(id)) return e;
             return nullptr;
         }
 
@@ -40,7 +40,7 @@ namespace GemeloDigitalController {
         }
 
         // UPDATE - reemplaza todos los atributos modificables
-        bool modificar(int id, String^ material, double peso,
+        bool modificar(String^ id, String^ material, double peso,
             EstadoPieza estado, int puntosUnion, double anchura) {
             EstructuraTechoModel^ e = buscarPorId(id);
             if (e == nullptr) return false;
@@ -54,7 +54,7 @@ namespace GemeloDigitalController {
         }
 
         // DELETE
-        bool eliminar(int id) {
+        bool eliminar(String^ id) {
             EstructuraTechoModel^ e = buscarPorId(id);
             if (e == nullptr) return false;
             repositorio->Remove(e);
@@ -82,7 +82,7 @@ namespace GemeloDigitalController {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
                 EstructuraTechoModel^ e = gcnew EstructuraTechoModel(
-                    Int32::Parse(c[0]), c[1], Double::Parse(c[2]),
+                    c[0], c[1], Double::Parse(c[2]),
                     Int32::Parse(c[4]), Double::Parse(c[5]));
                 e->Estado = (EstadoPieza)Int32::Parse(c[3]);
                 repositorio->Add(e);

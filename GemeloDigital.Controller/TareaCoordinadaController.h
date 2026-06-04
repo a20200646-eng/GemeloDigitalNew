@@ -18,7 +18,7 @@ namespace GemeloDigitalController {
         }
 
         // CREATE
-        bool agregar(int id, int totalRequerido) {
+        bool agregar(String^ id, int totalRequerido) {
             if (buscarPorId(id) != nullptr) return false;
             repositorio->Add(gcnew TareaCoordinadaModel(id, totalRequerido));
             guardarArchivo();
@@ -26,9 +26,9 @@ namespace GemeloDigitalController {
         }
 
         // READ - por ID
-        TareaCoordinadaModel^ buscarPorId(int id) {
+        TareaCoordinadaModel^ buscarPorId(String^ id) {
             for each (TareaCoordinadaModel ^ t in repositorio)
-                if (t->Id == id) return t;
+                if (t->Id->Equals(id)) return t;
             return nullptr;
         }
 
@@ -38,7 +38,7 @@ namespace GemeloDigitalController {
         }
 
         // UPDATE - reemplaza todos los atributos modificables
-        bool modificar(int id, String^ estado, int totalConfirmado, int totalRequerido) {
+        bool modificar(String^ id, String^ estado, int totalConfirmado, int totalRequerido) {
             TareaCoordinadaModel^ t = buscarPorId(id);
             if (t == nullptr) return false;
             t->Estado = estado;
@@ -49,7 +49,7 @@ namespace GemeloDigitalController {
         }
 
         // DELETE
-        bool eliminar(int id) {
+        bool eliminar(String^ id) {
             TareaCoordinadaModel^ t = buscarPorId(id);
             if (t == nullptr) return false;
             repositorio->Remove(t);
@@ -77,7 +77,7 @@ namespace GemeloDigitalController {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
                 TareaCoordinadaModel^ t = gcnew TareaCoordinadaModel(
-                    Int32::Parse(c[0]), Int32::Parse(c[3]));
+                    c[0], Int32::Parse(c[3]));
                 t->Estado = c[1];
                 t->TotalConfirmado = Int32::Parse(c[2]);
                 repositorio->Add(t);

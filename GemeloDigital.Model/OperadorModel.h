@@ -9,7 +9,7 @@ namespace GemeloDigitalModel {
         String^ turno;
 
     public:
-        OperadorModel(int id, String^ nombre, String^ contrasena, String^ turno)
+        OperadorModel(String^ id, String^ nombre, String^ contrasena, String^ turno)
             : UsuarioModel(id, nombre, contrasena, RolUsuario::OPERADOR) {
             this->turno = turno;
         }

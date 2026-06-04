@@ -6,6 +6,7 @@ namespace LOGIN {
 	using namespace System;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
+	using namespace System::Collections::Generic;
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
@@ -22,10 +23,7 @@ namespace LOGIN {
 			//
 			//TODO: agre	gar código de constructor aquí
 			//
-			ctrl_brazo1 = gcnew BrazoRoboticoController();
-			for each (BrazoRoboticoModel ^ b in ctrl_brazo1->obtenerTodos()) {
-				comboBox1->Items->Add(b->Id.ToString());
-			}
+			ctrlBrazo = gcnew BrazoRoboticoController();
 			
 		}
 
@@ -80,7 +78,7 @@ namespace LOGIN {
 		/// Variable del diseñador necesaria.
 		/// </summary>
 		System::ComponentModel::Container ^components;
-		BrazoRoboticoController^ ctrl_brazo1;
+		BrazoRoboticoController^ ctrlBrazo;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -452,43 +450,122 @@ namespace LOGIN {
 #pragma endregion
 	private: System::Void comboBox1_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
 
-		//MessageBox::Show("Seleccionaste el brazo con ID: " + comboBox1->SelectedItem->ToString());
-		//Buscamos el brazo por id en el combo box
-		for each (BrazoRoboticoModel ^ b in ctrl_brazo1->obtenerTodos()) {
-			if (b->Id.ToString() == comboBox1->SelectedItem->ToString()) {
-				//MessageBox::Show("Encontrado el brazo: " + b->Id.ToString());
-				BrazoRoboticoModel^ brazoSeleccionado = b;
-				//Limpiamos los datagridviews
-				dataGridView2->Rows->Clear();
-				dataGridView1->Rows->Clear();
-				dataGridView3->Rows->Clear();
-				//Mostramos las articulaciones		
-				
-				for each (ArticulacionModel ^ a in brazoSeleccionado->Articulaciones) {
-					dataGridView2->Rows->Add(a->Id, a->Nombre, a->Activo, a->AnguloActual, a->AnguloMinimo, a->AnguloMaximo);
-				}
-
-				GripperModel^ gripper = brazoSeleccionado->Gripper;
-				dataGridView1->Rows->Add(gripper->Id, gripper->Nombre, gripper->Apertura, gripper->FuerzaAgarre, gripper->Abierto, gripper->Activo);
-
-				for each (SensorModel ^ s in brazoSeleccionado->Sensores) {
-					SensorFuerzaModel^ sf = dynamic_cast<SensorFuerzaModel^>(s);
-					SensorPosicionModel^ sp = dynamic_cast<SensorPosicionModel^>(s);
-					if (sf) {
-						dataGridView3->Rows->Add(sf->Id, sf->Nombre,"Fuerza", sf->FuerzaActual, sf->FuerzaMaxima, sf->Activo);
-					}
-					else if (sp) {
-						dataGridView3->Rows->Add(sp->Id, sp->Nombre,"Posicion", sp->AnguloMedido, sp->Tolerancia, sp->Activo);
-					}
-				}
-				
-			}
-
-		}
-
-		
+		// Al cambiar la selección del ComboBox, cargar los detalles del brazo seleccionado
+		this->comboBox1->SelectedIndexChanged += gcnew EventHandler(
+			this, &Brazos_Operador::comboBox1_SelectedIndexChanged);
+		CargarBrazoSeleccionado();
 	}
+
+		   void CargarComboBox()
+		   {
+			   comboBox1->Items->Clear();
+			   for each (BrazoRoboticoModel ^ b in ctrlBrazo->obtenerTodos())
+			   {
+				   String^ rol;
+				   switch (b->Rol)
+				   {
+				   case RolBrazo::LATERAL_IZQ: rol = "Lateral Izquierdo"; break;
+				   case RolBrazo::LATERAL_DER: rol = "Lateral Derecho";   break;
+				   case RolBrazo::CENTRAL_SUP: rol = "Central Superior";  break;
+				   default:                    rol = "Desconocido";        break;
+				   }
+				   comboBox1->Items->Add("Brazo " + b->Id + " — " + rol);
+			   }
+			   if (comboBox1->Items->Count > 0)
+				   comboBox1->SelectedIndex = 0;
+		   }
+
+		   void CargarBrazoSeleccionado()
+		   {
+			   int idx = comboBox1->SelectedIndex;
+			   if (idx < 0) return;
+
+			   List<BrazoRoboticoModel^>^ lista = ctrlBrazo->obtenerTodos();
+			   if (idx >= lista->Count) return;
+			   BrazoRoboticoModel^ b = lista[idx];
+
+			   CargarArticulaciones(b);
+			   CargarGripper(b);
+			   CargarSensores(b);
+		   }
+
+		   void CargarArticulaciones(BrazoRoboticoModel^ b)
+		   {
+			   dataGridView2->Rows->Clear();
+			   for each (ArticulacionModel ^ a in b->Articulaciones)
+			   {
+				   dataGridView2->Rows->Add(
+					   a->Id,
+					   a->Nombre,
+					   a->Activo ? "Sí" : "No",
+					   a->AnguloActual.ToString("F1") + "°",
+					   a->AnguloMinimo.ToString("F1") + "°",
+					   a->AnguloMaximo.ToString("F1") + "°"
+				   );
+			   }
+		   }
+
+		   void CargarGripper(BrazoRoboticoModel^ b)
+		   {
+			   dataGridView1->Rows->Clear();
+			   if (b->Gripper == nullptr) return;
+			   GripperModel^ g = b->Gripper;
+			   dataGridView1->Rows->Add(
+				   g->Id,
+				   g->Nombre,
+				   g->Apertura.ToString("F2"),
+				   g->FuerzaAgarre.ToString("F1") + " N",
+				   g->Abierto ? "Sí" : "No",
+				   g->Activo ? "Sí" : "No"
+			   );
+			   // Colorear fila en naranja si el gripper está activo
+			   if (dataGridView1->Rows->Count > 0)
+			   {
+				   DataGridViewRow^ row = dataGridView1->Rows[0];
+				   for (int i = 0; i < row->Cells->Count; i++)
+					   row->Cells[i]->Style->ForeColor = g->Activo
+					   ? Color::FromArgb(230, 160, 0)
+					   : Color::Gray;
+			   }
+		   }
+
+		   void CargarSensores(BrazoRoboticoModel^ b)
+		   {
+			   dataGridView3->Rows->Clear();
+			   for each (SensorModel ^ s in b->Sensores)
+			   {
+				   SensorPosicionModel^ sp = dynamic_cast<SensorPosicionModel^>(s);
+				   SensorFuerzaModel^ sf = dynamic_cast<SensorFuerzaModel^>(s);
+
+				   if (sp != nullptr)
+				   {
+					   dataGridView3->Rows->Add(
+						   sp->Id,
+						   sp->Nombre,
+						   "Posición",
+						   sp->AnguloMedido.ToString("F1") + "°",
+						   "Tol=" + sp->Tolerancia.ToString("F1"),
+						   sp->Activo ? "Sí" : "No"
+					   );
+				   }
+				   else if (sf != nullptr)
+				   {
+					   dataGridView3->Rows->Add(
+						   sf->Id,
+						   sf->Nombre,
+						   "Fuerza",
+						   sf->FuerzaActual.ToString("F1") + " N",
+						   "Max=" + sf->FuerzaMaxima.ToString("F1") + "N",
+						   sf->Activo ? "Sí" : "No"
+					   );
+				   }
+			   }
+		   }
+
 private: System::Void Brazos_Operador_Load(System::Object^ sender, System::EventArgs^ e) {
+	CargarComboBox();
+
+
 }
 };
 }
