@@ -1,37 +1,37 @@
-#pragma once
+ï»¿#pragma once
 
 #include <dwmapi.h>
 #pragma comment(lib,"dwmapi.lib")
 
 //Include de los formularios del jefe 
 #include "FormMenuJefe.h" //Corresponde al Dashboard del jefe de operaciones
-#include "Estacion_ciclo.h" //Corresponde a la sección de estación/ciclo del jefe de operaciones
-#include "Linea_de_Ensamblaje.h" //Corresponde a la sección de línea de ensamblaje del jefe de operaciones
-#include "Eventos_JefeOperaciones.h" //Corresponde a la sección de eventos del jefe de operaciones
-#include "Reportes_de_Costos.h" //Corresponde a la sección de reportes del jefe de operaciones
+#include "Estacion_ciclo.h" //Corresponde a la secciÃ³n de estaciÃ³n/ciclo del jefe de operaciones
+#include "Linea_de_Ensamblaje.h" //Corresponde a la secciÃ³n de lÃ­nea de ensamblaje del jefe de operaciones
+#include "Eventos_JefeOperaciones.h" //Corresponde a la secciÃ³n de eventos del jefe de operaciones
+#include "Reportes_de_Costos.h" //Corresponde a la secciÃ³n de reportes del jefe de operaciones
 
 
 //inlcude del Administrador
 #include "Dashboard_admin.h" //Corresponde al Dashboard del administrador
-#include "FormMenuAdmin.h" //Corresponde a la sección de usuarios del administrador
-#include "Historial_de_Eventos.h" //Corresponde a la sección de eventos del administrador
-#include "Reportes_de_Costos_Admin.h" //Corresponde a la sección de reportes del administrador
+#include "FormMenuAdmin.h" //Corresponde a la secciÃ³n de usuarios del administrador
+#include "Historial_de_Eventos.h" //Corresponde a la secciÃ³n de eventos del administrador
+#include "Reportes_de_Costos_Admin.h" //Corresponde a la secciÃ³n de reportes del administrador
 
 //include del operador
 #include "Dashboard_Operador.h" //Corresponde al Dashboard del operador
 #include "FormMenuOperador.h" //Corresponde a las tareas del operador
-#include "Brazos_Operador.h" //Corresponde a la sección de brazos del operador
-#include "EventosOperador.h" //Corresponde a la sección de eventos del operador
+#include "Brazos_Operador.h" //Corresponde a la secciÃ³n de brazos del operador
+#include "EventosOperador.h" //Corresponde a la secciÃ³n de eventos del operador
 
 //include del controlador de piezas
 #include "Dashboard_Inventario.h" //Corresponde al Dashboard del controlador de piezas
-#include "FormMenuControlador.h" //Corresponde a la sección de inventario del controlador de piezas
-#include "Estaciones_de_Trabajo_Inventario.h" //Corresponde a la sección de estaciones de trabajo del controlador de piezas
-#include "Linea_de_Ensamblaje1.h" //corresponde a la sección de línea de ensamblaje del controlador de piezas
+#include "FormMenuControlador.h" //Corresponde a la secciÃ³n de inventario del controlador de piezas
+#include "Estaciones_de_Trabajo_Inventario.h" //Corresponde a la secciÃ³n de estaciones de trabajo del controlador de piezas
+#include "Linea_de_Ensamblaje1.h" //corresponde a la secciÃ³n de lÃ­nea de ensamblaje del controlador de piezas
 
 
 using namespace GemeloDigitalController; //Para acceder a los controladores desde los formularios hijos
-
+using namespace GemeloDigitalModel; //Para acceder a los modelos desde los formularios hijos
 namespace LOGIN {
 
 	using namespace System;
@@ -55,13 +55,13 @@ namespace LOGIN {
 			InitializeComponent();
 			Login = PadreLogin;
 			//
-			//TODO: agregar código de constructor aquí
+			//TODO: agregar cÃ³digo de constructor aquÃ­
 			//
 		}
 
 	protected:
 		/// <summary>
-		/// Limpiar los recursos que se estén usando.
+		/// Limpiar los recursos que se estÃ©n usando.
 		/// </summary>
 		~Interfaz()
 		{
@@ -91,7 +91,7 @@ namespace LOGIN {
 
 
 	private:
-		// Variable global para rastrear y controlar el formulario que está en pantalla
+		// Variable global para rastrear y controlar el formulario que estÃ¡ en pantalla
 		Form^ formActivo = nullptr;
 
 		void AbrirFormHijo(Form^ formHijo) {
@@ -103,15 +103,15 @@ namespace LOGIN {
 			// 2. Guardamos el nuevo formulario como el activo
 			this->formActivo = formHijo;
 
-			// 3. Configuración para transformar la ventana en un control interno
+			// 3. ConfiguraciÃ³n para transformar la ventana en un control interno
 			formHijo->TopLevel = false; // Frena que se abra como una ventana flotante externa
-			formHijo->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None; // Quita la barra de título, bordes y botones de cerrar
-			formHijo->Dock = DockStyle::Fill; // Fuerza al formulario hijo a estirarse al tamaño exacto del panel contenedor
+			formHijo->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None; // Quita la barra de tÃ­tulo, bordes y botones de cerrar
+			formHijo->Dock = DockStyle::Fill; // Fuerza al formulario hijo a estirarse al tamaÃ±o exacto del panel contenedor
 
 			// 4. Agregamos el formulario al panel contenedor y lo mostramos
 			this->panel2->Controls->Add(formHijo);
 			this->panel2->Tag = formHijo;
-			formHijo->BringToFront(); // Lo trae al frente para que no lo tape ningún otro control
+			formHijo->BringToFront(); // Lo trae al frente para que no lo tape ningÃºn otro control
 			formHijo->Show(); // Lo renderiza en pantalla
 		}
 
@@ -120,14 +120,14 @@ namespace LOGIN {
 
 	private:
 		/// <summary>
-		/// Variable del diseñador necesaria.
+		/// Variable del diseÃ±ador necesaria.
 		/// </summary>
 		System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
-		/// Método necesario para admitir el Diseñador. No se puede modificar
-		/// el contenido de este método con el editor de código.
+		/// MÃ©todo necesario para admitir el DiseÃ±ador. No se puede modificar
+		/// el contenido de este mÃ©todo con el editor de cÃ³digo.
 		/// </summary>
 		void InitializeComponent(void)
 		{
@@ -230,7 +230,7 @@ namespace LOGIN {
 			this->button6->Name = L"button6";
 			this->button6->Size = System::Drawing::Size(130, 24);
 			this->button6->TabIndex = 11;
-			this->button6->Text = L"Cerrar Sesión";
+			this->button6->Text = L"Cerrar SesiÃ³n";
 			this->button6->UseVisualStyleBackColor = false;
 			this->button6->Click += gcnew System::EventHandler(this, &Interfaz::button6_Click);
 			// 
@@ -280,7 +280,7 @@ namespace LOGIN {
 			this->button2->Name = L"button2";
 			this->button2->Size = System::Drawing::Size(226, 32);
 			this->button2->TabIndex = 4;
-			this->button2->Text = L"Estación/Ciclo";
+			this->button2->Text = L"EstaciÃ³n/Ciclo";
 			this->button2->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
 			this->button2->UseVisualStyleBackColor = true;
 			this->button2->Click += gcnew System::EventHandler(this, &Interfaz::button2_Click);
@@ -298,7 +298,7 @@ namespace LOGIN {
 			this->button3->Name = L"button3";
 			this->button3->Size = System::Drawing::Size(226, 32);
 			this->button3->TabIndex = 3;
-			this->button3->Text = L"Línea de ensamblaje";
+			this->button3->Text = L"LÃ­nea de ensamblaje";
 			this->button3->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
 			this->button3->UseVisualStyleBackColor = true;
 			this->button3->Click += gcnew System::EventHandler(this, &Interfaz::button3_Click);
@@ -372,10 +372,242 @@ namespace LOGIN {
 
 		}
 #pragma endregion
+
+		void SembrarDatosPrueba()
+		{
+			// ============================================================
+			// CICLO REALISTA â€” ESTACION BODY FRAMING
+			// Secuencia: se ensamblan 2 paneles laterales + 1 estructura
+			// de techo sobre un chasis. 3 brazos roboticos en operacion.
+			// Ciclo 1 COMPLETADO, Ciclo 2 EN CURSO.
+			// ============================================================
+
+			// --- 1. BRAZOS ROBOTICOS ---
+			BrazoRoboticoController^ ctrlBrazo = gcnew BrazoRoboticoController();
+			if (ctrlBrazo->obtenerTodos()->Count == 0)
+			{
+				// Brazo 1: Lateral Izquierdo â€” posiciona panel izquierdo
+				ctrlBrazo->agregar("IDB1", RolBrazo::LATERAL_IZQ);
+				ctrlBrazo->agregarArticulacion("IDB1", "A1IDB1", "Hombro", 35.0, -90.0, 90.0);
+				ctrlBrazo->agregarArticulacion("IDB1", "A2IDB1", "Codo", 20.0, -60.0, 60.0);
+				ctrlBrazo->agregarArticulacion("IDB1", "A3IDB1", "Muneca", 10.0, -45.0, 45.0);
+				ctrlBrazo->asignarGripper("IDB1", "G1IDB1", "GripperIzq", 0.80, 9.0, true);
+				ctrlBrazo->agregarSensorPosicion("IDB1", "SP1IDB1", "SPos-1", 35.0, 0.5);
+				ctrlBrazo->agregarSensorFuerza("IDB1", "SF1IDB1", "SFza-1", 9.0, 0.0, 25.0);
+				ctrlBrazo->modificar("IDB1", EstadoBrazo::POSICIONANDO);
+
+				// Brazo 2: Lateral Derecho â€” posiciona panel derecho
+				ctrlBrazo->agregar("IDB2", RolBrazo::LATERAL_DER);
+				ctrlBrazo->agregarArticulacion("IDB2", "A1IDB2", "Hombro", 42.0, -90.0, 90.0);
+				ctrlBrazo->agregarArticulacion("IDB2", "A2IDB2", "Codo", 28.0, -60.0, 60.0);
+				ctrlBrazo->agregarArticulacion("IDB2", "A3IDB2", "Muneca", 15.0, -45.0, 45.0);
+				ctrlBrazo->asignarGripper("IDB2", "G1IDB2", "GripperDer", 0.85, 8.5, true);
+				ctrlBrazo->agregarSensorPosicion("IDB2", "SP1IDB2", "SPos-2", 42.0, 0.5);
+				ctrlBrazo->agregarSensorFuerza("IDB2", "SF1IDB2", "SFza-2", 8.5, 0.0, 25.0);
+				ctrlBrazo->modificar("IDB2", EstadoBrazo::SOLDANDO);
+
+				// Brazo 3: Central Superior â€” suelda estructura de techo
+				ctrlBrazo->agregar("IDB3", RolBrazo::CENTRAL_SUP);
+				ctrlBrazo->agregarArticulacion("IDB3", "A1IDB3", "Hombro", 60.0, -90.0, 90.0);
+				ctrlBrazo->agregarArticulacion("IDB3", "A2IDB3", "Codo", 45.0, -60.0, 60.0);
+				ctrlBrazo->agregarArticulacion("IDB3", "A3IDB3", "Muneca", 22.0, -45.0, 45.0);
+				ctrlBrazo->asignarGripper("IDB3", "G1IDB3", "GripperCen", 0.60, 12.0, false);
+				ctrlBrazo->agregarSensorPosicion("IDB3", "SP1IDB3", "SPos-3", 60.0, 0.8);
+				ctrlBrazo->agregarSensorFuerza("IDB3", "SF1IDB3", "SFza-3", 12.0, 0.0, 30.0);
+				ctrlBrazo->modificar("IDB3", EstadoBrazo::REPOSO);
+			}
+
+			// --- 2. PIEZAS â€” Paneles laterales y estructura de techo ---
+			PanelLateralController^ ctrlPanel = gcnew PanelLateralController();
+			if (ctrlPanel->obtenerTodos()->Count == 0)
+			{
+				// Panel izquierdo â€” ciclo 1 ensamblado, ciclo 2 en proceso
+				ctrlPanel->agregar("PL-001", "Acero Galvanizado", 18.5, LadoPanel::IZQUIERDO, 6);
+				ctrlPanel->modificar("PL-001", "Acero Galvanizado", 18.5, EstadoPieza::ENSAMBLADA, 6);
+
+				ctrlPanel->agregar("PL-002", "Acero Galvanizado", 18.5, LadoPanel::IZQUIERDO, 6);
+				ctrlPanel->modificar("PL-002", "Acero Galvanizado", 18.5, EstadoPieza::EN_PROCESO, 6);
+
+				// Panel derecho â€” ciclo 1 ensamblado, ciclo 2 en proceso
+				ctrlPanel->agregar("PL-003", "Acero Galvanizado", 17.2, LadoPanel::DERECHO, 6);
+				ctrlPanel->modificar("PL-003", "Acero Galvanizado", 17.2, EstadoPieza::ENSAMBLADA, 6);
+
+				ctrlPanel->agregar("PL-004", "Acero Galvanizado", 17.2, LadoPanel::DERECHO, 6);
+				ctrlPanel->modificar("PL-004", "Acero Galvanizado", 17.2, EstadoPieza::EN_PROCESO, 6);
+			}
+
+			EstructuraTechoController^ ctrlTecho = gcnew EstructuraTechoController();
+			if (ctrlTecho->obtenerTodos()->Count == 0)
+			{
+				// Techo ciclo 1 â€” ensamblado
+				ctrlTecho->agregar("ET-001", "Aluminio Reforzado", 12.0, 8, 140.0);
+				ctrlTecho->modificar("ET-001", "Aluminio Reforzado", 12.0, EstadoPieza::ENSAMBLADA, 8, 140.0);
+
+				// Techo ciclo 2 â€” disponible, esperando posicionamiento
+				ctrlTecho->agregar("ET-002", "Aluminio Reforzado", 12.0, 8, 140.0);
+			}
+
+			// --- 3. LINEA DE ENSAMBLAJE ---
+			// La linea encola las piezas en orden: PanelIzq â†’ PanelDer â†’ Techo
+			LineaEnsamblajeController^ ctrlLinea = gcnew LineaEnsamblajeController();
+			if (ctrlLinea->obtenerTodos()->Count == 0)
+			{
+				ctrlLinea->agregar("1");
+
+				//Buscar piezas ya creadas por su ID
+				PanelLateralModel^ pl002 = ctrlPanel->buscarPorId("PL-002");
+				PanelLateralModel^ pl004 = ctrlPanel->buscarPorId("PL-004");
+				EstructuraTechoModel^ et002 = ctrlTecho->buscarPorId("ET-002");
+
+				// Agregar piezas del ciclo 2 a la cola (ciclo 1 ya fue procesado)
+				if(pl002 != nullptr) ctrlLinea->agregarPieza("1", pl002);
+				if(pl004 != nullptr) ctrlLinea->agregarPieza("1", pl004);
+				if(et002 != nullptr) ctrlLinea->agregarPieza("1", et002);
+
+				// Indice 0 = PanelIzq en proceso actualmente
+				ctrlLinea->modificar("1", 0, false);
+			}
+
+			// --- 4. TAREAS DEL CICLO ACTIVO ---
+			// Brazo 1 (LATERAL_IZQ): Posicionar panel + Sostener mientras se suelda
+			// Brazo 2 (LATERAL_DER): Soldar puntos del panel derecho (EN CURSO)
+			// Brazo 3 (CENTRAL_SUP): Coordinar posicion final antes de soldar techo
+
+			TareaPosicionarController^ ctrlPos = gcnew TareaPosicionarController();
+			if (ctrlPos->obtenerTodos()->Count == 0)
+			{
+				ctrlPos->agregar("POS1", 35.0, 0.5);
+				ctrlPos->modificar("POS1", "COMPLETADA", 35.0, 0.5); // Panel izq ya posicionado
+				ctrlPos->agregar("POS2", 42.0, 0.5);
+				ctrlPos->modificar("POS2", "EN CURSO", 42.0, 0.5);   // Panel der posicionandose
+			}
+
+			TareaSostenerController^ ctrlSos = gcnew TareaSostenerController();
+			if (ctrlSos->obtenerTodos()->Count == 0)
+			{
+				ctrlSos->agregar("SOS1", 9.0, 45);
+				ctrlSos->modificar("SOS1", "EN CURSO", 9.0, 45); // Brazo 1 sostiene mientras brazo 2 suelda
+				ctrlSos->agregar("SOS2", 8.5, 30);
+				ctrlSos->modificar("SOS2", "PENDIENTE", 8.5, 30);
+			}
+
+			TareaSoldarController^ ctrlSol = gcnew TareaSoldarController();
+			if (ctrlSol->obtenerTodos()->Count == 0)
+			{
+				// Ciclo 1 completado â€” 6/6 puntos panel izq
+				ctrlSol->agregar("SOL1", 6, 440.0);
+				ctrlSol->modificar("SOL1", "COMPLETADA", 6, 6, 440.0);
+
+				// Ciclo 2 en curso â€” 4/8 puntos panel der
+				ctrlSol->agregar("SOL2", 8, 450.0);
+				ctrlSol->modificar("SOL2", "EN CURSO", 8, 4, 450.0);
+
+				// Techo pendiente â€” brazo 3 aun en reposo
+				ctrlSol->agregar("SOL3", 12, 430.0);
+				ctrlSol->modificar("SOL3", "PENDIENTE", 12, 0, 430.0);
+			}
+
+			TareaCoordinadaController^ ctrlCoo = gcnew TareaCoordinadaController();
+			if (ctrlCoo->obtenerTodos()->Count == 0)
+			{
+				// Los 3 brazos deben confirmar posicion antes de soldar techo
+				ctrlCoo->agregar("Coo1", 3);
+				ctrlCoo->modificar("Coo1", "EN CURSO", 1, 3); // Solo brazo 1 confirmo
+			}
+
+			// --- 5. ESTACION BODY FRAMING ---
+			EstacionBodyFramingController^ ctrlEst = gcnew EstacionBodyFramingController();
+			if (ctrlEst->obtenerTodos()->Count == 0)
+				ctrlEst->agregar("1");
+
+			// --- 6. REPORTE DE COSTOS ---
+			// Ciclo 1: completado, 38 min, costo por ciclo $115
+			// Ciclo 2: en curso (parcial)
+			ReporteController^ ctrlReporte = gcnew ReporteController();
+			if (ctrlReporte->obtenerTodos()->Count == 0)
+			{
+				ctrlReporte->agregar("REP1", 1, 38.0, 115.0);  // Ciclo completado
+				ctrlReporte->agregar("REP2", 0, 12.5, 115.0);  // Ciclo en curso
+			}
+
+			// --- 7. EVENTOS ---
+			// Narrativa: durante el ciclo 1 todo fue INFO/ALERTA menor.
+			// En el ciclo 2 hay un error activo en el brazo 2.
+
+			EventoTareaController^ ctrlEvTarea = gcnew EventoTareaController();
+			if (ctrlEvTarea->obtenerTodos()->Count == 0)
+			{
+				// Ciclo 1 â€” tarea soldar panel izq completada
+				ctrlEvTarea->agregar("ET-001", "2026-06-04 08:15:00",
+					"Tarea Soldar PL-001 completada exitosamente", "1", "COMPLETADO");
+
+				// Ciclo 1 â€” tarea posicionar panel izq completada
+				ctrlEvTarea->agregar("ET-002", "2026-06-04 08:02:00",
+					"Tarea Posicionar PL-001 completada", "1", "COMPLETADO");
+
+				// Ciclo 2 â€” tarea soldar panel der en curso
+				ctrlEvTarea->agregar("ET-003", "2026-06-04 08:28:00",
+					"Tarea Soldar PL-004 iniciada â€” 4/8 puntos completados", "2", "EN PROCESO");
+			}
+
+			EventoAlertaController^ ctrlEvAlerta = gcnew EventoAlertaController();
+			if (ctrlEvAlerta->obtenerTodos()->Count == 0)
+			{
+				// Brazo 2 reportÃ³ fuerza de agarre cerca del lÃ­mite
+				ctrlEvAlerta->agregar("EA-001", "2026-06-04 08:22:00",
+					"Fuerza de agarre GripperDer proxima al limite (8.5 N / max 9.0 N)",
+					"2", "FUERZA_LIMITE");
+
+				// Brazo 1 pausado brevemente para recalibraciÃ³n
+				ctrlEvAlerta->agregar("EA-002", "2026-06-04 08:05:00",
+					"Brazo 1 detenido momentaneamente para recalibracion de angulo",
+					"1", "RECALIBRACION");
+			}
+
+			EventoErrorController^ ctrlEvError = gcnew EventoErrorController();
+			if (ctrlEvError->obtenerTodos()->Count == 0)
+			{
+				// Brazo 2 tuvo un error de posicionamiento que fue resuelto
+				ctrlEvError->agregar("EE-001", "2026-06-04 08:18:00",
+					"Brazo 2 excedio tolerancia de posicionamiento durante ciclo 2",
+					"ERR-POS-002", "POSICIONAMIENTO");
+
+				// Error de sensor en brazo 3 â€” aun activo
+				ctrlEvError->agregar("EE-002", "2026-06-04 08:30:00",
+					"SensorFza-3 reporta lectura anomala â€” brazo 3 en reposo preventivo",
+					"ERR-SEN-003", "LECTURA_SENSOR");
+			}
+
+			// --- 8. REGISTRO DE EVENTOS (Ã­ndice centralizado) ---
+			RegistroEventosController^ ctrlRegistro = gcnew RegistroEventosController();
+			ctrlRegistro->cargarArchivo(ctrlEvTarea, ctrlEvAlerta, ctrlEvError);
+
+			if (ctrlRegistro->obtenerTodos()->Count == 0)
+			{
+				ctrlRegistro->agregar(); // crea el registro Ã­ndice 0
+
+				// Vincular todos los eventos al registro 0
+				ctrlRegistro->agregarEvento(0, ctrlEvTarea->buscarPorId("ET-001"));
+				ctrlRegistro->agregarEvento(0, ctrlEvTarea->buscarPorId("ET-002"));
+				ctrlRegistro->agregarEvento(0, ctrlEvTarea->buscarPorId("ET-003"));
+				ctrlRegistro->agregarEvento(0, ctrlEvAlerta->buscarPorId("EA-001"));
+				ctrlRegistro->agregarEvento(0, ctrlEvAlerta->buscarPorId("EA-002"));
+				ctrlRegistro->agregarEvento(0, ctrlEvError->buscarPorId("EE-001"));
+				ctrlRegistro->agregarEvento(0, ctrlEvError->buscarPorId("EE-002"));
+			}
+
+
+
+		}
+
+
+
+
 	private: System::Void Interfaz_Load(System::Object^ sender, System::EventArgs^ e) {
 		HWND hwnd = (HWND)this->Handle.ToPointer();
 		BOOL modooscuro = true;
 		DwmSetWindowAttribute(hwnd, 20, &modooscuro, sizeof(modooscuro));
+		SembrarDatosPrueba();
 	}
 
 

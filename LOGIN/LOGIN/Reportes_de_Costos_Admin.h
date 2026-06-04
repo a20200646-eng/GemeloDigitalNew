@@ -1,10 +1,12 @@
 #pragma once
-
+using namespace GemeloDigitalController;
+using namespace GemeloDigitalModel;
 namespace LOGIN {
 
 	using namespace System;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
+	using namespace System::Collections::Generic;
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
@@ -21,6 +23,7 @@ namespace LOGIN {
 			//
 			//TODO: agregar cÃ³digo de constructor aquÃ­
 			//
+			ctrlReporte = gcnew ReporteController();
 		}
 
 	protected:
@@ -61,6 +64,7 @@ namespace LOGIN {
 		/// Variable del diseÃ±ador necesaria.
 		/// </summary>
 		System::ComponentModel::Container ^components;
+		ReporteController^ ctrlReporte;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -104,13 +108,14 @@ namespace LOGIN {
 			this->chart1->ChartAreas->Add(chartArea1);
 			legend1->Name = L"Legend1";
 			this->chart1->Legends->Add(legend1);
-			this->chart1->Location = System::Drawing::Point(104, 613);
+			this->chart1->Location = System::Drawing::Point(78, 498);
+			this->chart1->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->chart1->Name = L"chart1";
 			series1->ChartArea = L"ChartArea1";
 			series1->Legend = L"Legend1";
 			series1->Name = L"Series1";
 			this->chart1->Series->Add(series1);
-			this->chart1->Size = System::Drawing::Size(872, 161);
+			this->chart1->Size = System::Drawing::Size(654, 131);
 			this->chart1->TabIndex = 42;
 			this->chart1->Text = L"chart1";
 			// 
@@ -119,9 +124,10 @@ namespace LOGIN {
 			this->label1->AutoSize = true;
 			this->label1->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
 				static_cast<System::Int32>(static_cast<System::Byte>(11)));
-			this->label1->Location = System::Drawing::Point(101, 573);
+			this->label1->Location = System::Drawing::Point(76, 466);
+			this->label1->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(207, 16);
+			this->label1->Size = System::Drawing::Size(171, 13);
 			this->label1->TabIndex = 41;
 			this->label1->Text = L"GrÃ¡fico de costos por ciclo (GDI+)";
 			// 
@@ -139,7 +145,8 @@ namespace LOGIN {
 			this->dataGridView2->Cursor = System::Windows::Forms::Cursors::Default;
 			this->dataGridView2->EnableHeadersVisualStyles = false;
 			this->dataGridView2->GridColor = System::Drawing::SystemColors::ActiveCaptionText;
-			this->dataGridView2->Location = System::Drawing::Point(104, 181);
+			this->dataGridView2->Location = System::Drawing::Point(78, 147);
+			this->dataGridView2->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->dataGridView2->Name = L"dataGridView2";
 			this->dataGridView2->RowHeadersBorderStyle = System::Windows::Forms::DataGridViewHeaderBorderStyle::Single;
 			dataGridViewCellStyle1->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
@@ -155,7 +162,7 @@ namespace LOGIN {
 			this->dataGridView2->RowHeadersVisible = false;
 			this->dataGridView2->RowHeadersWidth = 51;
 			this->dataGridView2->RowTemplate->Height = 24;
-			this->dataGridView2->Size = System::Drawing::Size(872, 133);
+			this->dataGridView2->Size = System::Drawing::Size(654, 108);
 			this->dataGridView2->TabIndex = 40;
 			// 
 			// dataGridViewTextBoxColumn1
@@ -193,23 +200,24 @@ namespace LOGIN {
 			this->label5->AutoSize = true;
 			this->label5->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
 				static_cast<System::Int32>(static_cast<System::Byte>(11)));
-			this->label5->Location = System::Drawing::Point(101, 141);
+			this->label5->Location = System::Drawing::Point(76, 115);
+			this->label5->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label5->Name = L"label5";
-			this->label5->Size = System::Drawing::Size(140, 16);
+			this->label5->Size = System::Drawing::Size(109, 13);
 			this->label5->TabIndex = 39;
 			this->label5->Text = L"Reportes Registrados";
 			// 
 			// label8
 			// 
 			this->label8->AutoSize = true;
-			this->label8->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->label8->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label8->ForeColor = System::Drawing::Color::White;
-			this->label8->Location = System::Drawing::Point(100, 23);
+			this->label8->Location = System::Drawing::Point(75, 19);
 			this->label8->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label8->Name = L"label8";
 			this->label8->RightToLeft = System::Windows::Forms::RightToLeft::No;
-			this->label8->Size = System::Drawing::Size(194, 22);
+			this->label8->Size = System::Drawing::Size(145, 16);
 			this->label8->TabIndex = 37;
 			this->label8->Text = L"Reportes de Costos";
 			// 
@@ -219,10 +227,10 @@ namespace LOGIN {
 			this->label2->Font = (gcnew System::Drawing::Font(L"Calibri", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label2->ForeColor = System::Drawing::Color::White;
-			this->label2->Location = System::Drawing::Point(101, 82);
+			this->label2->Location = System::Drawing::Point(76, 67);
 			this->label2->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(301, 15);
+			this->label2->Size = System::Drawing::Size(257, 13);
 			this->label2->TabIndex = 43;
 			this->label2->Text = L"El Administrador genera y gestiona todos los reportes";
 			// 
@@ -239,9 +247,10 @@ namespace LOGIN {
 			this->panel1->Controls->Add(this->label3);
 			this->panel1->Controls->Add(this->label6);
 			this->panel1->Controls->Add(this->label7);
-			this->panel1->Location = System::Drawing::Point(104, 364);
+			this->panel1->Location = System::Drawing::Point(78, 296);
+			this->panel1->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->panel1->Name = L"panel1";
-			this->panel1->Size = System::Drawing::Size(935, 137);
+			this->panel1->Size = System::Drawing::Size(702, 112);
 			this->panel1->TabIndex = 44;
 			// 
 			// textBox3
@@ -249,9 +258,10 @@ namespace LOGIN {
 			this->textBox3->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(41)),
 				static_cast<System::Int32>(static_cast<System::Byte>(59)));
 			this->textBox3->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->textBox3->Location = System::Drawing::Point(490, 80);
+			this->textBox3->Location = System::Drawing::Point(368, 65);
+			this->textBox3->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->textBox3->Name = L"textBox3";
-			this->textBox3->Size = System::Drawing::Size(202, 22);
+			this->textBox3->Size = System::Drawing::Size(152, 20);
 			this->textBox3->TabIndex = 26;
 			// 
 			// textBox2
@@ -259,9 +269,10 @@ namespace LOGIN {
 			this->textBox2->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(41)),
 				static_cast<System::Int32>(static_cast<System::Byte>(59)));
 			this->textBox2->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->textBox2->Location = System::Drawing::Point(268, 80);
+			this->textBox2->Location = System::Drawing::Point(201, 65);
+			this->textBox2->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->textBox2->Name = L"textBox2";
-			this->textBox2->Size = System::Drawing::Size(202, 22);
+			this->textBox2->Size = System::Drawing::Size(152, 20);
 			this->textBox2->TabIndex = 25;
 			// 
 			// textBox1
@@ -269,9 +280,10 @@ namespace LOGIN {
 			this->textBox1->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(41)),
 				static_cast<System::Int32>(static_cast<System::Byte>(59)));
 			this->textBox1->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->textBox1->Location = System::Drawing::Point(42, 80);
+			this->textBox1->Location = System::Drawing::Point(32, 65);
+			this->textBox1->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->textBox1->Name = L"textBox1";
-			this->textBox1->Size = System::Drawing::Size(199, 22);
+			this->textBox1->Size = System::Drawing::Size(150, 20);
 			this->textBox1->TabIndex = 24;
 			// 
 			// button5
@@ -284,75 +296,77 @@ namespace LOGIN {
 			this->button5->FlatAppearance->MouseDownBackColor = System::Drawing::Color::MintCream;
 			this->button5->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->button5->ForeColor = System::Drawing::Color::Black;
-			this->button5->Location = System::Drawing::Point(709, 65);
+			this->button5->Location = System::Drawing::Point(532, 53);
+			this->button5->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->button5->Name = L"button5";
-			this->button5->Size = System::Drawing::Size(206, 51);
+			this->button5->Size = System::Drawing::Size(154, 41);
 			this->button5->TabIndex = 21;
 			this->button5->Text = L"Agregar";
 			this->button5->UseVisualStyleBackColor = false;
+			this->button5->Click += gcnew System::EventHandler(this, &Reportes_de_Costos_Admin::button5_Click);
 			// 
 			// label4
 			// 
 			this->label4->AutoSize = true;
-			this->label4->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label4->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label4->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(142)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(177)));
-			this->label4->Location = System::Drawing::Point(487, 48);
+			this->label4->Location = System::Drawing::Point(365, 39);
 			this->label4->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label4->Name = L"label4";
-			this->label4->Size = System::Drawing::Size(131, 16);
+			this->label4->Size = System::Drawing::Size(92, 13);
 			this->label4->TabIndex = 22;
 			this->label4->Text = L"Costo por ciclo ($)";
 			// 
 			// label3
 			// 
 			this->label3->AutoSize = true;
-			this->label3->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label3->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(142)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(177)));
-			this->label3->Location = System::Drawing::Point(265, 48);
+			this->label3->Location = System::Drawing::Point(199, 39);
 			this->label3->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(119, 16);
+			this->label3->Size = System::Drawing::Size(87, 13);
 			this->label3->TabIndex = 21;
 			this->label3->Text = L"Horas trabajadas";
 			// 
 			// label6
 			// 
 			this->label6->AutoSize = true;
-			this->label6->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label6->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label6->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(142)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(177)));
-			this->label6->Location = System::Drawing::Point(39, 48);
+			this->label6->Location = System::Drawing::Point(29, 39);
 			this->label6->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label6->Name = L"label6";
-			this->label6->Size = System::Drawing::Size(59, 16);
+			this->label6->Size = System::Drawing::Size(52, 13);
 			this->label6->TabIndex = 20;
 			this->label6->Text = L"NÂ° Ciclo";
 			// 
 			// label7
 			// 
 			this->label7->AutoSize = true;
-			this->label7->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label7->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label7->ForeColor = System::Drawing::Color::White;
-			this->label7->Location = System::Drawing::Point(18, 20);
+			this->label7->Location = System::Drawing::Point(14, 16);
 			this->label7->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label7->Name = L"label7";
-			this->label7->Size = System::Drawing::Size(156, 16);
+			this->label7->Size = System::Drawing::Size(113, 13);
 			this->label7->TabIndex = 19;
 			this->label7->Text = L"Agregar nuevo reporte";
 			// 
 			// Reportes_de_Costos_Admin
 			// 
-			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(40)),
 				static_cast<System::Int32>(static_cast<System::Byte>(58)));
-			this->ClientSize = System::Drawing::Size(1134, 925);
+			this->ClientSize = System::Drawing::Size(850, 752);
 			this->Controls->Add(this->panel1);
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->chart1);
@@ -360,6 +374,7 @@ namespace LOGIN {
 			this->Controls->Add(this->dataGridView2);
 			this->Controls->Add(this->label5);
 			this->Controls->Add(this->label8);
+			this->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->Name = L"Reportes_de_Costos_Admin";
 			this->Text = L"Reportes_de_Costos_Admin";
 			this->Load += gcnew System::EventHandler(this, &Reportes_de_Costos_Admin::Reportes_de_Costos_Admin_Load);
@@ -373,37 +388,95 @@ namespace LOGIN {
 		}
 #pragma endregion
 	private: System::Void Reportes_de_Costos_Admin_Load(System::Object^ sender, System::EventArgs^ e) {
-		try {
-			// 1. Limpiamos cualquier rastro o diseño previo de la gráfica
-			this->chart1->Series->Clear();
-			this->chart1->Titles->Clear();
-
-			// 2. Le damos el título corporativo y financiero a la sección
-			this->chart1->Titles->Add("Análisis de Costo Total por Ciclo de Producción ($)");
-
-			// 3. Creamos la serie de columnas/barras ideal para comparar montos de dinero
-			String^ nombreSerie = "CostosTotales";
-			this->chart1->Series->Add(nombreSerie);
-			this->chart1->Series[nombreSerie]->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Column;
-
-			// Cambiamos el color a un tono naranja moderno para que combine con tu interfaz
-			this->chart1->Series[nombreSerie]->Color = System::Drawing::Color::Orange;
-
-			// 4. Inyectamos los datos reales simulados de los costos de la planta
-			// El eje X muestra el ciclo evaluado y el eje Y muestra el Costo Total en dólares
-			this->chart1->Series[nombreSerie]->Points->AddXY("Ciclo 01 (BodyFraming)", 60.0);   // 0.5 hrs * $120
-			this->chart1->Series[nombreSerie]->Points->AddXY("Ciclo 02 (Soldadura)", 180.0);   // 1.5 hrs * $120
-			this->chart1->Series[nombreSerie]->Points->AddXY("Ciclo 03 (Materiales)", 120.0);     // 1.0 hrs * $120
-			this->chart1->Series[nombreSerie]->Points->AddXY("Ciclo 04 (Ensamblaje)", 240.0);  // 2.0 hrs * $120
-
-			// 5. Activamos las etiquetas para que el monto exacto en dólares se vea flotando arriba de cada barra
-			this->chart1->Series[nombreSerie]->IsValueShownAsLabel = true;
-			this->chart1->Series[nombreSerie]->LabelFormat = "$#,##0.00"; // Formato monetario profesional
-
-		}
-		catch (Exception^ ex) {
-			MessageBox::Show("Error al generar la gráfica de costos: " + ex->Message, "Aviso del Sistema");
-		}
+		dataGridView2->ReadOnly = true;
+		CargarReportes();
 	}
+
+		   void CargarReportes()
+		   {
+			   dataGridView2->Rows->Clear();
+			   chart1->Series->Clear();
+			   chart1->Titles->Clear();
+
+			   chart1->Titles->Add("Costo Total por Ciclo ($)");
+
+			   String^ nombreSerie = "CostosTotales";
+			   chart1->Series->Add(nombreSerie);
+			   chart1->Series[nombreSerie]->ChartType =
+				   System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Column;
+			   chart1->Series[nombreSerie]->Color = System::Drawing::Color::Orange;
+			   chart1->Series[nombreSerie]->IsValueShownAsLabel = true;
+			   chart1->Series[nombreSerie]->LabelFormat = "$#,##0.00";
+
+			   for each (ReporteCostos ^ r in ctrlReporte->obtenerTodos())
+			   {
+				   double costoTotal = r->calcularCostoTotal();
+
+				   dataGridView2->Rows->Add(
+					   r->Id,
+					   r->CiclosCompletados.ToString(),
+					   r->TiempoOperativo.ToString("F1") + " hrs",
+					   "$" + r->CostoPorCiclo.ToString("F2"),
+					   "$" + costoTotal.ToString("F2")
+				   );
+
+				   int idx = dataGridView2->Rows->Count - 1;
+				   dataGridView2->Rows[idx]->Cells[4]->Style->ForeColor =
+					   Drawing::Color::FromArgb(230, 160, 0);
+
+				   chart1->Series[nombreSerie]->Points->AddXY(
+					   "Ciclo " + r->Id, costoTotal);
+			   }
+
+			   // Estilo gráfico
+			   chart1->BackColor = Drawing::Color::FromArgb(22, 32, 50);
+			   chart1->ChartAreas[0]->BackColor = Drawing::Color::FromArgb(30, 40, 58);
+			   chart1->ChartAreas[0]->AxisX->LabelStyle->ForeColor = Drawing::Color::White;
+			   chart1->ChartAreas[0]->AxisY->LabelStyle->ForeColor = Drawing::Color::White;
+			   chart1->ChartAreas[0]->AxisX->LineColor = Drawing::Color::FromArgb(60, 70, 90);
+			   chart1->ChartAreas[0]->AxisY->LineColor = Drawing::Color::FromArgb(60, 70, 90);
+			   chart1->ChartAreas[0]->AxisY->Title = "Costo ($)";
+			   chart1->ChartAreas[0]->AxisY->TitleForeColor = Drawing::Color::White;
+			   if (chart1->Legends->Count > 0)
+				   chart1->Legends[0]->Enabled = false;
+		   }
+
+private: System::Void button5_Click(System::Object^ sender, System::EventArgs^ e) {
+	String^ ciclosStr = textBox1->Text->Trim();
+	String^ horasStr = textBox2->Text->Trim();
+	String^ costoStr = textBox3->Text->Trim();
+
+	if (ciclosStr == "" || horasStr == "" || costoStr == "")
+	{
+		MessageBox::Show("Completa todos los campos.", "Aviso",
+			MessageBoxButtons::OK, MessageBoxIcon::Warning);
+		return;
+	}
+
+	int    ciclos;
+	double horas, costo;
+
+	if (!Int32::TryParse(ciclosStr, ciclos) ||
+		!Double::TryParse(horasStr, horas) ||
+		!Double::TryParse(costoStr, costo))
+	{
+		MessageBox::Show("N° Ciclo debe ser entero. Horas y Costo deben ser números.",
+			"Error de formato", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+		return;
+	}
+
+	// Generar ID autoincremental
+	String^ nuevoId = (ctrlReporte->obtenerTodos()->Count + 1).ToString();
+
+	ctrlReporte->agregar(nuevoId, ciclos, horas, costo);
+
+	// Limpiar campos
+	textBox1->Text = "";
+	textBox2->Text = "";
+	textBox3->Text = "";
+
+	CargarReportes();
+
+}
 };
 }

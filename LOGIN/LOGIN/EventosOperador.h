@@ -27,6 +27,7 @@ namespace LOGIN {
 			//
 			ctrlEventoTarea = gcnew EventoTareaController();
 			ctrlEventoAlerta = gcnew EventoAlertaController();
+			ctrlEventoError = gcnew EventoErrorController();
 			filtroActivo = 0;
 			this->Load += gcnew EventHandler(this, &EventosOperador::EventosOperador_Load);
 		}
@@ -95,6 +96,7 @@ namespace LOGIN {
 		System::ComponentModel::Container ^components;
 		EventoTareaController^ ctrlEventoTarea;
 		EventoAlertaController^ ctrlEventoAlerta;
+		EventoErrorController^ ctrlEventoError;
 		int filtroActivo; // 0=Todos 1=INFO 2=ALERTA 3=ERROR
 
 #pragma region Windows Form Designer generated code
@@ -104,7 +106,7 @@ namespace LOGIN {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle2 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
+			System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle1 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
 			this->label5 = (gcnew System::Windows::Forms::Label());
 			this->label6 = (gcnew System::Windows::Forms::Label());
 			this->button5 = (gcnew System::Windows::Forms::Button());
@@ -120,6 +122,7 @@ namespace LOGIN {
 			this->Column3 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->panel2 = (gcnew System::Windows::Forms::Panel());
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
+			this->comboBox1 = (gcnew System::Windows::Forms::ComboBox());
 			this->textBox4 = (gcnew System::Windows::Forms::TextBox());
 			this->label7 = (gcnew System::Windows::Forms::Label());
 			this->textBox3 = (gcnew System::Windows::Forms::TextBox());
@@ -129,7 +132,6 @@ namespace LOGIN {
 			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->button6 = (gcnew System::Windows::Forms::Button());
-			this->comboBox1 = (gcnew System::Windows::Forms::ComboBox());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->BeginInit();
 			this->panel2->SuspendLayout();
 			this->panel1->SuspendLayout();
@@ -169,12 +171,13 @@ namespace LOGIN {
 			this->button5->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
 			this->button5->ForeColor = System::Drawing::Color::Black;
 			this->button5->Location = System::Drawing::Point(107, 75);
-			this->button5->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+			this->button5->Margin = System::Windows::Forms::Padding(2);
 			this->button5->Name = L"button5";
 			this->button5->Size = System::Drawing::Size(96, 35);
 			this->button5->TabIndex = 22;
 			this->button5->Text = L"INFO";
 			this->button5->UseVisualStyleBackColor = false;
+			this->button5->Click += gcnew System::EventHandler(this, &EventosOperador::button5_Click_1);
 			// 
 			// button1
 			// 
@@ -184,12 +187,13 @@ namespace LOGIN {
 			this->button1->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
 			this->button1->ForeColor = System::Drawing::Color::Black;
 			this->button1->Location = System::Drawing::Point(225, 75);
-			this->button1->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+			this->button1->Margin = System::Windows::Forms::Padding(2);
 			this->button1->Name = L"button1";
 			this->button1->Size = System::Drawing::Size(96, 35);
 			this->button1->TabIndex = 23;
 			this->button1->Text = L"ALERTA";
 			this->button1->UseVisualStyleBackColor = false;
+			this->button1->Click += gcnew System::EventHandler(this, &EventosOperador::button1_Click_1);
 			// 
 			// button2
 			// 
@@ -199,12 +203,13 @@ namespace LOGIN {
 			this->button2->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
 			this->button2->ForeColor = System::Drawing::Color::Black;
 			this->button2->Location = System::Drawing::Point(344, 75);
-			this->button2->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+			this->button2->Margin = System::Windows::Forms::Padding(2);
 			this->button2->Name = L"button2";
 			this->button2->Size = System::Drawing::Size(96, 35);
 			this->button2->TabIndex = 24;
 			this->button2->Text = L"ERROR";
 			this->button2->UseVisualStyleBackColor = false;
+			this->button2->Click += gcnew System::EventHandler(this, &EventosOperador::button2_Click_1);
 			// 
 			// button3
 			// 
@@ -215,12 +220,13 @@ namespace LOGIN {
 			this->button3->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
 			this->button3->ForeColor = System::Drawing::Color::Black;
 			this->button3->Location = System::Drawing::Point(457, 75);
-			this->button3->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+			this->button3->Margin = System::Windows::Forms::Padding(2);
 			this->button3->Name = L"button3";
 			this->button3->Size = System::Drawing::Size(96, 35);
 			this->button3->TabIndex = 25;
 			this->button3->Text = L"Todos";
 			this->button3->UseVisualStyleBackColor = false;
+			this->button3->Click += gcnew System::EventHandler(this, &EventosOperador::button3_Click_1);
 			// 
 			// button4
 			// 
@@ -232,12 +238,13 @@ namespace LOGIN {
 			this->button4->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
 				static_cast<System::Int32>(static_cast<System::Byte>(0)));
 			this->button4->Location = System::Drawing::Point(748, 75);
-			this->button4->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+			this->button4->Margin = System::Windows::Forms::Padding(2);
 			this->button4->Name = L"button4";
 			this->button4->Size = System::Drawing::Size(96, 35);
 			this->button4->TabIndex = 26;
 			this->button4->Text = L"Refrescar";
 			this->button4->UseVisualStyleBackColor = false;
+			this->button4->Click += gcnew System::EventHandler(this, &EventosOperador::button4_Click_1);
 			// 
 			// dataGridView1
 			// 
@@ -254,19 +261,19 @@ namespace LOGIN {
 			this->dataGridView1->EnableHeadersVisualStyles = false;
 			this->dataGridView1->GridColor = System::Drawing::SystemColors::ActiveCaptionText;
 			this->dataGridView1->Location = System::Drawing::Point(45, 154);
-			this->dataGridView1->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+			this->dataGridView1->Margin = System::Windows::Forms::Padding(2);
 			this->dataGridView1->Name = L"dataGridView1";
 			this->dataGridView1->RowHeadersBorderStyle = System::Windows::Forms::DataGridViewHeaderBorderStyle::Single;
-			dataGridViewCellStyle2->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
-			dataGridViewCellStyle2->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(58)),
+			dataGridViewCellStyle1->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
+			dataGridViewCellStyle1->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(58)),
 				static_cast<System::Int32>(static_cast<System::Byte>(95)));
-			dataGridViewCellStyle2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			dataGridViewCellStyle1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			dataGridViewCellStyle2->ForeColor = System::Drawing::SystemColors::WindowText;
-			dataGridViewCellStyle2->SelectionBackColor = System::Drawing::SystemColors::Highlight;
-			dataGridViewCellStyle2->SelectionForeColor = System::Drawing::SystemColors::HighlightText;
-			dataGridViewCellStyle2->WrapMode = System::Windows::Forms::DataGridViewTriState::True;
-			this->dataGridView1->RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
+			dataGridViewCellStyle1->ForeColor = System::Drawing::SystemColors::WindowText;
+			dataGridViewCellStyle1->SelectionBackColor = System::Drawing::SystemColors::Highlight;
+			dataGridViewCellStyle1->SelectionForeColor = System::Drawing::SystemColors::HighlightText;
+			dataGridViewCellStyle1->WrapMode = System::Windows::Forms::DataGridViewTriState::True;
+			this->dataGridView1->RowHeadersDefaultCellStyle = dataGridViewCellStyle1;
 			this->dataGridView1->RowHeadersVisible = false;
 			this->dataGridView1->RowHeadersWidth = 51;
 			this->dataGridView1->RowTemplate->Height = 24;
@@ -312,7 +319,7 @@ namespace LOGIN {
 			this->panel2->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
 				static_cast<System::Int32>(static_cast<System::Byte>(11)));
 			this->panel2->Location = System::Drawing::Point(45, 332);
-			this->panel2->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+			this->panel2->Margin = System::Windows::Forms::Padding(2);
 			this->panel2->Name = L"panel2";
 			this->panel2->RightToLeft = System::Windows::Forms::RightToLeft::No;
 			this->panel2->Size = System::Drawing::Size(803, 182);
@@ -335,10 +342,18 @@ namespace LOGIN {
 			this->panel1->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)),
 				static_cast<System::Int32>(static_cast<System::Byte>(0)));
 			this->panel1->Location = System::Drawing::Point(2, 2);
-			this->panel1->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+			this->panel1->Margin = System::Windows::Forms::Padding(2);
 			this->panel1->Name = L"panel1";
 			this->panel1->Size = System::Drawing::Size(797, 175);
 			this->panel1->TabIndex = 28;
+			// 
+			// comboBox1
+			// 
+			this->comboBox1->FormattingEnabled = true;
+			this->comboBox1->Location = System::Drawing::Point(40, 65);
+			this->comboBox1->Name = L"comboBox1";
+			this->comboBox1->Size = System::Drawing::Size(121, 21);
+			this->comboBox1->TabIndex = 35;
 			// 
 			// textBox4
 			// 
@@ -346,7 +361,7 @@ namespace LOGIN {
 				static_cast<System::Int32>(static_cast<System::Byte>(59)));
 			this->textBox4->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->textBox4->Location = System::Drawing::Point(501, 66);
-			this->textBox4->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+			this->textBox4->Margin = System::Windows::Forms::Padding(2);
 			this->textBox4->Name = L"textBox4";
 			this->textBox4->Size = System::Drawing::Size(281, 20);
 			this->textBox4->TabIndex = 34;
@@ -372,7 +387,7 @@ namespace LOGIN {
 				static_cast<System::Int32>(static_cast<System::Byte>(59)));
 			this->textBox3->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->textBox3->Location = System::Drawing::Point(230, 66);
-			this->textBox3->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+			this->textBox3->Margin = System::Windows::Forms::Padding(2);
 			this->textBox3->Name = L"textBox3";
 			this->textBox3->Size = System::Drawing::Size(260, 20);
 			this->textBox3->TabIndex = 32;
@@ -383,7 +398,7 @@ namespace LOGIN {
 				static_cast<System::Int32>(static_cast<System::Byte>(59)));
 			this->textBox2->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->textBox2->Location = System::Drawing::Point(39, 128);
-			this->textBox2->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+			this->textBox2->Margin = System::Windows::Forms::Padding(2);
 			this->textBox2->Name = L"textBox2";
 			this->textBox2->Size = System::Drawing::Size(505, 20);
 			this->textBox2->TabIndex = 31;
@@ -452,20 +467,13 @@ namespace LOGIN {
 			this->button6->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
 			this->button6->ForeColor = System::Drawing::Color::Black;
 			this->button6->Location = System::Drawing::Point(63, 493);
-			this->button6->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+			this->button6->Margin = System::Windows::Forms::Padding(2);
 			this->button6->Name = L"button6";
 			this->button6->Size = System::Drawing::Size(208, 41);
 			this->button6->TabIndex = 35;
 			this->button6->Text = L"Registrar evento";
 			this->button6->UseVisualStyleBackColor = false;
-			// 
-			// comboBox1
-			// 
-			this->comboBox1->FormattingEnabled = true;
-			this->comboBox1->Location = System::Drawing::Point(40, 65);
-			this->comboBox1->Name = L"comboBox1";
-			this->comboBox1->Size = System::Drawing::Size(121, 21);
-			this->comboBox1->TabIndex = 35;
+			this->button6->Click += gcnew System::EventHandler(this, &EventosOperador::button6_Click_1);
 			// 
 			// EventosOperador
 			// 
@@ -484,9 +492,10 @@ namespace LOGIN {
 			this->Controls->Add(this->button5);
 			this->Controls->Add(this->label6);
 			this->Controls->Add(this->label5);
-			this->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+			this->Margin = System::Windows::Forms::Padding(2);
 			this->Name = L"EventosOperador";
 			this->Text = L"EventosOperador";
+			this->Load += gcnew System::EventHandler(this, &EventosOperador::EventosOperador_Load_1);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->EndInit();
 			this->panel2->ResumeLayout(false);
 			this->panel1->ResumeLayout(false);
@@ -538,47 +547,68 @@ namespace LOGIN {
 						   Color::FromArgb(230, 160, 0); // naranja ALERTA
 				   }
 			   }
+
+			   // EventoError — Nivel ERROR (solo lectura)
+			   if (filtroActivo == 0 || filtroActivo == 3)
+			   {
+				   for each (EventoErrorModel ^ e in ctrlEventoError->obtenerTodos())
+				   {
+					   int rowIdx = dataGridView1->Rows->Add(
+						   "EventoError", e->Id, e->Timestamp,
+						   "ERROR", e->Descripcion);
+					   dataGridView1->Rows[rowIdx]->Cells[3]->Style->ForeColor =
+						   Color::FromArgb(200, 40, 40); // rojo ERROR
+				   }
+			   }
 		   }
 
-		   // button5 — filtro INFO
-private: System::Void button5_Click(System::Object^ sender, System::EventArgs^ e)
-{
+		   
+
+
+
+
+
+private: System::Void EventosOperador_Load_1(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void button5_Click_1(System::Object^ sender, System::EventArgs^ e) {
+	//button5 — filtro INFO
 	filtroActivo = 1;
 	CargarHistorial();
-}
 
-	   // button1 — filtro ALERTA
-private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e)
-{
+
+}
+private: System::Void button1_Click_1(System::Object^ sender, System::EventArgs^ e) {
+	//button1 — filtro ALERTA
 	filtroActivo = 2;
 	CargarHistorial();
-}
 
-	   // button2 — filtro ERROR (sin EventoError en este form — muestra vacío)
-private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e)
-{
+}
+private: System::Void button2_Click_1(System::Object^ sender, System::EventArgs^ e) {
+	//button2 — filtro ERROR
 	filtroActivo = 3;
 	CargarHistorial();
-}
 
-	   // button3 — Todos
-private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e)
-{
+
+}
+private: System::Void button3_Click_1(System::Object^ sender, System::EventArgs^ e) {
+	//button3 — filtro TODOS
 	filtroActivo = 0;
 	CargarHistorial();
-}
 
-	   // button4 — Refrescar
-private: System::Void button4_Click(System::Object^ sender, System::EventArgs^ e)
-{
+
+
+}
+private: System::Void button4_Click_1(System::Object^ sender, System::EventArgs^ e) {
+	//button4 — Refrescar (re-cargar historial sin cambiar filtro)
 	ctrlEventoTarea = gcnew EventoTareaController();
 	ctrlEventoAlerta = gcnew EventoAlertaController();
+	ctrlEventoError = gcnew EventoErrorController();
 	CargarHistorial();
-}
 
-	   // button6 — Registrar evento
-private: System::Void button6_Click(System::Object^ sender, System::EventArgs^ e)
-{
+}
+private: System::Void button6_Click_1(System::Object^ sender, System::EventArgs^ e) {
+	//button6 — Registrar nuevo evento (solo para Operador)
+	// Validar campos
 	if (comboBox1->SelectedIndex < 0)
 	{
 		MessageBox::Show("Selecciona el tipo de evento.", "Aviso",
@@ -606,7 +636,7 @@ private: System::Void button6_Click(System::Object^ sender, System::EventArgs^ e
 	{
 		ctrlEventoTarea->agregar(eventoId, timestamp, descripcion, extra1, extra2);
 	}
-	else // EventoAlerta
+	else // EventoAlert	-+a
 	{
 		ctrlEventoAlerta->agregar(eventoId, timestamp, descripcion, extra1, extra2);
 	}
@@ -620,12 +650,7 @@ private: System::Void button6_Click(System::Object^ sender, System::EventArgs^ e
 
 	MessageBox::Show("Evento registrado correctamente.", "OK",
 		MessageBoxButtons::OK, MessageBoxIcon::Information);
+
 }
-
-
-
-
-
-
 };
 }

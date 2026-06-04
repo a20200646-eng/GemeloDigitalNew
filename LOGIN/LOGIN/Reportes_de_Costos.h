@@ -24,7 +24,7 @@ namespace LOGIN {
 			//
 			//TODO: agregar código de constructor aquí
 			//
-			this->Load += gcnew System::EventHandler(this, &Reportes_de_Costos::Reportes_de_Costos_Load);
+			
 		}
 
 	protected:
@@ -291,7 +291,7 @@ namespace LOGIN {
 			serie->IsValueShownAsLabel = true;
 			serie->LabelForeColor = Drawing::Color::White;
 
-			for each (ReporteCostos ^ r in reportes) {
+			for each (ReporteCostos^ r in reportes) {
 				double costoTotal = r->calcularCostoTotal();
 
 				// Fila en la tabla
