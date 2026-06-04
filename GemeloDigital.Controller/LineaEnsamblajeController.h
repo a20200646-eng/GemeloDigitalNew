@@ -15,9 +15,9 @@ namespace GemeloDigitalController {
     public:
         LineaEnsamblajeController() {
             repositorio = gcnew List<LineaEnsamblajeModel^>();
-            // NOTA: cargarArchivo() requiere los controllers de piezas
-            // Se llama manualmente desde AppContext despues de cargar
-            // PanelLateralController y EstructuraTechoController
+            PanelLateralController^ ctrlPanel = gcnew PanelLateralController();
+            EstructuraTechoController^ ctrlTecho = gcnew EstructuraTechoController();
+            cargarArchivo(ctrlPanel, ctrlTecho);
         }
 
         // CREATE

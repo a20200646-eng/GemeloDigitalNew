@@ -417,6 +417,16 @@ namespace LOGIN {
 				ctrlBrazo->modificar("IDB3", EstadoBrazo::REPOSO);
 			}
 
+			// --- ESTACIONES DE TRABAJO ---
+			EstacionTrabajoController^ ctrlEst2 = gcnew EstacionTrabajoController();
+			if (ctrlEst2->obtenerTodos()->Count == 0)
+			{
+				ctrlEst2->agregar("EST-001", "Panel Lateral", false);
+				ctrlEst2->agregar("EST-002", "Estructura Techo", false);
+				ctrlEst2->agregar("EST-003", "Panel Lateral", true);
+				ctrlEst2->agregar("EST-004", "Estructura Techo", true);
+			}
+
 			// --- 2. PIEZAS — Paneles laterales y estructura de techo ---
 			PanelLateralController^ ctrlPanel = gcnew PanelLateralController();
 			if (ctrlPanel->obtenerTodos()->Count == 0)
@@ -447,25 +457,24 @@ namespace LOGIN {
 				ctrlTecho->agregar("ET-002", "Aluminio Reforzado", 12.0, 8, 140.0);
 			}
 
-			// --- 3. LINEA DE ENSAMBLAJE ---
-			// La linea encola las piezas en orden: PanelIzq → PanelDer → Techo
+			// --- LINEA DE ENSAMBLAJE ---
 			LineaEnsamblajeController^ ctrlLinea = gcnew LineaEnsamblajeController();
 			if (ctrlLinea->obtenerTodos()->Count == 0)
 			{
 				ctrlLinea->agregar("1");
+				ctrlLinea->agregar("2");
 
-				//Buscar piezas ya creadas por su ID
+				// Agregar piezas a línea 1 usando piezas ya creadas
 				PanelLateralModel^ pl002 = ctrlPanel->buscarPorId("PL-002");
 				PanelLateralModel^ pl004 = ctrlPanel->buscarPorId("PL-004");
 				EstructuraTechoModel^ et002 = ctrlTecho->buscarPorId("ET-002");
 
-				// Agregar piezas del ciclo 2 a la cola (ciclo 1 ya fue procesado)
-				if(pl002 != nullptr) ctrlLinea->agregarPieza("1", pl002);
-				if(pl004 != nullptr) ctrlLinea->agregarPieza("1", pl004);
-				if(et002 != nullptr) ctrlLinea->agregarPieza("1", et002);
+				if (pl002 != nullptr) ctrlLinea->agregarPieza("1", pl002);
+				if (pl004 != nullptr) ctrlLinea->agregarPieza("1", pl004);
+				if (et002 != nullptr) ctrlLinea->agregarPieza("1", et002);
 
-				// Indice 0 = PanelIzq en proceso actualmente
 				ctrlLinea->modificar("1", 0, false);
+				ctrlLinea->modificar("2", 0, false);
 			}
 
 			// --- 4. TAREAS DEL CICLO ACTIVO ---
@@ -595,6 +604,8 @@ namespace LOGIN {
 				ctrlRegistro->agregarEvento(0, ctrlEvError->buscarPorId("EE-001"));
 				ctrlRegistro->agregarEvento(0, ctrlEvError->buscarPorId("EE-002"));
 			}
+
+			
 
 
 
