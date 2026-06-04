@@ -36,14 +36,14 @@ namespace LOGIN {
 
 			//hacer validacion para que no se repitan IDs en ningun tipo de sensor es decir 
 			//sensor posisicion 1 (S1) no puede ser igual a sensor de fuerza 1 (S1)
-			//ctrl_brazo1->eliminar(1); //Limpiar el brazo de prueba para evitar duplicados al reiniciar la aplicación
+			/*ctrl_brazo1->eliminar("1"); //Limpiar el brazo de prueba para evitar duplicados al reiniciar la aplicación
 			for each (BrazoRoboticoModel ^ b in ctrl_brazo1->obtenerTodos()) {
 				dataGridView1->Rows->Add(
 					b->Id,
 					b->Rol.ToString(),
 					b->Estado.ToString(),"TRUE"
 				);
-			}
+			}*/
 
 
 		}
