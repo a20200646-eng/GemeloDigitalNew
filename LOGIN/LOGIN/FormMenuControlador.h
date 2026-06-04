@@ -8,6 +8,8 @@ namespace LOGIN {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace GemeloDigitalController;
+	using namespace GemeloDigitalModel;
 
 	/// <summary>
 	/// Resumen de FormMenuControlador
@@ -18,9 +20,14 @@ namespace LOGIN {
 		FormMenuControlador(void)
 		{
 			InitializeComponent();
-			//
-			//TODO: agregar código de constructor aquí
-			//
+
+			panelController = gcnew PanelLateralController();
+			techoController = gcnew EstructuraTechoController();
+
+			mostrandoPaneles = true;
+
+			cargarPaneles();
+			actualizarResumen();
 		}
 
 	protected:
@@ -34,8 +41,10 @@ namespace LOGIN {
 				delete components;
 			}
 		}
+		PanelLateralController^ panelController;
+		EstructuraTechoController^ techoController;
 
-
+		bool mostrandoPaneles;
 
 
 
@@ -93,6 +102,12 @@ namespace LOGIN {
 	protected:
 
 	private:
+
+		PanelLateralController^ panelController;
+		EstructuraTechoController^ techoController;
+
+		bool mostrandoPaneles;
+
 		/// <summary>
 		/// Variable del diseñador necesaria.
 		/// </summary>
@@ -152,11 +167,11 @@ namespace LOGIN {
 			this->label6->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label6->ForeColor = System::Drawing::Color::White;
-			this->label6->Location = System::Drawing::Point(36, 40);
+			this->label6->Location = System::Drawing::Point(27, 32);
 			this->label6->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label6->Name = L"label6";
 			this->label6->RightToLeft = System::Windows::Forms::RightToLeft::No;
-			this->label6->Size = System::Drawing::Size(205, 22);
+			this->label6->Size = System::Drawing::Size(161, 16);
 			this->label6->TabIndex = 11;
 			this->label6->Text = L"Inventario de Piezas";
 			// 
@@ -171,12 +186,14 @@ namespace LOGIN {
 				static_cast<System::Int32>(static_cast<System::Byte>(158)), static_cast<System::Int32>(static_cast<System::Byte>(11)));
 			this->button1->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->button1->ForeColor = System::Drawing::Color::White;
-			this->button1->Location = System::Drawing::Point(55, 89);
+			this->button1->Location = System::Drawing::Point(41, 72);
+			this->button1->Margin = System::Windows::Forms::Padding(2);
 			this->button1->Name = L"button1";
-			this->button1->Size = System::Drawing::Size(364, 50);
+			this->button1->Size = System::Drawing::Size(273, 41);
 			this->button1->TabIndex = 12;
 			this->button1->Text = L"Paneles Laterales";
 			this->button1->UseVisualStyleBackColor = false;
+			this->button1->Click += gcnew System::EventHandler(this, &FormMenuControlador::button1_Click);
 			// 
 			// button2
 			// 
@@ -189,12 +206,14 @@ namespace LOGIN {
 				static_cast<System::Int32>(static_cast<System::Byte>(158)), static_cast<System::Int32>(static_cast<System::Byte>(11)));
 			this->button2->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->button2->ForeColor = System::Drawing::Color::White;
-			this->button2->Location = System::Drawing::Point(495, 89);
+			this->button2->Location = System::Drawing::Point(371, 72);
+			this->button2->Margin = System::Windows::Forms::Padding(2);
 			this->button2->Name = L"button2";
-			this->button2->Size = System::Drawing::Size(448, 50);
+			this->button2->Size = System::Drawing::Size(336, 41);
 			this->button2->TabIndex = 13;
 			this->button2->Text = L"Estructuras Techo";
 			this->button2->UseVisualStyleBackColor = false;
+			this->button2->Click += gcnew System::EventHandler(this, &FormMenuControlador::button2_Click);
 			// 
 			// dataGridView1
 			// 
@@ -210,7 +229,8 @@ namespace LOGIN {
 			this->dataGridView1->Cursor = System::Windows::Forms::Cursors::Default;
 			this->dataGridView1->EnableHeadersVisualStyles = false;
 			this->dataGridView1->GridColor = System::Drawing::SystemColors::ActiveCaptionText;
-			this->dataGridView1->Location = System::Drawing::Point(55, 201);
+			this->dataGridView1->Location = System::Drawing::Point(41, 163);
+			this->dataGridView1->Margin = System::Windows::Forms::Padding(2);
 			this->dataGridView1->Name = L"dataGridView1";
 			this->dataGridView1->RowHeadersBorderStyle = System::Windows::Forms::DataGridViewHeaderBorderStyle::Single;
 			dataGridViewCellStyle1->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
@@ -226,7 +246,7 @@ namespace LOGIN {
 			this->dataGridView1->RowHeadersVisible = false;
 			this->dataGridView1->RowHeadersWidth = 51;
 			this->dataGridView1->RowTemplate->Height = 24;
-			this->dataGridView1->Size = System::Drawing::Size(1144, 160);
+			this->dataGridView1->Size = System::Drawing::Size(858, 130);
 			this->dataGridView1->TabIndex = 18;
 			// 
 			// Column1
@@ -271,10 +291,10 @@ namespace LOGIN {
 			this->label3->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label3->ForeColor = System::Drawing::Color::White;
-			this->label3->Location = System::Drawing::Point(18, 20);
+			this->label3->Location = System::Drawing::Point(14, 16);
 			this->label3->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(148, 16);
+			this->label3->Size = System::Drawing::Size(131, 15);
 			this->label3->TabIndex = 19;
 			this->label3->Text = L"Agregar nueva pieza:";
 			// 
@@ -294,9 +314,10 @@ namespace LOGIN {
 			this->panel1->Controls->Add(this->label2);
 			this->panel1->Controls->Add(this->label1);
 			this->panel1->Controls->Add(this->label3);
-			this->panel1->Location = System::Drawing::Point(64, 393);
+			this->panel1->Location = System::Drawing::Point(48, 319);
+			this->panel1->Margin = System::Windows::Forms::Padding(2);
 			this->panel1->Name = L"panel1";
-			this->panel1->Size = System::Drawing::Size(1173, 204);
+			this->panel1->Size = System::Drawing::Size(880, 166);
 			this->panel1->TabIndex = 20;
 			// 
 			// button6
@@ -308,21 +329,24 @@ namespace LOGIN {
 			this->button6->FlatAppearance->BorderSize = 0;
 			this->button6->FlatAppearance->MouseDownBackColor = System::Drawing::Color::White;
 			this->button6->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
-			this->button6->Location = System::Drawing::Point(374, 133);
+			this->button6->Location = System::Drawing::Point(280, 108);
+			this->button6->Margin = System::Windows::Forms::Padding(2);
 			this->button6->Name = L"button6";
-			this->button6->Size = System::Drawing::Size(209, 50);
+			this->button6->Size = System::Drawing::Size(157, 41);
 			this->button6->TabIndex = 28;
 			this->button6->Text = L"Eliminar";
 			this->button6->UseVisualStyleBackColor = false;
+			this->button6->Click += gcnew System::EventHandler(this, &FormMenuControlador::button6_Click);
 			// 
 			// textBox4
 			// 
 			this->textBox4->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(41)),
 				static_cast<System::Int32>(static_cast<System::Byte>(59)));
 			this->textBox4->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->textBox4->Location = System::Drawing::Point(919, 80);
+			this->textBox4->Location = System::Drawing::Point(689, 65);
+			this->textBox4->Margin = System::Windows::Forms::Padding(2);
 			this->textBox4->Name = L"textBox4";
-			this->textBox4->Size = System::Drawing::Size(202, 22);
+			this->textBox4->Size = System::Drawing::Size(152, 20);
 			this->textBox4->TabIndex = 27;
 			// 
 			// textBox3
@@ -330,9 +354,10 @@ namespace LOGIN {
 			this->textBox3->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(41)),
 				static_cast<System::Int32>(static_cast<System::Byte>(59)));
 			this->textBox3->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->textBox3->Location = System::Drawing::Point(658, 80);
+			this->textBox3->Location = System::Drawing::Point(494, 65);
+			this->textBox3->Margin = System::Windows::Forms::Padding(2);
 			this->textBox3->Name = L"textBox3";
-			this->textBox3->Size = System::Drawing::Size(202, 22);
+			this->textBox3->Size = System::Drawing::Size(152, 20);
 			this->textBox3->TabIndex = 26;
 			// 
 			// textBox2
@@ -340,9 +365,10 @@ namespace LOGIN {
 			this->textBox2->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(41)),
 				static_cast<System::Int32>(static_cast<System::Byte>(59)));
 			this->textBox2->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->textBox2->Location = System::Drawing::Point(355, 80);
+			this->textBox2->Location = System::Drawing::Point(266, 65);
+			this->textBox2->Margin = System::Windows::Forms::Padding(2);
 			this->textBox2->Name = L"textBox2";
-			this->textBox2->Size = System::Drawing::Size(202, 22);
+			this->textBox2->Size = System::Drawing::Size(152, 20);
 			this->textBox2->TabIndex = 25;
 			// 
 			// textBox1
@@ -350,9 +376,10 @@ namespace LOGIN {
 			this->textBox1->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(41)),
 				static_cast<System::Int32>(static_cast<System::Byte>(59)));
 			this->textBox1->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->textBox1->Location = System::Drawing::Point(42, 80);
+			this->textBox1->Location = System::Drawing::Point(32, 65);
+			this->textBox1->Margin = System::Windows::Forms::Padding(2);
 			this->textBox1->Name = L"textBox1";
-			this->textBox1->Size = System::Drawing::Size(202, 22);
+			this->textBox1->Size = System::Drawing::Size(152, 20);
 			this->textBox1->TabIndex = 24;
 			// 
 			// button3
@@ -365,12 +392,14 @@ namespace LOGIN {
 			this->button3->FlatAppearance->MouseDownBackColor = System::Drawing::Color::White;
 			this->button3->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->button3->ForeColor = System::Drawing::Color::Black;
-			this->button3->Location = System::Drawing::Point(57, 133);
+			this->button3->Location = System::Drawing::Point(43, 108);
+			this->button3->Margin = System::Windows::Forms::Padding(2);
 			this->button3->Name = L"button3";
-			this->button3->Size = System::Drawing::Size(277, 50);
+			this->button3->Size = System::Drawing::Size(208, 41);
 			this->button3->TabIndex = 21;
 			this->button3->Text = L"Agregar Panel";
 			this->button3->UseVisualStyleBackColor = false;
+			this->button3->Click += gcnew System::EventHandler(this, &FormMenuControlador::button3_Click);
 			// 
 			// label5
 			// 
@@ -379,10 +408,10 @@ namespace LOGIN {
 				static_cast<System::Byte>(0)));
 			this->label5->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(142)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(177)));
-			this->label5->Location = System::Drawing::Point(916, 48);
+			this->label5->Location = System::Drawing::Point(687, 39);
 			this->label5->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label5->Name = L"label5";
-			this->label5->Size = System::Drawing::Size(68, 16);
+			this->label5->Size = System::Drawing::Size(60, 15);
 			this->label5->TabIndex = 23;
 			this->label5->Text = L"Anclajes:";
 			// 
@@ -393,10 +422,10 @@ namespace LOGIN {
 				static_cast<System::Byte>(0)));
 			this->label4->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(142)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(177)));
-			this->label4->Location = System::Drawing::Point(655, 48);
+			this->label4->Location = System::Drawing::Point(491, 39);
 			this->label4->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label4->Name = L"label4";
-			this->label4->Size = System::Drawing::Size(44, 16);
+			this->label4->Size = System::Drawing::Size(39, 15);
 			this->label4->TabIndex = 22;
 			this->label4->Text = L"Lado:";
 			// 
@@ -407,10 +436,10 @@ namespace LOGIN {
 				static_cast<System::Byte>(0)));
 			this->label2->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(142)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(177)));
-			this->label2->Location = System::Drawing::Point(352, 48);
+			this->label2->Location = System::Drawing::Point(264, 39);
 			this->label2->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(44, 16);
+			this->label2->Size = System::Drawing::Size(39, 15);
 			this->label2->TabIndex = 21;
 			this->label2->Text = L"Peso:";
 			// 
@@ -421,10 +450,10 @@ namespace LOGIN {
 				static_cast<System::Byte>(0)));
 			this->label1->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(142)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(177)));
-			this->label1->Location = System::Drawing::Point(39, 48);
+			this->label1->Location = System::Drawing::Point(29, 39);
 			this->label1->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(65, 16);
+			this->label1->Size = System::Drawing::Size(57, 15);
 			this->label1->TabIndex = 20;
 			this->label1->Text = L"Material:";
 			// 
@@ -435,9 +464,10 @@ namespace LOGIN {
 			this->panel2->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
 			this->panel2->Controls->Add(this->panel3);
 			this->panel2->ForeColor = System::Drawing::SystemColors::ActiveBorder;
-			this->panel2->Location = System::Drawing::Point(68, 632);
+			this->panel2->Location = System::Drawing::Point(51, 514);
+			this->panel2->Margin = System::Windows::Forms::Padding(2);
 			this->panel2->Name = L"panel2";
-			this->panel2->Size = System::Drawing::Size(1169, 113);
+			this->panel2->Size = System::Drawing::Size(877, 92);
 			this->panel2->TabIndex = 21;
 			// 
 			// panel3
@@ -455,9 +485,10 @@ namespace LOGIN {
 			this->panel3->Controls->Add(this->label8);
 			this->panel3->Controls->Add(this->label7);
 			this->panel3->ForeColor = System::Drawing::SystemColors::ActiveBorder;
-			this->panel3->Location = System::Drawing::Point(3, 3);
+			this->panel3->Location = System::Drawing::Point(2, 2);
+			this->panel3->Margin = System::Windows::Forms::Padding(2);
 			this->panel3->Name = L"panel3";
-			this->panel3->Size = System::Drawing::Size(1163, 107);
+			this->panel3->Size = System::Drawing::Size(872, 87);
 			this->panel3->TabIndex = 22;
 			// 
 			// label14
@@ -467,10 +498,10 @@ namespace LOGIN {
 				static_cast<System::Byte>(0)));
 			this->label14->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(142)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(177)));
-			this->label14->Location = System::Drawing::Point(863, 66);
+			this->label14->Location = System::Drawing::Point(647, 54);
 			this->label14->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label14->Name = L"label14";
-			this->label14->Size = System::Drawing::Size(91, 16);
+			this->label14->Size = System::Drawing::Size(82, 15);
 			this->label14->TabIndex = 38;
 			this->label14->Text = L"Ensambladas";
 			// 
@@ -481,10 +512,10 @@ namespace LOGIN {
 				static_cast<System::Byte>(0)));
 			this->label15->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
 				static_cast<System::Int32>(static_cast<System::Byte>(11)));
-			this->label15->Location = System::Drawing::Point(801, 51);
+			this->label15->Location = System::Drawing::Point(601, 41);
 			this->label15->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label15->Name = L"label15";
-			this->label15->Size = System::Drawing::Size(34, 35);
+			this->label15->Size = System::Drawing::Size(27, 28);
 			this->label15->TabIndex = 37;
 			this->label15->Text = L"4";
 			// 
@@ -495,10 +526,10 @@ namespace LOGIN {
 				static_cast<System::Byte>(0)));
 			this->label12->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(142)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(177)));
-			this->label12->Location = System::Drawing::Point(613, 66);
+			this->label12->Location = System::Drawing::Point(460, 54);
 			this->label12->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label12->Name = L"label12";
-			this->label12->Size = System::Drawing::Size(80, 16);
+			this->label12->Size = System::Drawing::Size(70, 15);
 			this->label12->TabIndex = 36;
 			this->label12->Text = L"En proceso";
 			// 
@@ -509,10 +540,10 @@ namespace LOGIN {
 				static_cast<System::Byte>(0)));
 			this->label13->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
 				static_cast<System::Int32>(static_cast<System::Byte>(11)));
-			this->label13->Location = System::Drawing::Point(543, 51);
+			this->label13->Location = System::Drawing::Point(407, 41);
 			this->label13->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label13->Name = L"label13";
-			this->label13->Size = System::Drawing::Size(34, 35);
+			this->label13->Size = System::Drawing::Size(27, 28);
 			this->label13->TabIndex = 35;
 			this->label13->Text = L"1";
 			// 
@@ -523,10 +554,10 @@ namespace LOGIN {
 				static_cast<System::Byte>(0)));
 			this->label9->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(142)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(177)));
-			this->label9->Location = System::Drawing::Point(296, 66);
+			this->label9->Location = System::Drawing::Point(222, 54);
 			this->label9->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label9->Name = L"label9";
-			this->label9->Size = System::Drawing::Size(131, 16);
+			this->label9->Size = System::Drawing::Size(114, 15);
 			this->label9->TabIndex = 34;
 			this->label9->Text = L"Techos disponibles";
 			// 
@@ -537,10 +568,10 @@ namespace LOGIN {
 				static_cast<System::Byte>(0)));
 			this->label11->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
 				static_cast<System::Int32>(static_cast<System::Byte>(11)));
-			this->label11->Location = System::Drawing::Point(245, 51);
+			this->label11->Location = System::Drawing::Point(184, 41);
 			this->label11->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label11->Name = L"label11";
-			this->label11->Size = System::Drawing::Size(34, 35);
+			this->label11->Size = System::Drawing::Size(27, 28);
 			this->label11->TabIndex = 33;
 			this->label11->Text = L"2";
 			// 
@@ -551,10 +582,10 @@ namespace LOGIN {
 				static_cast<System::Byte>(0)));
 			this->label10->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(142)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(177)));
-			this->label10->Location = System::Drawing::Point(76, 66);
+			this->label10->Location = System::Drawing::Point(57, 54);
 			this->label10->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label10->Name = L"label10";
-			this->label10->Size = System::Drawing::Size(133, 16);
+			this->label10->Size = System::Drawing::Size(118, 15);
 			this->label10->TabIndex = 32;
 			this->label10->Text = L"Paneles disponibles";
 			// 
@@ -565,10 +596,10 @@ namespace LOGIN {
 				static_cast<System::Byte>(0)));
 			this->label8->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
 				static_cast<System::Int32>(static_cast<System::Byte>(11)));
-			this->label8->Location = System::Drawing::Point(29, 51);
+			this->label8->Location = System::Drawing::Point(22, 41);
 			this->label8->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label8->Name = L"label8";
-			this->label8->Size = System::Drawing::Size(34, 35);
+			this->label8->Size = System::Drawing::Size(27, 28);
 			this->label8->TabIndex = 30;
 			this->label8->Text = L"3";
 			// 
@@ -579,20 +610,20 @@ namespace LOGIN {
 				static_cast<System::Byte>(0)));
 			this->label7->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
 				static_cast<System::Int32>(static_cast<System::Byte>(11)));
-			this->label7->Location = System::Drawing::Point(9, 11);
+			this->label7->Location = System::Drawing::Point(7, 9);
 			this->label7->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label7->Name = L"label7";
-			this->label7->Size = System::Drawing::Size(183, 23);
+			this->label7->Size = System::Drawing::Size(154, 19);
 			this->label7->TabIndex = 29;
 			this->label7->Text = L"Resumen de stock:";
 			// 
 			// FormMenuControlador
 			// 
-			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(40)),
 				static_cast<System::Int32>(static_cast<System::Byte>(58)));
-			this->ClientSize = System::Drawing::Size(1287, 782);
+			this->ClientSize = System::Drawing::Size(965, 609);
 			this->Controls->Add(this->panel2);
 			this->Controls->Add(this->dataGridView1);
 			this->Controls->Add(this->button2);
@@ -600,9 +631,10 @@ namespace LOGIN {
 			this->Controls->Add(this->label6);
 			this->Controls->Add(this->panel1);
 			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
-			this->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->Margin = System::Windows::Forms::Padding(2);
 			this->Name = L"FormMenuControlador";
 			this->Text = L"FormMenuControlador";
+			this->Load += gcnew System::EventHandler(this, &FormMenuControlador::FormMenuControlador_Load);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->EndInit();
 			this->panel1->ResumeLayout(false);
 			this->panel1->PerformLayout();
@@ -614,7 +646,123 @@ namespace LOGIN {
 
 		}
 #pragma endregion
+
+	private:
+
+	void cargarPaneles() 
+	{
+		dataGridView1->Rows->Clear();
+
+		for each (PanelLateralModel ^ p in panelController->obtenerTodos())
+		{
+			dataGridView1->Rows->Add(p->Id, p->Material, p->Peso, p->Estado.ToString(), p->Lado.ToString(), p->PuntosAnclaje);
+		}
+	}
+
+	void cargarTechos()
+	{
+		dataGridView1->Rows->Clear();
+
+		for each (EstructuraTechoModel ^ t in techoController->obtenerTodos())
+		{
+			dataGridView1->Rows->Add(t->Id, t->Material, t->Peso, t->Estado.ToString(), t->PuntosUnion, t->Anchura);
+		}
+	}
+
+	void actualizarResumen() 
+	{
+		int panelesDisponibles = 0;
+		int techosDisponibles = 0;
+
+		int enProceso = 0;
+		int ensambladas = 0;
+
+		for each (PanelLateralModel ^ p in panelController->obtenerTodos()) 
+		{
+			if (p->Estado == EstadoPieza::DISPONIBLE)
+				panelesDisponibles++;
+
+			if (p->Estado == EstadoPieza::EN_PROCESO)
+				enProceso++;
+
+			if (p->Estado == EstadoPieza::ENSAMBLADA)
+				ensambladas++;
+		}
+
+		for each (EstructuraTechoModel ^ t in techoController->obtenerTodos())
+		{
+			if (t->Estado == EstadoPieza::DISPONIBLE)
+				techosDisponibles++;
+
+			if (t->Estado == EstadoPieza::EN_PROCESO)
+				enProceso++;
+
+			if (t->Estado == EstadoPieza::ENSAMBLADA)
+				ensambladas++;
+		}
+
+		label8->Text = panelesDisponibles.ToString();
+		label11->Text = techosDisponibles.ToString();
+		label13->Text = enProceso.ToString();
+		label15->Text = ensambladas.ToString();
+	}
 	private: System::Void textBox1_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 	}
+private: System::Void FormMenuControlador_Load(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
+	mostrandoPaneles = true;
+
+	button3->Text = "Agregar Panel";
+
+	cargarPaneles();
+}
+private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
+	mostrandoPaneles = false;
+
+	button3->Text = "Agregar Techo";
+
+	cargarTechos();
+}
+private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e) {
+	if (mostrandoPaneles) 
+	{
+		String^ id = "P" + (panelController->obtenerTodos()->Count + 1);
+
+		panelController->agregar(id, textBox1->Text, Double::Parse(textBox2->Text), LadoPanel::IZQUIERDO, Int32::Parse(textBox4->Text));
+
+		cargarPaneles();
+
+	}
+	else 
+	{
+		String^ id = "T" + (techoController->obtenerTodos()->Count + 1);
+
+		techoController->agregar(id, textBox1->Text, Double::Parse(textBox2->Text), Int32::Parse(textBox4->Text), Double::Parse(textBox3->Text));
+
+		cargarTechos();
+	}
+
+	actualizarResumen();
+}
+private: System::Void button6_Click(System::Object^ sender, System::EventArgs^ e) {
+	if (dataGridView1->SelectedRows->Count == 0)
+		return;
+
+	String^ id = dataGridView1->SelectedRows[0]->Cells[0]->Value->ToString();
+
+	if (mostrandoPaneles) 
+	{
+		panelController->eliminar(id);
+		cargarPaneles();
+	}
+	else 
+	{
+		techoController->eliminar(id);
+		cargarTechos();
+	}
+
+	actualizarResumen();
+}
 };
 }
