@@ -1,10 +1,12 @@
 #pragma once
-
+using namespace GemeloDigitalController;
+using namespace GemeloDigitalModel;
 namespace LOGIN {
 
 	using namespace System;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
+	using namespace System::Collections::Generic;
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
@@ -41,10 +43,6 @@ namespace LOGIN {
 				delete components;
 			}
 		}
-		PanelLateralController^ panelController;
-		EstructuraTechoController^ techoController;
-
-		bool mostrandoPaneles;
 
 
 
@@ -88,23 +86,11 @@ namespace LOGIN {
 	private: System::Windows::Forms::Label^ label11;
 	private: System::Windows::Forms::Label^ label10;
 
-
-
-
-
-
-
-
-
-
-
-
 	protected:
 
 	private:
 
-		PanelLateralController^ panelController;
-		EstructuraTechoController^ techoController;
+		
 
 		bool mostrandoPaneles;
 
@@ -112,6 +98,8 @@ namespace LOGIN {
 		/// Variable del diseñador necesaria.
 		/// </summary>
 		System::ComponentModel::Container ^components;
+		PanelLateralController^ panelController;
+		EstructuraTechoController^ techoController;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -711,6 +699,12 @@ namespace LOGIN {
 private: System::Void FormMenuControlador_Load(System::Object^ sender, System::EventArgs^ e) {
 }
 private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
+	// En button1_Click (Paneles):
+	this->Column4->HeaderText = L"Lado";
+	this->Column5->HeaderText = L"Anclajes";
+
+	
+
 	mostrandoPaneles = true;
 
 	button3->Text = "Agregar Panel";
@@ -718,6 +712,11 @@ private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e
 	cargarPaneles();
 }
 private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
+
+	// En button2_Click (Techos):
+	this->Column4->HeaderText = L"Pts Unión";
+	this->Column5->HeaderText = L"Anchura (cm)";
+
 	mostrandoPaneles = false;
 
 	button3->Text = "Agregar Techo";
@@ -725,11 +724,33 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 	cargarTechos();
 }
 private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e) {
+	if (textBox1->Text->Trim() == "" || textBox2->Text->Trim() == "" ||
+		textBox4->Text->Trim() == "")
+	{
+		MessageBox::Show("Completa todos los campos obligatorios.", "Aviso",
+			MessageBoxButtons::OK, MessageBoxIcon::Warning);
+		return;
+	}
+	double peso;
+	int anclajes;
+	if (!Double::TryParse(textBox2->Text, peso) ||
+		!Int32::TryParse(textBox4->Text, anclajes))
+	{
+		MessageBox::Show("Peso debe ser decimal. Anclajes debe ser entero.", "Error",
+			MessageBoxButtons::OK, MessageBoxIcon::Warning);
+		return;
+	}
+
+
 	if (mostrandoPaneles) 
 	{
 		String^ id = "P" + (panelController->obtenerTodos()->Count + 1);
 
-		panelController->agregar(id, textBox1->Text, Double::Parse(textBox2->Text), LadoPanel::IZQUIERDO, Int32::Parse(textBox4->Text));
+		LadoPanel lado = (textBox3->Text->ToUpper()->Contains("DER"))
+			? LadoPanel::DERECHO
+			: LadoPanel::IZQUIERDO;
+		panelController->agregar(id, textBox1->Text, Double::Parse(textBox2->Text),
+			lado, Int32::Parse(textBox4->Text));
 
 		cargarPaneles();
 

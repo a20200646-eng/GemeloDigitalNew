@@ -449,15 +449,15 @@ namespace LOGIN {
 					Principal->button6->Text = "Salir";
 					Principal->button5->Visible = false;
 				}
-				// 🌟 NUEVO ROL 4: Gestor (Nivel 4)
+				// ROL 4: Controlador de piezas (Gestor de Inventario)
 				else if (nivel == 4) {
-					Principal->label1->Text = "Gestor de Planta";
+					Principal->label1->Text = "Controlador de piezas"; // <-- debe coincidir exactamente con Interfaz.h
 					Principal->button1->Text = "Dashboard";
-					Principal->button2->Text = "Eventos";        // El gestor ve eventos directamente
-					Principal->button3->Text = "Reportes";       // Ve reportes
-					Principal->button6->Text = "Salir";
-					Principal->button4->Visible = false;         // Ocultamos botones sobrantes
+					Principal->button2->Text = "Inventario";
+					Principal->button3->Text = "Estaciones Trabajo";
+					Principal->button4->Text = "Línea Ensamblaje";
 					Principal->button5->Visible = false;
+					Principal->button6->Text = "Cerrar sesión";
 				}
 
 				// Mostrar la pantalla principal y ocultar el login
