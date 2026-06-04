@@ -18,7 +18,7 @@ namespace GemeloDigitalController {
         }
 
         // CREATE
-        bool agregar(int id, String^ nombre, bool activo,
+        bool agregar(String^ id, String^ nombre, bool activo,
             double anguloMedido, double tolerancia) {
             if (buscarPorId(id) != nullptr) return false;
             repositorio->Add(gcnew SensorPosicionModel(
@@ -28,9 +28,9 @@ namespace GemeloDigitalController {
         }
 
         // READ - por ID
-        SensorPosicionModel^ buscarPorId(int id) {
+        SensorPosicionModel^ buscarPorId(String^ id) {
             for each (SensorPosicionModel ^ s in repositorio)
-                if (s->Id == id) return s;
+                if (s->Id->Equals(id)) return s;
             return nullptr;
         }
 
@@ -40,7 +40,7 @@ namespace GemeloDigitalController {
         }
 
         // UPDATE - reemplaza todos los atributos modificables
-        bool modificar(int id, String^ nombre, bool activo,
+        bool modificar(String^ id, String^ nombre, bool activo,
             double anguloMedido, double tolerancia) {
             SensorPosicionModel^ s = buscarPorId(id);
             if (s == nullptr) return false;
@@ -53,7 +53,7 @@ namespace GemeloDigitalController {
         }
 
         // DELETE
-        bool eliminar(int id) {
+        bool eliminar(String^ id) {
             SensorPosicionModel^ s = buscarPorId(id);
             if (s == nullptr) return false;
             repositorio->Remove(s);
@@ -81,7 +81,7 @@ namespace GemeloDigitalController {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
                 repositorio->Add(gcnew SensorPosicionModel(
-                    Int32::Parse(c[0]), c[1], c[2]->Equals("1"),
+                    c[0], c[1], c[2]->Equals("1"),
                     Double::Parse(c[3]), Double::Parse(c[4])));
             }
             sr->Close();

@@ -6,21 +6,21 @@ namespace GemeloDigitalModel {
 
     public ref class EventoModel abstract {
     protected:
-        int         id;
+        String^ id;
         String^ timestamp;
         String^ descripcion;
         NivelEvento nivel;
 
     public:
-        EventoModel(int id, String^ timestamp, String^ descripcion, NivelEvento nivel) {
+        EventoModel(String^ id, String^ timestamp, String^ descripcion, NivelEvento nivel) {
             this->id = id;
             this->timestamp = timestamp;
             this->descripcion = descripcion;
             this->nivel = nivel;
         }
 
-        property int Id {
-            int get() { return id; }
+        property String^ Id {
+            String^ get() { return id; }
         }
 
         property String^ Timestamp {

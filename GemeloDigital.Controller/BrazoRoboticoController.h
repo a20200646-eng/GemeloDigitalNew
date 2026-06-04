@@ -23,7 +23,7 @@ namespace GemeloDigitalController {
         }
 
         // CREATE
-        bool agregar(int id, RolBrazo rol) {
+        bool agregar(String^ id, RolBrazo rol) {
             if (buscarPorId(id) != nullptr) return false;
             repositorio->Add(gcnew BrazoRoboticoModel(id, rol));
             guardarArchivo();
@@ -31,9 +31,9 @@ namespace GemeloDigitalController {
         }
 
         // READ - por ID
-        BrazoRoboticoModel^ buscarPorId(int id) {
+        BrazoRoboticoModel^ buscarPorId(String^ id) {
             for each (BrazoRoboticoModel ^ b in repositorio)
-                if (b->Id == id) return b;
+                if (b->Id->Equals(id)) return b;
             return nullptr;
         }
 
@@ -44,7 +44,7 @@ namespace GemeloDigitalController {
 
         // UPDATE - solo Estado es modificable en un brazo
         // Rol es estructural y no cambia una vez creado el brazo
-        bool modificar(int id, EstadoBrazo nuevoEstado) {
+        bool modificar(String^ id, EstadoBrazo nuevoEstado) {
             BrazoRoboticoModel^ b = buscarPorId(id);
             if (b == nullptr) return false;
             b->Estado = nuevoEstado;
@@ -53,7 +53,7 @@ namespace GemeloDigitalController {
         }
 
         // DELETE
-        bool eliminar(int id) {
+        bool eliminar(String^ id) {
             BrazoRoboticoModel^ b = buscarPorId(id);
             if (b == nullptr) return false;
             repositorio->Remove(b);
@@ -62,7 +62,7 @@ namespace GemeloDigitalController {
         }
 
         // Gestion de componentes internos
-        bool agregarArticulacion(int idBrazo, int idArt, String^ nombre,
+        bool agregarArticulacion(String^ idBrazo, String^ idArt, String^ nombre,
             double anguloActual, double anguloMin, double anguloMax) {
             BrazoRoboticoModel^ b = buscarPorId(idBrazo);
             if (b == nullptr) return false;
@@ -72,7 +72,7 @@ namespace GemeloDigitalController {
             return true;
         }
 
-        bool asignarGripper(int idBrazo, int idGripper, String^ nombre,
+        bool asignarGripper(String^ idBrazo, String^ idGripper, String^ nombre,
             double apertura, double fuerzaAgarre, bool abierto) {
             BrazoRoboticoModel^ b = buscarPorId(idBrazo);
             if (b == nullptr) return false;
@@ -82,7 +82,7 @@ namespace GemeloDigitalController {
             return true;
         }
 
-        bool agregarSensorPosicion(int idBrazo, int idSensor, String^ nombre,
+        bool agregarSensorPosicion(String^ idBrazo, String^ idSensor, String^ nombre,
             double anguloMedido, double tolerancia) {
             BrazoRoboticoModel^ b = buscarPorId(idBrazo);
             if (b == nullptr) return false;
@@ -92,7 +92,7 @@ namespace GemeloDigitalController {
             return true;
         }
 
-        bool agregarSensorFuerza(int idBrazo, int idSensor, String^ nombre,
+        bool agregarSensorFuerza(String^ idBrazo, String^ idSensor, String^ nombre,
             double fuerzaActual, double fuerzaMin, double fuerzaMax) {
             BrazoRoboticoModel^ b = buscarPorId(idBrazo);
             if (b == nullptr) return false;
@@ -162,7 +162,7 @@ namespace GemeloDigitalController {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
                 BrazoRoboticoModel^ b = gcnew BrazoRoboticoModel(
-                    Int32::Parse(c[0]), (RolBrazo)Int32::Parse(c[1]));
+                    c[0], (RolBrazo)Int32::Parse(c[1]));
                 b->Estado = (EstadoBrazo)Int32::Parse(c[2]);
                 b->Gripper = nullptr;
                 repositorio->Add(b);
@@ -176,9 +176,9 @@ namespace GemeloDigitalController {
                     if (linea->Trim()->Length == 0) continue;
                     array<String^>^ c = linea->Split('|');
                     ArticulacionModel^ a = gcnew ArticulacionModel(
-                        Int32::Parse(c[1]), c[2], c[3]->Equals("1"),
+                        c[1], c[2], c[3]->Equals("1"),
                         Double::Parse(c[4]), Double::Parse(c[5]), Double::Parse(c[6]));
-                    BrazoRoboticoModel^ b = buscarPorId(Int32::Parse(c[0]));
+                    BrazoRoboticoModel^ b = buscarPorId(c[0]);
                     if (b != nullptr) b->Articulaciones->Add(a);
                 }
                 sr->Close();
@@ -191,9 +191,9 @@ namespace GemeloDigitalController {
                     if (linea->Trim()->Length == 0) continue;
                     array<String^>^ c = linea->Split('|');
                     GripperModel^ g = gcnew GripperModel(
-                        Int32::Parse(c[1]), c[2], c[3]->Equals("1"),
+                        c[1], c[2], c[3]->Equals("1"),
                         Double::Parse(c[4]), Double::Parse(c[5]), c[6]->Equals("1"));
-                    BrazoRoboticoModel^ b = buscarPorId(Int32::Parse(c[0]));
+                    BrazoRoboticoModel^ b = buscarPorId(c[0]);
                     if (b != nullptr) b->Gripper = g;
                 }
                 sr->Close();
@@ -206,9 +206,9 @@ namespace GemeloDigitalController {
                     if (linea->Trim()->Length == 0) continue;
                     array<String^>^ c = linea->Split('|');
                     SensorPosicionModel^ s = gcnew SensorPosicionModel(
-                        Int32::Parse(c[1]), c[2], c[3]->Equals("1"),
+                        c[1], c[2], c[3]->Equals("1"),
                         Double::Parse(c[4]), Double::Parse(c[5]));
-                    BrazoRoboticoModel^ b = buscarPorId(Int32::Parse(c[0]));
+                    BrazoRoboticoModel^ b = buscarPorId(c[0]);
                     if (b != nullptr) b->Sensores->Add(s);
                 }
                 sr->Close();
@@ -221,9 +221,9 @@ namespace GemeloDigitalController {
                     if (linea->Trim()->Length == 0) continue;
                     array<String^>^ c = linea->Split('|');
                     SensorFuerzaModel^ s = gcnew SensorFuerzaModel(
-                        Int32::Parse(c[1]), c[2], c[3]->Equals("1"),
+                        c[1], c[2], c[3]->Equals("1"),
                         Double::Parse(c[4]), Double::Parse(c[5]), Double::Parse(c[6]));
-                    BrazoRoboticoModel^ b = buscarPorId(Int32::Parse(c[0]));
+                    BrazoRoboticoModel^ b = buscarPorId(c[0]);
                     if (b != nullptr) b->Sensores->Add(s);
                 }
                 sr->Close();

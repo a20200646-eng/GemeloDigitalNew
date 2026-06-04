@@ -10,7 +10,7 @@ namespace GemeloDigitalModel {
         double tolerancia;
 
     public:
-        TareaPosicionarModel(int id, double posicionObjetivo, double tolerancia)
+        TareaPosicionarModel(String^ id, double posicionObjetivo, double tolerancia)
             : TareaModel(id, "PENDIENTE") {
             this->posicionObjetivo = posicionObjetivo;
             this->tolerancia = tolerancia;

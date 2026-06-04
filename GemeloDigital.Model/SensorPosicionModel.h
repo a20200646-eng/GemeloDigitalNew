@@ -10,7 +10,7 @@ namespace GemeloDigitalModel {
         double tolerancia;
 
     public:
-        SensorPosicionModel(int id, String^ nombre, bool activo,
+        SensorPosicionModel(String^ id, String^ nombre, bool activo,
             double anguloMedido, double tolerancia)
             : SensorModel(id, nombre, activo) {
             this->anguloMedido = anguloMedido;

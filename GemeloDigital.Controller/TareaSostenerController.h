@@ -18,7 +18,7 @@ namespace GemeloDigitalController {
         }
 
         // CREATE
-        bool agregar(int id, double fuerzaSosten, int duracion) {
+        bool agregar(String^ id, double fuerzaSosten, int duracion) {
             if (buscarPorId(id) != nullptr) return false;
             repositorio->Add(gcnew TareaSostenerModel(id, fuerzaSosten, duracion));
             guardarArchivo();
@@ -26,9 +26,9 @@ namespace GemeloDigitalController {
         }
 
         // READ - por ID
-        TareaSostenerModel^ buscarPorId(int id) {
+        TareaSostenerModel^ buscarPorId(String^ id) {
             for each (TareaSostenerModel ^ t in repositorio)
-                if (t->Id == id) return t;
+                if (t->Id->Equals(id)) return t;
             return nullptr;
         }
 
@@ -38,7 +38,7 @@ namespace GemeloDigitalController {
         }
 
         // UPDATE - reemplaza todos los atributos modificables
-        bool modificar(int id, String^ estado, double fuerzaSosten, int duracion) {
+        bool modificar(String^ id, String^ estado, double fuerzaSosten, int duracion) {
             TareaSostenerModel^ t = buscarPorId(id);
             if (t == nullptr) return false;
             t->Estado = estado;
@@ -49,7 +49,7 @@ namespace GemeloDigitalController {
         }
 
         // DELETE
-        bool eliminar(int id) {
+        bool eliminar(String^ id) {
             TareaSostenerModel^ t = buscarPorId(id);
             if (t == nullptr) return false;
             repositorio->Remove(t);
@@ -76,7 +76,7 @@ namespace GemeloDigitalController {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
                 TareaSostenerModel^ t = gcnew TareaSostenerModel(
-                    Int32::Parse(c[0]), Double::Parse(c[2]), Int32::Parse(c[3]));
+                    c[0], Double::Parse(c[2]), Int32::Parse(c[3]));
                 t->Estado = c[1];
                 repositorio->Add(t);
             }

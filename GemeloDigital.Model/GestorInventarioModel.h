@@ -9,7 +9,7 @@ namespace GemeloDigitalModel {
         int totalPiezasGestionadas;
 
     public:
-        GestorInventarioModel(int id, String^ nombre, String^ contrasena)
+        GestorInventarioModel(String^ id, String^ nombre, String^ contrasena)
             : UsuarioModel(id, nombre, contrasena, RolUsuario::GESTOR) {
             this->totalPiezasGestionadas = 0;
         }

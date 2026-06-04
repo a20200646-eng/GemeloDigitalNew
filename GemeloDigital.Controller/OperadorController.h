@@ -18,7 +18,7 @@ namespace GemeloDigitalController {
         }
 
         // CREATE
-        bool agregar(int id, String^ nombre, String^ contrasena, String^ turno) {
+        bool agregar(String^ id, String^ nombre, String^ contrasena, String^ turno) {
             if (buscarPorId(id) != nullptr) return false;
             repositorio->Add(gcnew OperadorModel(id, nombre, contrasena, turno));
             guardarArchivo();
@@ -26,9 +26,9 @@ namespace GemeloDigitalController {
         }
 
         // READ - por ID
-        OperadorModel^ buscarPorId(int id) {
+        OperadorModel^ buscarPorId(String^ id) {
             for each (OperadorModel ^ o in repositorio)
-                if (o->Id == id) return o;
+                if (o->Id->Equals(id)) return o;
             return nullptr;
         }
 
@@ -38,7 +38,7 @@ namespace GemeloDigitalController {
         }
 
         // UPDATE - reemplaza todos los atributos modificables
-        bool modificar(int id, String^ nombre, String^ contrasena, String^ turno) {
+        bool modificar(String^ id, String^ nombre, String^ contrasena, String^ turno) {
             OperadorModel^ o = buscarPorId(id);
             if (o == nullptr) return false;
             o->Nombre = nombre;
@@ -49,7 +49,7 @@ namespace GemeloDigitalController {
         }
 
         // DELETE
-        bool eliminar(int id) {
+        bool eliminar(String^ id) {
             OperadorModel^ o = buscarPorId(id);
             if (o == nullptr) return false;
             repositorio->Remove(o);
@@ -76,7 +76,7 @@ namespace GemeloDigitalController {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
                 repositorio->Add(gcnew OperadorModel(
-                    Int32::Parse(c[0]), c[1], c[2], c[3]));
+                    c[0], c[1], c[2], c[3]));
             }
             sr->Close();
         }

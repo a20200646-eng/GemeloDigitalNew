@@ -19,7 +19,7 @@ namespace GemeloDigitalController {
         }
 
         // CREATE
-        bool agregar(int id) {
+        bool agregar(String^ id) {
             if (buscarPorId(id) != nullptr) return false;
             repositorio->Add(gcnew EstacionBodyFramingModel(id));
             guardarArchivo();
@@ -27,9 +27,9 @@ namespace GemeloDigitalController {
         }
 
         // READ - por ID
-        EstacionBodyFramingModel^ buscarPorId(int id) {
+        EstacionBodyFramingModel^ buscarPorId(String^ id) {
             for each (EstacionBodyFramingModel ^ e in repositorio)
-                if (e->Id == id) return e;
+                if (e->Id->Equals(id)) return e;
             return nullptr;
         }
 
@@ -39,7 +39,7 @@ namespace GemeloDigitalController {
         }
 
         // UPDATE - solo EstadoSistema es modificable
-        bool modificar(int id, EstadoSistema nuevoEstado) {
+        bool modificar(String^ id, EstadoSistema nuevoEstado) {
             EstacionBodyFramingModel^ e = buscarPorId(id);
             if (e == nullptr) return false;
             e->EstadoSistemaActual = nuevoEstado;
@@ -48,7 +48,7 @@ namespace GemeloDigitalController {
         }
 
         // DELETE
-        bool eliminar(int id) {
+        bool eliminar(String^ id) {
             EstacionBodyFramingModel^ e = buscarPorId(id);
             if (e == nullptr) return false;
             repositorio->Remove(e);
@@ -57,7 +57,7 @@ namespace GemeloDigitalController {
         }
 
         // Agregar brazo a la estacion
-        bool agregarBrazo(int idEstacion, BrazoRoboticoModel^ brazo) {
+        bool agregarBrazo(String^ idEstacion, BrazoRoboticoModel^ brazo) {
             EstacionBodyFramingModel^ e = buscarPorId(idEstacion);
             if (e == nullptr || brazo == nullptr) return false;
             e->agregarBrazo(brazo);
@@ -93,7 +93,7 @@ namespace GemeloDigitalController {
             while ((linea = sr->ReadLine()) != nullptr) {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
-                EstacionBodyFramingModel^ e = gcnew EstacionBodyFramingModel(Int32::Parse(c[0]));
+                EstacionBodyFramingModel^ e = gcnew EstacionBodyFramingModel(c[0]);
                 e->EstadoSistemaActual = (EstadoSistema)Int32::Parse(c[1]);
                 repositorio->Add(e);
             }
@@ -105,8 +105,8 @@ namespace GemeloDigitalController {
             while ((linea = sr->ReadLine()) != nullptr) {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
-                EstacionBodyFramingModel^ e = buscarPorId(Int32::Parse(c[0]));
-                BrazoRoboticoModel^ b = ctrlBrazo->buscarPorId(Int32::Parse(c[1]));
+                EstacionBodyFramingModel^ e = buscarPorId(c[0]);
+                BrazoRoboticoModel^ b = ctrlBrazo->buscarPorId(c[1]);
                 if (e != nullptr && b != nullptr) e->Brazos->Add(b);
             }
             sr->Close();

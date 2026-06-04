@@ -18,7 +18,7 @@ namespace GemeloDigitalController {
         }
 
         // CREATE
-        bool agregar(int id, String^ nombre, bool activo,
+        bool agregar(String^ id, String^ nombre, bool activo,
             double apertura, double fuerzaAgarre, bool abierto) {
             if (buscarPorId(id) != nullptr) return false;
             repositorio->Add(gcnew GripperModel(
@@ -28,9 +28,9 @@ namespace GemeloDigitalController {
         }
 
         // READ - por ID
-        GripperModel^ buscarPorId(int id) {
+        GripperModel^ buscarPorId(String^ id) {
             for each (GripperModel ^ g in repositorio)
-                if (g->Id == id) return g;
+                if (g->Id->Equals(id)) return g;
             return nullptr;
         }
 
@@ -40,7 +40,7 @@ namespace GemeloDigitalController {
         }
 
         // UPDATE - reemplaza todos los atributos modificables
-        bool modificar(int id, String^ nombre, bool activo,
+        bool modificar(String^ id, String^ nombre, bool activo,
             double apertura, double fuerzaAgarre, bool abierto) {
             GripperModel^ g = buscarPorId(id);
             if (g == nullptr) return false;
@@ -54,7 +54,7 @@ namespace GemeloDigitalController {
         }
 
         // DELETE
-        bool eliminar(int id) {
+        bool eliminar(String^ id) {
             GripperModel^ g = buscarPorId(id);
             if (g == nullptr) return false;
             repositorio->Remove(g);
@@ -82,7 +82,7 @@ namespace GemeloDigitalController {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
                 repositorio->Add(gcnew GripperModel(
-                    Int32::Parse(c[0]), c[1], c[2]->Equals("1"),
+                    c[0], c[1], c[2]->Equals("1"),
                     Double::Parse(c[3]), Double::Parse(c[4]), c[5]->Equals("1")));
             }
             sr->Close();

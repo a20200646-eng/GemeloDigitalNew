@@ -5,19 +5,19 @@ namespace GemeloDigitalModel {
 
     public ref class EstacionTrabajoModel {
     private:
-        int     id;
+        String^ id;
         String^ tipoPiezaAceptada;
         bool    ocupada;
 
     public:
-        EstacionTrabajoModel(int id, String^ tipoPiezaAceptada, bool ocupada) {
+        EstacionTrabajoModel(String^ id, String^ tipoPiezaAceptada, bool ocupada) {
             this->id = id;
             this->tipoPiezaAceptada = tipoPiezaAceptada;
             this->ocupada = ocupada;
         }
 
-        property int Id {
-            int get() { return id; }
+        property String^ Id {
+            String^ get() { return id; }
         }
 
         property String^ TipoPiezaAceptada {

@@ -634,7 +634,7 @@ namespace LOGIN {
 			int nuevoId = contr->obtenerTodos()->Count + 1;
 
 			// Guardamos directamente en la persistencia real del equipo (.dat)
-			if (contr->agregar(nuevoId, usuario, password, nivelAcceso)) {
+			if (contr->agregar(nuevoId.ToString(), usuario, password, nivelAcceso)) {
 				MessageBox::Show("¡Usuario '" + usuario + "' registrado con éxito en el sistema!", "Éxito", MessageBoxButtons::OK, MessageBoxIcon::Information);
 				this->textBox1->Clear(); this->textBox2->Clear(); this->textBox3->Clear();
 

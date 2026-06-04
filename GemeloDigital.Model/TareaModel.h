@@ -5,17 +5,17 @@ namespace GemeloDigitalModel {
 
     public ref class TareaModel abstract {
     protected:
-        int     id;
+        String^ id;
         String^ estado;
 
     public:
-        TareaModel(int id, String^ estado) {
+        TareaModel(String^ id, String^ estado) {
             this->id = id;
             this->estado = estado;
         }
 
-        property int Id {
-            int get() { return id; }
+        property String^ Id {
+            String^ get() { return id; }
         }
 
         property String^ Estado {

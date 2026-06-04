@@ -6,20 +6,20 @@ namespace GemeloDigitalModel {
 
     public ref class ComponenteRoboticoModel abstract {
     protected:
-        int     id;
+        String^ id;
         String^ nombre;
         bool    activo;
 
     public:
-        ComponenteRoboticoModel(int id, String^ nombre, bool activo) {
+        ComponenteRoboticoModel(String^ id, String^ nombre, bool activo) {
             this->id = id;
             this->nombre = nombre;
             this->activo = activo;
         }
 
         // Properties
-        property int Id {
-            int get() { return id; }
+        property String^ Id {
+            String^ get() { return id; }
         }
 
         property String^ Nombre {

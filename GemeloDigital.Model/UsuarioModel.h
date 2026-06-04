@@ -6,21 +6,21 @@ namespace GemeloDigitalModel {
 
     public ref class UsuarioModel abstract {
     protected:
-        int        id;
+        String^ id;
         String^ nombre;
         String^ contrasena;
         RolUsuario rol;
 
     public:
-        UsuarioModel(int id, String^ nombre, String^ contrasena, RolUsuario rol) {
+        UsuarioModel(String^ id, String^ nombre, String^ contrasena, RolUsuario rol) {
             this->id = id;
             this->nombre = nombre;
             this->contrasena = contrasena;
             this->rol = rol;
         }
 
-        property int Id {
-            int get() { return id; }
+        property String^ Id {
+            String^ get() { return id; }
         }
 
         property String^ Nombre {

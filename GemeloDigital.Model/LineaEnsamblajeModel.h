@@ -7,21 +7,21 @@ namespace GemeloDigitalModel {
 
     public ref class LineaEnsamblajeModel {
     private:
-        int                id;
+        String^ id;
         List<PiezaModel^>^ colaPiezas;
         int                indiceActual;
         bool               secuenciaAprobada;
 
     public:
-        LineaEnsamblajeModel(int id) {
+        LineaEnsamblajeModel(String^ id) {
             this->id = id;
             this->indiceActual = 0;
             this->secuenciaAprobada = false;
             colaPiezas = gcnew List<PiezaModel^>();
         }
 
-        property int Id {
-            int get() { return id; }
+        property String^ Id {
+            String^ get() { return id; }
         }
 
         property int IndiceActual {

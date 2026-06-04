@@ -9,13 +9,13 @@ namespace GemeloDigitalController {
     // ReporteCostos — clase auxiliar del Controller, no tiene Model
     public ref class ReporteCostos {
     private:
-        int    id;
+        String^    id;
         int    ciclosCompletados;
         double tiempoOperativo;
         double costoPorCiclo;
 
     public:
-        ReporteCostos(int id, int ciclosCompletados,
+        ReporteCostos(String^ id, int ciclosCompletados,
             double tiempoOperativo, double costoPorCiclo) {
             this->id = id;
             this->ciclosCompletados = ciclosCompletados;
@@ -23,8 +23,8 @@ namespace GemeloDigitalController {
             this->costoPorCiclo = costoPorCiclo;
         }
 
-        property int Id {
-            int get() { return id; }
+        property String^ Id {
+            String^ get() { return id; }
         }
 
         property int CiclosCompletados {
@@ -67,7 +67,7 @@ namespace GemeloDigitalController {
         }
 
         // CREATE
-        bool agregar(int id, int ciclos, double tiempo, double costoCiclo) {
+        bool agregar(String^ id, int ciclos, double tiempo, double costoCiclo) {
             if (buscarPorId(id) != nullptr) return false;
             repositorio->Add(gcnew ReporteCostos(id, ciclos, tiempo, costoCiclo));
             guardarArchivo();
@@ -75,9 +75,9 @@ namespace GemeloDigitalController {
         }
 
         // READ - por ID
-        ReporteCostos^ buscarPorId(int id) {
+        ReporteCostos^ buscarPorId(String^ id) {
             for each (ReporteCostos ^ r in repositorio)
-                if (r->Id == id) return r;
+                if (r->Id->Equals(id)) return r;
             return nullptr;
         }
 
@@ -87,7 +87,7 @@ namespace GemeloDigitalController {
         }
 
         // UPDATE - reemplaza todos los atributos modificables
-        bool modificar(int id, int ciclosCompletados,
+        bool modificar(String^ id, int ciclosCompletados,
             double tiempoOperativo, double costoPorCiclo) {
             ReporteCostos^ r = buscarPorId(id);
             if (r == nullptr) return false;
@@ -99,7 +99,7 @@ namespace GemeloDigitalController {
         }
 
         // DELETE
-        bool eliminar(int id) {
+        bool eliminar(String^ id) {
             ReporteCostos^ r = buscarPorId(id);
             if (r == nullptr) return false;
             repositorio->Remove(r);
@@ -127,7 +127,7 @@ namespace GemeloDigitalController {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
                 repositorio->Add(gcnew ReporteCostos(
-                    Int32::Parse(c[0]), Int32::Parse(c[1]),
+                    c[0], Int32::Parse(c[1]),
                     Double::Parse(c[2]), Double::Parse(c[3])));
             }
             sr->Close();

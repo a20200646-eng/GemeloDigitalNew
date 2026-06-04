@@ -13,7 +13,13 @@ namespace LOGIN {
 	using namespace System::Drawing;
 
 	/// <summary>
-	/// Resumen de Dashboard_Operador
+	/// Dashboard del Operador.
+	/// Muestra KPIs de tareas pendientes/completadas, tabla de tareas pendientes
+	/// y tabla de referencia de estado de brazos.
+	/// Controllers usados:
+	///   - TareaPosicionarController, TareaSostenerController,
+	///     TareaSoldarController, TareaCoordinadaController
+	///   - BrazoRoboticoController
 	/// </summary>
 	public ref class Dashboard_Operador : public System::Windows::Forms::Form
 	{
@@ -24,23 +30,14 @@ namespace LOGIN {
 			//
 			//TODO: agregar código de constructor aquí
 			//
-			ctrl_brazo1 = gcnew BrazoRoboticoController();
+			ctrlPosicionar = gcnew TareaPosicionarController();
+			ctrlSostener = gcnew TareaSostenerController();
+			ctrlSoldar = gcnew TareaSoldarController();
+			ctrlCoordinada = gcnew TareaCoordinadaController();
+			ctrlBrazo = gcnew BrazoRoboticoController();
 
-			/*ctrl_brazo1->agregar(1, GemeloDigitalModel::RolBrazo::CENTRAL_SUP); //estado en reposo por defecto
-
-			ctrl_brazo1->agregarArticulacion(1, 1, "Articulación 1", 90, 0, 180);
-			ctrl_brazo1->agregarSensorFuerza(1, 1, "Sensor de Fuerza Principal", 100, 0, 100);
-			ctrl_brazo1->asignarGripper(1, 1, "Gripper Principal", 50, 50, false);
-			ctrl_brazo1->agregarSensorPosicion(1, 1, "Sensor de Posición Principal", 90, 5);*/
-
-
-			for each (BrazoRoboticoModel ^ b in ctrl_brazo1->obtenerTodos()) {
-				dataGridView1->Rows->Add(
-					b->Id.ToString(),
-					b->Rol.ToString(),
-					b->Estado.ToString(), "TRUE"
-				);
-			}
+			
+			
 
 		}
 
@@ -91,7 +88,11 @@ namespace LOGIN {
 		/// </summary>
 		System::ComponentModel::Container ^components;
 
-		BrazoRoboticoController^ ctrl_brazo1;
+		TareaPosicionarController^ ctrlPosicionar;
+		TareaSostenerController^ ctrlSostener;
+		TareaSoldarController^ ctrlSoldar;
+		TareaCoordinadaController^ ctrlCoordinada;
+		BrazoRoboticoController^ ctrlBrazo;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -347,6 +348,9 @@ namespace LOGIN {
 			dataGridViewCellStyle1->WrapMode = System::Windows::Forms::DataGridViewTriState::True;
 			this->dataGridView2->RowHeadersDefaultCellStyle = dataGridViewCellStyle1;
 			this->dataGridView2->RowHeadersVisible = false;
+			//
+			this->dataGridView2->ReadOnly = true;
+			//
 			this->dataGridView2->RowHeadersWidth = 51;
 			this->dataGridView2->RowTemplate->Height = 24;
 			this->dataGridView2->Size = System::Drawing::Size(654, 108);
@@ -417,6 +421,9 @@ namespace LOGIN {
 			dataGridViewCellStyle2->WrapMode = System::Windows::Forms::DataGridViewTriState::True;
 			this->dataGridView1->RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
 			this->dataGridView1->RowHeadersVisible = false;
+			// Solo lectura (referencia)
+			this->dataGridView1->ReadOnly = true;
+			// No permitir agregar/eliminar filas (referencia)
 			this->dataGridView1->RowHeadersWidth = 51;
 			this->dataGridView1->RowTemplate->Height = 24;
 			this->dataGridView1->Size = System::Drawing::Size(654, 108);
@@ -461,6 +468,7 @@ namespace LOGIN {
 			this->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->Name = L"Dashboard_Operador";
 			this->Text = L"Dashboard_Operador";
+			// Conectar evento Load
 			this->Load += gcnew System::EventHandler(this, &Dashboard_Operador::Dashboard_Operador_Load);
 			this->panel5->ResumeLayout(false);
 			this->panel5->PerformLayout();
@@ -468,6 +476,9 @@ namespace LOGIN {
 			this->panel3->PerformLayout();
 			this->panel7->ResumeLayout(false);
 			this->panel7->PerformLayout();
+
+
+			
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView2))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->EndInit();
 			this->ResumeLayout(false);
@@ -475,7 +486,153 @@ namespace LOGIN {
 
 		}
 #pragma endregion
-	private: System::Void Dashboard_Operador_Load(System::Object^ sender, System::EventArgs^ e) {
+
+	void Cargar() {
+			CargarKPIs();
+			CargarTareasPendientes();
+			CargarEstadoBrazos();
 	}
+	private: System::Void Dashboard_Operador_Load(System::Object^ sender, System::EventArgs^ e) {
+		Cargar();
+	}
+
+		   void CargarKPIs()
+		   {
+			   int pendientes = 0;
+			   int completadas = 0;
+			   int totalBrazos = ctrlBrazo->obtenerTodos()->Count;
+
+			   // Contar desde cada controller de tareas
+			   for each(TareaPosicionarModel ^ t in ctrlPosicionar->obtenerTodos())
+			   {
+				   if (t->Estado == "PENDIENTE" || t->Estado == "EN CURSO") pendientes++;
+				   else if (t->Estado == "COMPLETADA") completadas++;
+			   }
+			   for each(TareaSostenerModel ^ t in ctrlSostener->obtenerTodos())
+			   {
+				   if (t->Estado == "PENDIENTE" || t->Estado == "EN CURSO") pendientes++;
+				   else if (t->Estado == "COMPLETADA") completadas++;
+			   }
+			   for each(TareaSoldarModel ^ t in ctrlSoldar->obtenerTodos())
+			   {
+				   if (t->Estado == "PENDIENTE" || t->Estado == "EN CURSO") pendientes++;
+				   else if (t->Estado == "COMPLETADA") completadas++;
+			   }
+			   for each(TareaCoordinadaModel ^ t in ctrlCoordinada->obtenerTodos())
+			   {
+				   if (t->Estado == "PENDIENTE" || t->Estado == "EN CURSO") pendientes++;
+				   else if (t->Estado == "COMPLETADA") completadas++;
+			   }
+
+			   label8->Text = pendientes.ToString();
+			   label10->Text = completadas.ToString();
+			   label12->Text = totalBrazos.ToString();
+		   }
+
+		   void CargarTareasPendientes()
+		   {
+			   dataGridView2->Rows->Clear();
+
+			   // --- Posicionar ---
+			   for each(TareaPosicionarModel ^ t in ctrlPosicionar->obtenerTodos())
+			   {
+				   if (t->Estado == "COMPLETADA") continue;
+				   String^ detalle = "PosObj=" + t->PosicionObjetivo.ToString("F1")
+					   + " Tol=" + t->Tolerancia.ToString("F1");
+				   dataGridView2->Rows->Add("Posicionar", t->Id, t->Estado, detalle);
+			   }
+
+			   // --- Sostener ---
+			   for each(TareaSostenerModel ^ t in ctrlSostener->obtenerTodos())
+			   {
+				   if (t->Estado == "COMPLETADA") continue;
+				   String^ detalle = "Fuerza=" + t->FuerzaSosten.ToString("F1")
+					   + " Dur=" + t->Duracion.ToString() + "s";
+				   dataGridView2->Rows->Add("Sostener", t->Id, t->Estado, detalle);
+			   }
+
+			   // --- Soldar ---
+			   for each(TareaSoldarModel ^ t in ctrlSoldar->obtenerTodos())
+			   {
+				   if (t->Estado == "COMPLETADA") continue;
+				   String^ detalle = t->PuntosCompletados.ToString() + "/"
+					   + t->PuntosObjetivo.ToString() + " puntos";
+				   dataGridView2->Rows->Add("Soldar", t->Id, t->Estado, detalle);
+			   }
+
+			   // --- Coordinada ---
+			   for each(TareaCoordinadaModel ^ t in ctrlCoordinada->obtenerTodos())
+			   {
+				   if (t->Estado == "COMPLETADA") continue;
+				   String^ detalle = t->TotalConfirmado.ToString() + "/"
+					   + t->TotalRequerido.ToString() + " confirmados";
+				   dataGridView2->Rows->Add("Coordinada", t->Id, t->Estado, detalle);
+			   }
+
+			   // Colorear columna Estado
+			   for each(DataGridViewRow ^ row in dataGridView2->Rows)
+			   {
+				   if (row->IsNewRow) continue;
+				   String^ estado = row->Cells[2]->Value->ToString();
+				   DataGridViewCell^ celda = row->Cells[2];
+				   if (estado == "PENDIENTE")
+					   celda->Style->ForeColor = Color::FromArgb(230, 160, 0);    // naranja
+				   else if (estado == "EN CURSO")
+					   celda->Style->ForeColor = Color::FromArgb(80, 160, 255);   // azul
+				   else
+					   celda->Style->ForeColor = Color::FromArgb(0, 200, 100);    // verde
+			   }
+		   }
+
+		   void CargarEstadoBrazos()
+		   {
+			   dataGridView1->Rows->Clear();
+
+			   for each(BrazoRoboticoModel ^ b in ctrlBrazo->obtenerTodos())
+			   {
+				   String^ rol;
+				   switch (b->Rol)
+				   {
+				   case RolBrazo::LATERAL_IZQ:  rol = "Lateral Izquierdo"; break;
+				   case RolBrazo::LATERAL_DER:  rol = "Lateral Derecho";   break;
+				   case RolBrazo::CENTRAL_SUP:  rol = "Central Superior";  break;
+				   default:                     rol = "Desconocido";        break;
+				   }
+
+				   String^ estado;
+				   switch (b->Estado)
+				   {
+				   case EstadoBrazo::REPOSO:        estado = "REPOSO";        break;
+				   case EstadoBrazo::CALIBRANDO:    estado = "CALIBRANDO";    break;
+				   case EstadoBrazo::POSICIONANDO:  estado = "POSICIONANDO";  break;
+				   case EstadoBrazo::SOLDANDO:      estado = "SOLDANDO";      break;
+				   case EstadoBrazo::EN_ERROR:      estado = "EN ERROR";      break;
+				   case EstadoBrazo::PAUSA:         estado = "PAUSA";         break;
+				   default:                         estado = "DESCONOCIDO";   break;
+				   }
+
+				   dataGridView1->Rows->Add(b->Id, rol, estado);
+			   }
+
+			   // Colorear columna Estado
+			   for each(DataGridViewRow ^ row in dataGridView1->Rows)
+			   {
+				   if (row->IsNewRow) continue;
+				   String^ estado = row->Cells[2]->Value->ToString();
+				   DataGridViewCell^ celda = row->Cells[2];
+				   if (estado == "POSICIONANDO")
+					   celda->Style->ForeColor = Color::FromArgb(80, 160, 255);   // azul
+				   else if (estado == "SOLDANDO")
+					   celda->Style->ForeColor = Color::FromArgb(230, 160, 0);    // naranja
+				   else if (estado == "EN ERROR")
+					   celda->Style->ForeColor = Color::FromArgb(200, 40, 40);    // rojo
+				   else if (estado == "PAUSA")
+					   celda->Style->ForeColor = Color::FromArgb(160, 80, 200);   // violeta
+				   else
+					   celda->Style->ForeColor = Color::Gray;                     // gris REPOSO
+			   }
+		   }
+
+
 };
 }

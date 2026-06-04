@@ -11,7 +11,7 @@ namespace GemeloDigitalModel {
         double anguloMaximo;
 
     public:
-        ArticulacionModel(int id, String^ nombre, bool activo,
+        ArticulacionModel(String^ id, String^ nombre, bool activo,
             double anguloActual, double anguloMinimo, double anguloMaximo)
             : ComponenteRoboticoModel(id, nombre, activo) {
             this->anguloActual = anguloActual;

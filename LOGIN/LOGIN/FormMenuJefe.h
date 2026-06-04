@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 using namespace GemeloDigitalController;
 using namespace GemeloDigitalModel;
 namespace LOGIN {
@@ -6,6 +6,7 @@ namespace LOGIN {
 	using namespace System;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
+	using namespace System::Collections::Generic;
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
@@ -20,25 +21,25 @@ namespace LOGIN {
 		{
 			InitializeComponent();
 			//
-			//TODO: agregar c�digo de constructor aqu�
-			// Inicializar los controladores para manejar la l�gica de cada componente del brazo rob�tico
+			//TODO: agregar código de constructor aquí
+			// Inicializar los controladores para manejar la lógica de cada componente del brazo robótico
 		
 		
 			ctrl_brazo1 = gcnew BrazoRoboticoController();
 
 			/*ctrl_brazo1->agregar(1, GemeloDigitalModel::RolBrazo::CENTRAL_SUP); //estado en reposo por defecto
 			
-			ctrl_brazo1->agregarArticulacion(1, 1, "Articulaci�n 1", 90, 0, 180);
+			ctrl_brazo1->agregarArticulacion(1, 1, "Articulación 1", 90, 0, 180);
 			ctrl_brazo1->agregarSensorFuerza(1, 1, "Sensor de Fuerza Principal", 100, 0, 100);
 			ctrl_brazo1->asignarGripper(1, 1, "Gripper Principal", 50, 50, false);
-			ctrl_brazo1->agregarSensorPosicion(1, 2, "Sensor de Posici�n Principal", 90, 5);*/
+			ctrl_brazo1->agregarSensorPosicion(1, 2, "Sensor de Posición Principal", 90, 5);*/
 
 			//hacer validacion para que no se repitan IDs en ningun tipo de sensor es decir 
 			//sensor posisicion 1 (S1) no puede ser igual a sensor de fuerza 1 (S1)
-			//ctrl_brazo1->eliminar(1); //Limpiar el brazo de prueba para evitar duplicados al reiniciar la aplicaci�n
+			//ctrl_brazo1->eliminar(1); //Limpiar el brazo de prueba para evitar duplicados al reiniciar la aplicación
 			for each (BrazoRoboticoModel ^ b in ctrl_brazo1->obtenerTodos()) {
 				dataGridView1->Rows->Add(
-					b->Id.ToString(),
+					b->Id,
 					b->Rol.ToString(),
 					b->Estado.ToString(),"TRUE"
 				);
@@ -49,7 +50,7 @@ namespace LOGIN {
 
 	protected:
 		/// <summary>
-		/// Limpiar los recursos que se est�n usando.
+		/// Limpiar los recursos que se estén usando.
 		/// </summary>
 		~FormMenuJefe()
 		{
@@ -137,20 +138,20 @@ namespace LOGIN {
 
 	private:
 		/// <summary>
-		/// Variable del dise�ador necesaria.
+		/// Variable del diseñador necesaria.
 		/// </summary>
 		System::ComponentModel::Container ^components;
 
 
-		// Controladores para manejar la l�gica de cada componente del brazo rob�tico
+		// Controladores para manejar la lógica de cada componente del brazo robótico
 		
 		BrazoRoboticoController^ ctrl_brazo1;
 	
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
-		/// M�todo necesario para admitir el Dise�ador. No se puede modificar
-		/// el contenido de este m�todo con el editor de c�digo.
+		/// Método necesario para admitir el Diseñador. No se puede modificar
+		/// el contenido de este método con el editor de código.
 		/// </summary>
 		void InitializeComponent(void)
 		{
@@ -509,7 +510,7 @@ namespace LOGIN {
 			this->label14->Name = L"label14";
 			this->label14->Size = System::Drawing::Size(141, 13);
 			this->label14->TabIndex = 16;
-			this->label14->Text = L"Estado de brazos rob�ticos: ";
+			this->label14->Text = L"Estado de brazos robóticos: ";
 			// 
 			// dataGridView1
 			// 
@@ -713,7 +714,7 @@ namespace LOGIN {
 			this->label4->Name = L"label4";
 			this->label4->Size = System::Drawing::Size(106, 13);
 			this->label4->TabIndex = 24;
-			this->label4->Text = L"L�nea de ensamblaje";
+			this->label4->Text = L"Línea de ensamblaje";
 			// 
 			// FormMenuJefe
 			// 
@@ -780,6 +781,101 @@ private: System::Void label2_Click(System::Object^ sender, System::EventArgs^ e)
 private: System::Void label6_Click(System::Object^ sender, System::EventArgs^ e) {
 }
 private: System::Void FormMenuJefe_Load(System::Object^ sender, System::EventArgs^ e) {
+
+	// ── 1. BRAZOS ─────────────────────────────────────────────────
+	List<BrazoRoboticoModel^>^ brazos = ctrl_brazo1->obtenerTodos();
+	int totalBrazos = brazos->Count;
+	int brazosActivos = 0;
+
+	dataGridView1->Rows->Clear();
+
+	for each (BrazoRoboticoModel ^ b in brazos) {
+		bool activo = (b->Estado != GemeloDigitalModel::EstadoBrazo::REPOSO && b->Estado != GemeloDigitalModel::EstadoBrazo::PAUSA);
+		if (activo) brazosActivos++;
+
+		dataGridView1->Rows->Add(
+			b->Id,
+			b->Rol.ToString(),
+			b->Estado.ToString(),
+			activo ? "Si" : "No"
+		);
+	}
+
+	// KPI: Brazos activos (label8 = valor, label7 = etiqueta)
+	label8->Text = brazosActivos.ToString() + " / " + totalBrazos.ToString();
+
+	// ── 2. ESTADO DEL SISTEMA ─────────────────────────────────────
+	// Se determina por el estado de los brazos:
+	// Si alguno está en ERROR → ALERTA, si todos REPOSO → INACTIVO, si no → OPERATIVO
+	bool hayError = false;
+	bool todosInactivos = (brazosActivos == 0);
+
+	for each (BrazoRoboticoModel ^ b in brazos) {
+		if (b->Estado == GemeloDigitalModel::EstadoBrazo::EN_ERROR) {
+			hayError = true;
+		}
+			
+	}
+
+	String^ estadoSistema;
+	Color   colorEstado;
+	if (hayError) {
+		estadoSistema = "ALERTA";
+		colorEstado = Color::Orange;
+	}
+	else if (todosInactivos || totalBrazos == 0) {
+		estadoSistema = "INACTIVO";
+		colorEstado = Color::Gray;
+	}
+	else {
+		estadoSistema = "OPERATIVO";
+		colorEstado = Color::FromArgb(0, 200, 100);
+	}
+
+	label6->Text = estadoSistema;   // KPI card estado
+	label13->Text = estadoSistema;   // Indicador GDI+
+	label6->ForeColor = colorEstado;
+	label13->ForeColor = colorEstado;
+
+	// ── 3. EVENTOS REGISTRADOS ────────────────────────────────────
+	RegistroEventosController^ ctrlEventos = gcnew RegistroEventosController();
+	int totalEventos = 0;
+	for each (RegistroEventos ^ r in ctrlEventos->obtenerTodos())
+		totalEventos += r->TotalEventos;
+
+	label10->Text = totalEventos.ToString();   // KPI card eventos
+	label19->Text = totalEventos.ToString();   // label secundario
+
+	// ── 4. CICLOS COMPLETADOS ─────────────────────────────────────
+	ReporteController^ ctrlReporte = gcnew ReporteController();
+	int totalCiclos = 0;
+	for each (ReporteCostos ^ r in ctrlReporte->obtenerTodos())
+		totalCiclos += r->CiclosCompletados;
+
+	label12->Text = totalCiclos.ToString();    // KPI card ciclos
+
+	// ── 5. LÍNEA DE ENSAMBLAJE ────────────────────────────────────
+	// En FormMenuJefe_Load, reemplaza la sección de línea de ensamblaje por esto:
+	PanelLateralController^ ctrlPanel = gcnew PanelLateralController();
+	EstructuraTechoController^ ctrlTecho = gcnew EstructuraTechoController();
+	LineaEnsamblajeController^ ctrlLinea = gcnew LineaEnsamblajeController();
+	ctrlLinea->cargarArchivo(ctrlPanel, ctrlTecho);
+
+	List<LineaEnsamblajeModel^>^ lineas = ctrlLinea->obtenerTodos();
+
+	if (lineas->Count > 0) {
+		LineaEnsamblajeModel^ linea = lineas[0];
+		label22->Text = linea->SecuenciaAprobada ? "APROBADA" : "PENDIENTE";
+		label22->ForeColor = linea->SecuenciaAprobada
+			? Color::FromArgb(0, 200, 100)
+			: Color::Orange;
+		label21->Text = "Piezas en cola: " + linea->ColaPiezas->Count.ToString();
+	}
+	else {
+		label22->Text = "SIN DATOS";
+		label22->ForeColor = Color::Gray;
+		label21->Text = "Piezas en cola: 0";
+	}
 }
 };
 }

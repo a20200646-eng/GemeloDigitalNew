@@ -18,7 +18,7 @@ namespace GemeloDigitalController {
         }
 
         // CREATE
-        bool agregar(int id, String^ timestamp, String^ descripcion,
+        bool agregar(String^ id, String^ timestamp, String^ descripcion,
             String^ codigoError, String^ fase) {
             if (buscarPorId(id) != nullptr) return false;
             repositorio->Add(gcnew EventoErrorModel(
@@ -28,9 +28,9 @@ namespace GemeloDigitalController {
         }
 
         // READ - por ID
-        EventoErrorModel^ buscarPorId(int id) {
+        EventoErrorModel^ buscarPorId(String^ id) {
             for each (EventoErrorModel ^ e in repositorio)
-                if (e->Id == id) return e;
+                if (e->Id->Equals(id)) return e;
             return nullptr;
         }
 
@@ -41,7 +41,7 @@ namespace GemeloDigitalController {
 
         // UPDATE - reemplaza atributos modificables
         // Timestamp es inmutable — identifica cuándo ocurrió el error
-        bool modificar(int id, String^ descripcion, String^ codigoError, String^ fase) {
+        bool modificar(String^ id, String^ descripcion, String^ codigoError, String^ fase) {
             EventoErrorModel^ e = buscarPorId(id);
             if (e == nullptr) return false;
             e->Descripcion = descripcion;
@@ -52,7 +52,7 @@ namespace GemeloDigitalController {
         }
 
         // DELETE
-        bool eliminar(int id) {
+        bool eliminar(String^ id) {
             EventoErrorModel^ e = buscarPorId(id);
             if (e == nullptr) return false;
             repositorio->Remove(e);
@@ -80,7 +80,7 @@ namespace GemeloDigitalController {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
                 repositorio->Add(gcnew EventoErrorModel(
-                    Int32::Parse(c[0]), c[1], c[2], c[3], c[4]));
+                    c[0], c[1], c[2], c[3], c[4]));
             }
             sr->Close();
         }

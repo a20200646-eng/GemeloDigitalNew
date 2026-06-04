@@ -6,19 +6,19 @@ namespace GemeloDigitalModel {
 
     public ref class EventoAlertaModel : public EventoModel {
     private:
-        int     brazoId;
+        String^ brazoId;
         String^ tipoAlerta;
 
     public:
-        EventoAlertaModel(int id, String^ timestamp, String^ descripcion,
-            int brazoId, String^ tipoAlerta)
+        EventoAlertaModel(String^ id, String^ timestamp, String^ descripcion,
+            String^ brazoId, String^ tipoAlerta)
             : EventoModel(id, timestamp, descripcion, NivelEvento::ALERTA) {
             this->brazoId = brazoId;
             this->tipoAlerta = tipoAlerta;
         }
 
-        property int BrazoId {
-            int get() { return brazoId; }
+        property String^ BrazoId {
+            String^ get() { return brazoId; }
         }
 
         property String^ TipoAlerta {

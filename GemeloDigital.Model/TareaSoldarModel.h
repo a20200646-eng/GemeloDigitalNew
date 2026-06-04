@@ -11,7 +11,7 @@ namespace GemeloDigitalModel {
         double temperatura;
 
     public:
-        TareaSoldarModel(int id, int puntosObjetivo, double temperatura)
+        TareaSoldarModel(String^ id, int puntosObjetivo, double temperatura)
             : TareaModel(id, "PENDIENTE") {
             this->puntosObjetivo = puntosObjetivo;
             this->puntosCompletados = 0;

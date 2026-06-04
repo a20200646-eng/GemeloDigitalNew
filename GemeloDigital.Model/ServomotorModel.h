@@ -11,7 +11,7 @@ namespace GemeloDigitalModel {
         double velocidadGiro;
 
     public:
-        ServomotorModel(int id, String^ nombre, bool activo,
+        ServomotorModel(String^ id, String^ nombre, bool activo,
             int pulsosPWM, double torqueMaximo, double velocidadGiro)
             : ActuadorModel(id, nombre, activo) {
             this->pulsosPWM = pulsosPWM;

@@ -6,19 +6,19 @@ namespace GemeloDigitalModel {
 
     public ref class EventoTareaModel : public EventoModel {
     private:
-        int     tareaId;
+        String^ tareaId;
         String^ resultado;
 
     public:
-        EventoTareaModel(int id, String^ timestamp, String^ descripcion,
-            int tareaId, String^ resultado)
+        EventoTareaModel(String^ id, String^ timestamp, String^ descripcion,
+            String^ tareaId, String^ resultado)
             : EventoModel(id, timestamp, descripcion, NivelEvento::INFO) {
             this->tareaId = tareaId;
             this->resultado = resultado;
         }
 
-        property int TareaId {
-            int get() { return tareaId; }
+        property String^ TareaId {
+            String^ get() { return tareaId; }
         }
 
         property String^ Resultado {

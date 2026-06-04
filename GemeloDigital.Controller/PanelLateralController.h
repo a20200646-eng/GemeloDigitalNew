@@ -18,7 +18,7 @@ namespace GemeloDigitalController {
         }
 
         // CREATE
-        bool agregar(int id, String^ material, double peso,
+        bool agregar(String^ id, String^ material, double peso,
             LadoPanel lado, int puntosAnclaje) {
             if (buscarPorId(id) != nullptr) return false;
             repositorio->Add(gcnew PanelLateralModel(
@@ -28,9 +28,9 @@ namespace GemeloDigitalController {
         }
 
         // READ - por ID
-        PanelLateralModel^ buscarPorId(int id) {
+        PanelLateralModel^ buscarPorId(String^ id) {
             for each (PanelLateralModel ^ p in repositorio)
-                if (p->Id == id) return p;
+                if (p->Id->Equals(id)) return p;
             return nullptr;
         }
 
@@ -41,7 +41,7 @@ namespace GemeloDigitalController {
 
         // UPDATE - reemplaza todos los atributos modificables
         // Lado no se modifica — es estructural igual que Tipo en PiezaModel
-        bool modificar(int id, String^ material, double peso,
+        bool modificar(String^ id, String^ material, double peso,
             EstadoPieza estado, int puntosAnclaje) {
             PanelLateralModel^ p = buscarPorId(id);
             if (p == nullptr) return false;
@@ -54,7 +54,7 @@ namespace GemeloDigitalController {
         }
 
         // DELETE
-        bool eliminar(int id) {
+        bool eliminar(String^ id) {
             PanelLateralModel^ p = buscarPorId(id);
             if (p == nullptr) return false;
             repositorio->Remove(p);
@@ -82,7 +82,7 @@ namespace GemeloDigitalController {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
                 PanelLateralModel^ p = gcnew PanelLateralModel(
-                    Int32::Parse(c[0]), c[1], Double::Parse(c[2]),
+                    c[0], c[1], Double::Parse(c[2]),
                     (LadoPanel)Int32::Parse(c[4]), Int32::Parse(c[5]));
                 p->Estado = (EstadoPieza)Int32::Parse(c[3]);
                 repositorio->Add(p);

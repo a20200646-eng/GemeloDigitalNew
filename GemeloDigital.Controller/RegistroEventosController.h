@@ -55,17 +55,17 @@ namespace GemeloDigitalController {
         }
 
         // CREATE
-        bool agregar(int id) {
-            if (buscarPorId(id) != nullptr) return false;
+        bool agregar() {
             repositorio->Add(gcnew RegistroEventos());
             guardarArchivo();
             return true;
         }
 
         // READ - por indice
-        RegistroEventos^ buscarPorId(int id) {
-            if (id >= 0 && id < repositorio->Count)
-                return repositorio[id];
+		//Este metodo no es buscar por ID, sino por indice, porque el registro no tiene un ID definido en su Model, se accede por posicion en la lista
+        RegistroEventos^ buscarPorId(int indice) {
+            if (indice >= 0 && indice < repositorio->Count)
+                return repositorio[indice];
             return nullptr;
         }
 
@@ -123,7 +123,7 @@ namespace GemeloDigitalController {
                 array<String^>^ c = linea->Split('|');
                 int idx = Int32::Parse(c[0]);
                 int tipo = Int32::Parse(c[1]);
-                int eventoId = Int32::Parse(c[2]);
+                String^ eventoId = c[2];
 
                 // Crear registros intermedios si el indice los requiere
                 while (repositorio->Count <= idx)
