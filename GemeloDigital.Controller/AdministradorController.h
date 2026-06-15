@@ -18,9 +18,9 @@ namespace GemeloDigitalController {
         }
 
         // CREATE
-        bool agregar(String^ id, String^ nombre, String^ contrasena, int nivelAcceso) {
+        bool agregar(String^ id, String^ nombre, String^ contrasena, int nivelAcceso, String^ turno) {
             if (buscarPorId(id) != nullptr) return false;
-            repositorio->Add(gcnew AdministradorModel(id, nombre, contrasena, nivelAcceso));
+            repositorio->Add(gcnew AdministradorModel(id, nombre, contrasena, nivelAcceso, turno));
             guardarArchivo();
             return true;
         }
@@ -38,12 +38,13 @@ namespace GemeloDigitalController {
         }
 
         // UPDATE - reemplaza todos los atributos modificables
-        bool modificar(String^ id, String^ nombre, String^ contrasena, int nivelAcceso) {
+        bool modificar(String^ id, String^ nombre, String^ contrasena, int nivelAcceso, String^ turno) {
             AdministradorModel^ a = buscarPorId(id);
             if (a == nullptr) return false;
             a->Nombre = nombre;
             a->Contrasena = contrasena;
             a->NivelAcceso = nivelAcceso;
+            a->Turno = turno;
             guardarArchivo();
             return true;
         }
@@ -63,8 +64,8 @@ namespace GemeloDigitalController {
             Directory::CreateDirectory("datos");
             StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
             for each (AdministradorModel ^ a in repositorio)
-                sw->WriteLine(String::Format("{0}|{1}|{2}|{3}",
-                    a->Id, a->Nombre, a->Contrasena, a->NivelAcceso));
+                sw->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}",
+                    a->Id, a->Nombre, a->Contrasena, a->NivelAcceso, a->Turno));
             sw->Close();
         }
 
@@ -74,11 +75,11 @@ namespace GemeloDigitalController {
             repositorio->Clear();
             StreamReader^ sr = gcnew StreamReader(RUTA, Text::Encoding::UTF8);
             String^ linea;
-            while ((linea = sr->ReadLine()) != nullptr) {
+            while ((linea = sr->ReadLine()) != nullptr) {   
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
                 repositorio->Add(gcnew AdministradorModel(
-                    c[0], c[1], c[2], Int32::Parse(c[3])));
+                    c[0], c[1], c[2], Int32::Parse(c[3]), c[4]));
             }
             sr->Close();
         }

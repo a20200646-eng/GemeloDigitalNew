@@ -99,7 +99,10 @@ namespace LOGIN {
 		/// </summary>
 		System::ComponentModel::Container ^components;
 		PanelLateralController^ panelController;
-		EstructuraTechoController^ techoController;
+	private: System::Windows::Forms::Label^ label16;
+	private: System::Windows::Forms::ComboBox^ comboBox1;
+	private: System::Windows::Forms::ComboBox^ comboBox2;
+		   EstructuraTechoController^ techoController;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -122,6 +125,9 @@ namespace LOGIN {
 			this->Column5 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
+			this->comboBox2 = (gcnew System::Windows::Forms::ComboBox());
+			this->label16 = (gcnew System::Windows::Forms::Label());
+			this->comboBox1 = (gcnew System::Windows::Forms::ComboBox());
 			this->button6 = (gcnew System::Windows::Forms::Button());
 			this->textBox4 = (gcnew System::Windows::Forms::TextBox());
 			this->textBox3 = (gcnew System::Windows::Forms::TextBox());
@@ -152,14 +158,14 @@ namespace LOGIN {
 			// label6
 			// 
 			this->label6->AutoSize = true;
-			this->label6->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->label6->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label6->ForeColor = System::Drawing::Color::White;
 			this->label6->Location = System::Drawing::Point(27, 32);
 			this->label6->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label6->Name = L"label6";
 			this->label6->RightToLeft = System::Windows::Forms::RightToLeft::No;
-			this->label6->Size = System::Drawing::Size(161, 16);
+			this->label6->Size = System::Drawing::Size(148, 16);
 			this->label6->TabIndex = 11;
 			this->label6->Text = L"Inventario de Piezas";
 			// 
@@ -236,6 +242,7 @@ namespace LOGIN {
 			this->dataGridView1->RowTemplate->Height = 24;
 			this->dataGridView1->Size = System::Drawing::Size(858, 130);
 			this->dataGridView1->TabIndex = 18;
+			this->dataGridView1->CellContentClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &FormMenuControlador::dataGridView1_CellContentClick);
 			// 
 			// Column1
 			// 
@@ -276,13 +283,13 @@ namespace LOGIN {
 			// label3
 			// 
 			this->label3->AutoSize = true;
-			this->label3->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label3->ForeColor = System::Drawing::Color::White;
 			this->label3->Location = System::Drawing::Point(14, 16);
 			this->label3->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(131, 15);
+			this->label3->Size = System::Drawing::Size(108, 13);
 			this->label3->TabIndex = 19;
 			this->label3->Text = L"Agregar nueva pieza:";
 			// 
@@ -291,6 +298,9 @@ namespace LOGIN {
 			this->panel1->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(22)), static_cast<System::Int32>(static_cast<System::Byte>(32)),
 				static_cast<System::Int32>(static_cast<System::Byte>(50)));
 			this->panel1->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->panel1->Controls->Add(this->comboBox2);
+			this->panel1->Controls->Add(this->label16);
+			this->panel1->Controls->Add(this->comboBox1);
 			this->panel1->Controls->Add(this->button6);
 			this->panel1->Controls->Add(this->textBox4);
 			this->panel1->Controls->Add(this->textBox3);
@@ -307,6 +317,38 @@ namespace LOGIN {
 			this->panel1->Name = L"panel1";
 			this->panel1->Size = System::Drawing::Size(880, 166);
 			this->panel1->TabIndex = 20;
+			// 
+			// comboBox2
+			// 
+			this->comboBox2->FormattingEnabled = true;
+			this->comboBox2->Location = System::Drawing::Point(494, 65);
+			this->comboBox2->Name = L"comboBox2";
+			this->comboBox2->Size = System::Drawing::Size(152, 21);
+			this->comboBox2->TabIndex = 31;
+			this->comboBox2->SelectedIndexChanged += gcnew System::EventHandler(this, &FormMenuControlador::comboBox2_SelectedIndexChanged);
+			// 
+			// label16
+			// 
+			this->label16->AutoSize = true;
+			this->label16->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label16->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(142)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
+				static_cast<System::Int32>(static_cast<System::Byte>(177)));
+			this->label16->Location = System::Drawing::Point(491, 108);
+			this->label16->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label16->Name = L"label16";
+			this->label16->Size = System::Drawing::Size(98, 13);
+			this->label16->TabIndex = 30;
+			this->label16->Text = L"Estacion Asignada:";
+			this->label16->Click += gcnew System::EventHandler(this, &FormMenuControlador::label16_Click);
+			// 
+			// comboBox1
+			// 
+			this->comboBox1->FormattingEnabled = true;
+			this->comboBox1->Location = System::Drawing::Point(494, 128);
+			this->comboBox1->Name = L"comboBox1";
+			this->comboBox1->Size = System::Drawing::Size(152, 21);
+			this->comboBox1->TabIndex = 29;
 			// 
 			// button6
 			// 
@@ -331,6 +373,7 @@ namespace LOGIN {
 			this->textBox4->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(41)),
 				static_cast<System::Int32>(static_cast<System::Byte>(59)));
 			this->textBox4->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->textBox4->ForeColor = System::Drawing::Color::White;
 			this->textBox4->Location = System::Drawing::Point(689, 65);
 			this->textBox4->Margin = System::Windows::Forms::Padding(2);
 			this->textBox4->Name = L"textBox4";
@@ -342,6 +385,7 @@ namespace LOGIN {
 			this->textBox3->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(41)),
 				static_cast<System::Int32>(static_cast<System::Byte>(59)));
 			this->textBox3->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->textBox3->ForeColor = System::Drawing::Color::White;
 			this->textBox3->Location = System::Drawing::Point(494, 65);
 			this->textBox3->Margin = System::Windows::Forms::Padding(2);
 			this->textBox3->Name = L"textBox3";
@@ -353,6 +397,7 @@ namespace LOGIN {
 			this->textBox2->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(41)),
 				static_cast<System::Int32>(static_cast<System::Byte>(59)));
 			this->textBox2->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->textBox2->ForeColor = System::Drawing::Color::White;
 			this->textBox2->Location = System::Drawing::Point(266, 65);
 			this->textBox2->Margin = System::Windows::Forms::Padding(2);
 			this->textBox2->Name = L"textBox2";
@@ -364,6 +409,7 @@ namespace LOGIN {
 			this->textBox1->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(41)),
 				static_cast<System::Int32>(static_cast<System::Byte>(59)));
 			this->textBox1->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->textBox1->ForeColor = System::Drawing::Color::White;
 			this->textBox1->Location = System::Drawing::Point(32, 65);
 			this->textBox1->Margin = System::Windows::Forms::Padding(2);
 			this->textBox1->Name = L"textBox1";
@@ -392,56 +438,56 @@ namespace LOGIN {
 			// label5
 			// 
 			this->label5->AutoSize = true;
-			this->label5->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label5->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label5->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(142)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(177)));
 			this->label5->Location = System::Drawing::Point(687, 39);
 			this->label5->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label5->Name = L"label5";
-			this->label5->Size = System::Drawing::Size(60, 15);
+			this->label5->Size = System::Drawing::Size(50, 13);
 			this->label5->TabIndex = 23;
 			this->label5->Text = L"Anclajes:";
 			// 
 			// label4
 			// 
 			this->label4->AutoSize = true;
-			this->label4->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label4->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label4->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(142)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(177)));
 			this->label4->Location = System::Drawing::Point(491, 39);
 			this->label4->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label4->Name = L"label4";
-			this->label4->Size = System::Drawing::Size(39, 15);
+			this->label4->Size = System::Drawing::Size(34, 13);
 			this->label4->TabIndex = 22;
 			this->label4->Text = L"Lado:";
 			// 
 			// label2
 			// 
 			this->label2->AutoSize = true;
-			this->label2->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label2->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(142)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(177)));
 			this->label2->Location = System::Drawing::Point(264, 39);
 			this->label2->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(39, 15);
+			this->label2->Size = System::Drawing::Size(34, 13);
 			this->label2->TabIndex = 21;
 			this->label2->Text = L"Peso:";
 			// 
 			// label1
 			// 
 			this->label1->AutoSize = true;
-			this->label1->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label1->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(142)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(177)));
 			this->label1->Location = System::Drawing::Point(29, 39);
 			this->label1->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(57, 15);
+			this->label1->Size = System::Drawing::Size(47, 13);
 			this->label1->TabIndex = 20;
 			this->label1->Text = L"Material:";
 			// 
@@ -482,126 +528,126 @@ namespace LOGIN {
 			// label14
 			// 
 			this->label14->AutoSize = true;
-			this->label14->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label14->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label14->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(142)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(177)));
 			this->label14->Location = System::Drawing::Point(647, 54);
 			this->label14->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label14->Name = L"label14";
-			this->label14->Size = System::Drawing::Size(82, 15);
+			this->label14->Size = System::Drawing::Size(70, 13);
 			this->label14->TabIndex = 38;
 			this->label14->Text = L"Ensambladas";
 			// 
 			// label15
 			// 
 			this->label15->AutoSize = true;
-			this->label15->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 16.2F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->label15->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 16.2F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label15->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
 				static_cast<System::Int32>(static_cast<System::Byte>(11)));
 			this->label15->Location = System::Drawing::Point(601, 41);
 			this->label15->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label15->Name = L"label15";
-			this->label15->Size = System::Drawing::Size(27, 28);
+			this->label15->Size = System::Drawing::Size(25, 26);
 			this->label15->TabIndex = 37;
 			this->label15->Text = L"4";
 			// 
 			// label12
 			// 
 			this->label12->AutoSize = true;
-			this->label12->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label12->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label12->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(142)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(177)));
 			this->label12->Location = System::Drawing::Point(460, 54);
 			this->label12->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label12->Name = L"label12";
-			this->label12->Size = System::Drawing::Size(70, 15);
+			this->label12->Size = System::Drawing::Size(61, 13);
 			this->label12->TabIndex = 36;
 			this->label12->Text = L"En proceso";
 			// 
 			// label13
 			// 
 			this->label13->AutoSize = true;
-			this->label13->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 16.2F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->label13->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 16.2F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label13->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
 				static_cast<System::Int32>(static_cast<System::Byte>(11)));
 			this->label13->Location = System::Drawing::Point(407, 41);
 			this->label13->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label13->Name = L"label13";
-			this->label13->Size = System::Drawing::Size(27, 28);
+			this->label13->Size = System::Drawing::Size(25, 26);
 			this->label13->TabIndex = 35;
 			this->label13->Text = L"1";
 			// 
 			// label9
 			// 
 			this->label9->AutoSize = true;
-			this->label9->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label9->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label9->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(142)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(177)));
 			this->label9->Location = System::Drawing::Point(222, 54);
 			this->label9->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label9->Name = L"label9";
-			this->label9->Size = System::Drawing::Size(114, 15);
+			this->label9->Size = System::Drawing::Size(98, 13);
 			this->label9->TabIndex = 34;
 			this->label9->Text = L"Techos disponibles";
 			// 
 			// label11
 			// 
 			this->label11->AutoSize = true;
-			this->label11->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 16.2F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->label11->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 16.2F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label11->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
 				static_cast<System::Int32>(static_cast<System::Byte>(11)));
 			this->label11->Location = System::Drawing::Point(184, 41);
 			this->label11->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label11->Name = L"label11";
-			this->label11->Size = System::Drawing::Size(27, 28);
+			this->label11->Size = System::Drawing::Size(25, 26);
 			this->label11->TabIndex = 33;
 			this->label11->Text = L"2";
 			// 
 			// label10
 			// 
 			this->label10->AutoSize = true;
-			this->label10->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label10->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label10->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(142)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(177)));
 			this->label10->Location = System::Drawing::Point(57, 54);
 			this->label10->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label10->Name = L"label10";
-			this->label10->Size = System::Drawing::Size(118, 15);
+			this->label10->Size = System::Drawing::Size(100, 13);
 			this->label10->TabIndex = 32;
 			this->label10->Text = L"Paneles disponibles";
 			// 
 			// label8
 			// 
 			this->label8->AutoSize = true;
-			this->label8->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 16.2F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->label8->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 16.2F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label8->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
 				static_cast<System::Int32>(static_cast<System::Byte>(11)));
 			this->label8->Location = System::Drawing::Point(22, 41);
 			this->label8->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label8->Name = L"label8";
-			this->label8->Size = System::Drawing::Size(27, 28);
+			this->label8->Size = System::Drawing::Size(25, 26);
 			this->label8->TabIndex = 30;
 			this->label8->Text = L"3";
 			// 
 			// label7
 			// 
 			this->label7->AutoSize = true;
-			this->label7->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 10.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label7->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 10.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label7->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
 				static_cast<System::Int32>(static_cast<System::Byte>(11)));
 			this->label7->Location = System::Drawing::Point(7, 9);
 			this->label7->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label7->Name = L"label7";
-			this->label7->Size = System::Drawing::Size(154, 19);
+			this->label7->Size = System::Drawing::Size(137, 18);
 			this->label7->TabIndex = 29;
 			this->label7->Text = L"Resumen de stock:";
 			// 
@@ -636,6 +682,8 @@ namespace LOGIN {
 #pragma endregion
 
 	private:
+
+
 
 	void cargarPaneles() 
 	{
@@ -694,9 +742,41 @@ namespace LOGIN {
 		label13->Text = enProceso.ToString();
 		label15->Text = ensambladas.ToString();
 	}
+
+	void CargarEstaciones()
+	{
+		comboBox1->Items->Clear();
+		EstacionTrabajoController^ ctrlEst = gcnew EstacionTrabajoController();
+		TipoEstacion filtro;
+		if (mostrandoPaneles)
+			filtro = (comboBox2->SelectedIndex == 1)
+			? TipoEstacion::PANEL_DER
+			: TipoEstacion::PANEL_IZQ;
+		else
+			filtro = TipoEstacion::TECHO;
+
+		for each(EstacionTrabajoModel ^ e in ctrlEst->obtenerTodos())
+			if (e->Tipo == filtro)
+				comboBox1->Items->Add(e->Id + " (stock: " + e->CantidadPiezas + ")");
+
+		if (comboBox1->Items->Count > 0)
+			comboBox1->SelectedIndex = 0;
+	}
+
 	private: System::Void textBox1_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 	}
 private: System::Void FormMenuControlador_Load(System::Object^ sender, System::EventArgs^ e) {
+	mostrandoPaneles = true;
+	button3->Text = "Agregar Panel";
+	this->Column4->HeaderText = L"Lado";
+	this->Column5->HeaderText = L"Anclajes";
+	cargarPaneles();
+	actualizarResumen();// Al cargar el formulario, actualizamos el resumen para mostrar los datos iniciales.
+	comboBox2->Items->Clear();
+	comboBox2->Items->Add("IZQUIERDO");
+	comboBox2->Items->Add("DERECHO");
+	comboBox2->SelectedIndex = 0;
+	CargarEstaciones(); // Cargamos las estaciones disponibles para paneles al inicio.
 }
 private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
 	// En button1_Click (Paneles):
@@ -708,8 +788,18 @@ private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e
 	mostrandoPaneles = true;
 
 	button3->Text = "Agregar Panel";
+	label4->Text = "Lado:";
+	label5->Text = "Anclajes:";
 
 	cargarPaneles();
+
+	comboBox2->Visible = true;  // lado
+	comboBox2->Items->Clear();
+	comboBox2->Items->Add("IZQUIERDO");
+	comboBox2->Items->Add("DERECHO");
+	comboBox2->SelectedIndex = 0;
+	textBox3->Visible = false;
+	CargarEstaciones();  // recarga comboBox1 según lado
 }
 private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
 
@@ -720,8 +810,13 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 	mostrandoPaneles = false;
 
 	button3->Text = "Agregar Techo";
+	label4->Text = "Anchura (cm):";
+	label5->Text = "Pts Unión :"; 
 
 	cargarTechos();
+	comboBox2->Visible = false;
+	textBox3->Visible = true;  // anchura sigue siendo textbox
+	CargarEstaciones();
 }
 private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e) {
 	if (textBox1->Text->Trim() == "" || textBox2->Text->Trim() == "" ||
@@ -744,46 +839,95 @@ private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e
 
 	if (mostrandoPaneles) 
 	{
-		String^ id = "P" + (panelController->obtenerTodos()->Count + 1);
 
-		LadoPanel lado = (textBox3->Text->ToUpper()->Contains("DER"))
-			? LadoPanel::DERECHO
-			: LadoPanel::IZQUIERDO;
-		panelController->agregar(id, textBox1->Text, Double::Parse(textBox2->Text),
-			lado, Int32::Parse(textBox4->Text));
+		int num = panelController->obtenerTodos()->Count + 1;
+		String^ id = "PL-" + num.ToString("D3");
 
+		LadoPanel lado = (comboBox2->SelectedIndex == 1)
+			? LadoPanel::DERECHO : LadoPanel::IZQUIERDO;
+		String^ estId = comboBox1->SelectedIndex >= 0
+			? comboBox1->SelectedItem->ToString()->Substring(0, 7)->Trim()
+			: "";
+		panelController->agregar(id, textBox1->Text, peso, lado, anclajes, estId);
+
+		// Incrementar stock de la estación
+		EstacionTrabajoController^ ctrlEst = gcnew EstacionTrabajoController();
+		EstacionTrabajoModel^ est = ctrlEst->buscarPorId(estId);
+		if (est != nullptr)
+			ctrlEst->modificar(estId, est->Tipo, est->CantidadPiezas + 1);
 		cargarPaneles();
 
 	}
 	else 
 	{
-		String^ id = "T" + (techoController->obtenerTodos()->Count + 1);
 
-		techoController->agregar(id, textBox1->Text, Double::Parse(textBox2->Text), Int32::Parse(textBox4->Text), Double::Parse(textBox3->Text));
+		int num = techoController->obtenerTodos()->Count + 1;
+		String^ id = "ET-" + num.ToString("D3");
+
+		String^ estId = comboBox1->SelectedIndex >= 0
+			? comboBox1->SelectedItem->ToString()->Substring(0, 7)->Trim()
+			: "";
+		techoController->agregar(id, textBox1->Text, peso, anclajes,
+			Double::Parse(textBox3->Text), estId);
+
+		EstacionTrabajoController^ ctrlEst = gcnew EstacionTrabajoController();
+		EstacionTrabajoModel^ est = ctrlEst->buscarPorId(estId);
+		if (est != nullptr)
+			ctrlEst->modificar(estId, est->Tipo, est->CantidadPiezas + 1);
 
 		cargarTechos();
 	}
-
+	
 	actualizarResumen();
+
+	textBox1->Clear(); textBox2->Clear(); textBox3->Clear(); textBox4->Clear();
+	MessageBox::Show("Pieza agregada.", "Éxito",
+		MessageBoxButtons::OK, MessageBoxIcon::Information);
+
 }
 private: System::Void button6_Click(System::Object^ sender, System::EventArgs^ e) {
-	if (dataGridView1->SelectedRows->Count == 0)
+	if (dataGridView1->CurrentRow == nullptr) {
+		MessageBox::Show("Selecciona una fila para eliminar.",
+			"Aviso", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 		return;
+	}
 
-	String^ id = dataGridView1->SelectedRows[0]->Cells[0]->Value->ToString();
+	String^ id = dataGridView1->CurrentRow->Cells[0]->Value->ToString();
 
-	if (mostrandoPaneles) 
-	{
+	if (MessageBox::Show("¿Eliminar el registro con ID " + id + "?",
+		"Confirmar", MessageBoxButtons::YesNo, MessageBoxIcon::Warning)
+		!= System::Windows::Forms::DialogResult::Yes) return;
+
+	if (mostrandoPaneles) {
+
+		//no instanciamos PanelController nuevamente porque cargarPaneles usa su propio controller.
 		panelController->eliminar(id);
 		cargarPaneles();
+
 	}
-	else 
-	{
+	else {
+	
 		techoController->eliminar(id);
 		cargarTechos();
 	}
 
+
+	
 	actualizarResumen();
+	textBox1->Clear(); textBox2->Clear(); textBox3->Clear(); textBox4->Clear();
+	MessageBox::Show("Registro eliminado.", "Éxito",
+		MessageBoxButtons::OK, MessageBoxIcon::Information);
+}
+private: System::Void dataGridView1_CellContentClick(System::Object^ sender, System::Windows::Forms::DataGridViewCellEventArgs^ e) {
+
+
+
+
+}
+private: System::Void label16_Click(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void comboBox2_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
+	CargarEstaciones();
 }
 };
 }

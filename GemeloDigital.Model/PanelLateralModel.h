@@ -8,13 +8,15 @@ namespace GemeloDigitalModel {
     private:
         LadoPanel lado;
         int       puntosAnclaje;
+        String^ estacionId;
 
     public:
         PanelLateralModel(String^ id, String^ material, double peso,
-            LadoPanel lado, int puntosAnclaje)
+            LadoPanel lado, int puntosAnclaje, String^ estacionId)
             : PiezaModel(id, "Panel Lateral", material, peso, EstadoPieza::DISPONIBLE) {
             this->lado = lado;
             this->puntosAnclaje = puntosAnclaje;
+            this->estacionId = estacionId;
         }
 
         property LadoPanel Lado {
@@ -25,6 +27,11 @@ namespace GemeloDigitalModel {
         property int PuntosAnclaje {
             int  get() { return puntosAnclaje; }
             void set(int value) { puntosAnclaje = value; }
+        }
+
+        property String^ EstacionId {
+            String^ get() { return estacionId; }
+            void    set(String^ value) { estacionId = value; }
         }
 
         virtual void dataReport() override {

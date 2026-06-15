@@ -6,53 +6,42 @@ using namespace GemeloDigitalModel;
 
 namespace GemeloDigitalController {
 
-    // ReporteCostos — clase auxiliar del Controller, no tiene Model
     public ref class ReporteCostos {
     private:
-        String^    id;
-        int    ciclosCompletados;
-        double tiempoOperativo;
-        double costoPorCiclo;
+        String^ id;
+        int     ciclosIncluidos;
+        double  horasTotales;
+        double  costoPorHora;
 
     public:
-        ReporteCostos(String^ id, int ciclosCompletados,
-            double tiempoOperativo, double costoPorCiclo) {
+        ReporteCostos(String^ id, int ciclosIncluidos,
+            double horasTotales, double costoPorHora) {
             this->id = id;
-            this->ciclosCompletados = ciclosCompletados;
-            this->tiempoOperativo = tiempoOperativo;
-            this->costoPorCiclo = costoPorCiclo;
+            this->ciclosIncluidos = ciclosIncluidos;
+            this->horasTotales = horasTotales;
+            this->costoPorHora = costoPorHora;
         }
 
         property String^ Id {
             String^ get() { return id; }
         }
 
-        property int CiclosCompletados {
-            int  get() { return ciclosCompletados; }
-            void set(int value) { ciclosCompletados = value; }
+        property int CiclosIncluidos {
+            int  get() { return ciclosIncluidos; }
+            void set(int value) { ciclosIncluidos = value; }
         }
 
-        property double TiempoOperativo {
-            double get() { return tiempoOperativo; }
-            void   set(double value) { tiempoOperativo = value; }
+        property double HorasTotales {
+            double get() { return horasTotales; }
+            void   set(double value) { horasTotales = value; }
         }
 
-        property double CostoPorCiclo {
-            double get() { return costoPorCiclo; }
-            void   set(double value) { costoPorCiclo = value; }
+        property double CostoPorHora {
+            double get() { return costoPorHora; }
+            void   set(double value) { costoPorHora = value; }
         }
 
-        // Calculado dinamicamente — no se almacena
-        double calcularCostoTotal() { return ciclosCompletados * costoPorCiclo; }
-
-        void dataReport() {
-            Console::WriteLine("=== REPORTE DE COSTOS ===");
-            Console::WriteLine("ID: " + Id);
-            Console::WriteLine("|Ciclos: " + CiclosCompletados);
-            Console::WriteLine("|Tiempo operativo: " + TiempoOperativo + " hrs");
-            Console::WriteLine("|Costo/ciclo: $" + CostoPorCiclo);
-            Console::WriteLine("|COSTO TOTAL: $" + calcularCostoTotal());
-        }
+        double calcularCostoTotal() { return horasTotales * costoPorHora; }
     };
 
     public ref class ReporteController {
@@ -67,9 +56,10 @@ namespace GemeloDigitalController {
         }
 
         // CREATE
-        bool agregar(String^ id, int ciclos, double tiempo, double costoCiclo) {
+        bool agregar(String^ id, int ciclosIncluidos,
+            double horasTotales, double costoPorHora) {
             if (buscarPorId(id) != nullptr) return false;
-            repositorio->Add(gcnew ReporteCostos(id, ciclos, tiempo, costoCiclo));
+            repositorio->Add(gcnew ReporteCostos(id, ciclosIncluidos, horasTotales, costoPorHora));
             guardarArchivo();
             return true;
         }
@@ -86,14 +76,14 @@ namespace GemeloDigitalController {
             return repositorio;
         }
 
-        // UPDATE - reemplaza todos los atributos modificables
-        bool modificar(String^ id, int ciclosCompletados,
-            double tiempoOperativo, double costoPorCiclo) {
+        // UPDATE
+        bool modificar(String^ id, int ciclosIncluidos,
+            double horasTotales, double costoPorHora) {
             ReporteCostos^ r = buscarPorId(id);
             if (r == nullptr) return false;
-            r->CiclosCompletados = ciclosCompletados;
-            r->TiempoOperativo = tiempoOperativo;
-            r->CostoPorCiclo = costoPorCiclo;
+            r->CiclosIncluidos = ciclosIncluidos;
+            r->HorasTotales = horasTotales;
+            r->CostoPorHora = costoPorHora;
             guardarArchivo();
             return true;
         }
@@ -107,14 +97,13 @@ namespace GemeloDigitalController {
             return true;
         }
 
-        // Formato: id|ciclosCompletados|tiempoOperativo|costoPorCiclo
+        // Formato: id|turno|ciclosIncluidos|horasTotales|costoPorHora
         void guardarArchivo() {
             Directory::CreateDirectory("datos");
             StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
             for each (ReporteCostos ^ r in repositorio)
                 sw->WriteLine(String::Format("{0}|{1}|{2}|{3}",
-                    r->Id, r->CiclosCompletados,
-                    r->TiempoOperativo, r->CostoPorCiclo));
+                    r->Id, r->CiclosIncluidos, r->HorasTotales, r->CostoPorHora));
             sw->Close();
         }
 
@@ -126,6 +115,7 @@ namespace GemeloDigitalController {
             while ((linea = sr->ReadLine()) != nullptr) {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
+                if (c->Length < 4) continue;
                 repositorio->Add(gcnew ReporteCostos(
                     c[0], Int32::Parse(c[1]),
                     Double::Parse(c[2]), Double::Parse(c[3])));

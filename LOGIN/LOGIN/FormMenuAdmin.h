@@ -1,11 +1,13 @@
 #pragma once
 #include "FormRegistro.h"
-
+using namespace GemeloDigitalController;
+using namespace GemeloDigitalModel;
 namespace LOGIN {
 
 	using namespace System;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
+	using namespace System::Collections::Generic;
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
@@ -603,63 +605,62 @@ namespace LOGIN {
 
 		   // === BOTÓN ACCIÓN: AGREGAR / GUARDAR USUARIO ===
 	private: System::Void button5_Click(System::Object^ sender, System::EventArgs^ e) {
+		
 		String^ usuario = this->textBox1->Text->Trim();
 		String^ password = this->textBox2->Text->Trim();
+		String^ turno = this->textBox3->Text->Trim();  // ← aquí arriba
 
-		if (usuario == "" || password == "") {
-			MessageBox::Show("Por favor, rellene los campos de Nombre y Contraseña.", "Campos Vacíos", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-
-		String^ turno = this->textBox3->Text->Trim(); // Nota: Guardaremos el turno temporalmente o puedes omitirlo si el modelo no lo tiene
+		if (usuario == "" || password == "" || turno == "") {
+			MessageBox::Show("Rellene todos los campos.", "Campos Vacíos",
+				MessageBoxButtons::OK, MessageBoxIcon::Warning);
 			return;
 		}
 		if (usuario->Length < 4 || password->Length < 4) {
-			MessageBox::Show("El Nombre y la Contraseña deben tener al menos 4 caracteres.", "Seguridad", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+			MessageBox::Show("Nombre y Contraseña deben tener al menos 4 caracteres.",
+				"Seguridad", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 			return;
 		}
-		if (usuario->Contains("|") || password->Contains("|")) {
-			MessageBox::Show("No se permite el uso del carácter pipe ( | ).", "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
-
+		if (usuario->Contains("|") || password->Contains("|") || turno->Contains("|")) {
+			MessageBox::Show("No se permite el carácter pipe ( | ).",
+				"Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
 			return;
 		}
 
 		try {
-
-			// Usamos el controlador de tus compañeros
-			GemeloDigitalController::AdministradorController^ contr = gcnew GemeloDigitalController::AdministradorController();
-
-			// Obtenemos el nivel de acceso desde el Tag del botón
-			int nivelAcceso = (this->button5->Tag != nullptr) ? Int32::Parse(this->button5->Tag->ToString()) : 1;
-
-			// Autogeneramos un ID secuencial
+			AdministradorController^ contr =
+				gcnew AdministradorController();
+			int nivelAcceso = (this->button5->Tag != nullptr)
+				? Int32::Parse(this->button5->Tag->ToString()) : 1;
 			int nuevoId = contr->obtenerTodos()->Count + 1;
 
-			// Guardamos directamente en la persistencia real del equipo (.dat)
-			if (contr->agregar(nuevoId.ToString(), usuario, password, nivelAcceso)) {
-				MessageBox::Show("¡Usuario '" + usuario + "' registrado con éxito en el sistema!", "Éxito", MessageBoxButtons::OK, MessageBoxIcon::Information);
+			if (contr->agregar(nuevoId.ToString(), usuario, password, nivelAcceso, turno)) {
+				MessageBox::Show("¡Usuario '" + usuario + "' registrado con éxito!",
+					"Éxito", MessageBoxButtons::OK, MessageBoxIcon::Information);
 				this->textBox1->Clear(); this->textBox2->Clear(); this->textBox3->Clear();
-
 				CargarUsuariosPorRol(nivelAcceso);
 			}
 			else {
-				MessageBox::Show("No se pudo registrar el usuario. El ID ya existe.", "Error");
+				MessageBox::Show("No se pudo registrar. El ID ya existe.", "Error");
 			}
 		}
 		catch (Exception^ ex) {
-			MessageBox::Show("Error al guardar: " + ex->Message, "Error Crítico");
+			MessageBox::Show("Error: " + ex->Message, "Error Crítico");
 		}
+
+
 	}
 
 		   // === FUNCIÓN AUXILIAR: CARGAR Y FILTRAR TABLA DESDE EL CONTROLADOR ===
 	private: void CargarUsuariosPorRol(int nivelFiltrar) {
 		try {
 			this->dataGridView1->Rows->Clear();
-			GemeloDigitalController::AdministradorController^ contr = gcnew GemeloDigitalController::AdministradorController();
-			System::Collections::Generic::List<GemeloDigitalModel::AdministradorModel^>^ lista = contr->obtenerTodos();
+			AdministradorController^ contr = gcnew AdministradorController();
+			List<AdministradorModel^>^ lista = contr->obtenerTodos();
 
-			for each (GemeloDigitalModel::AdministradorModel ^ u in lista) {
+			for each (AdministradorModel ^ u in lista) {
 				if (u->NivelAcceso == nivelFiltrar) {
 					String^ idSimulado = "U00" + u->Id;
-					this->dataGridView1->Rows->Add(idSimulado, u->Nombre, u->Contrasena, "Nivel " + nivelFiltrar);
+					this->dataGridView1->Rows->Add(idSimulado, u->Nombre, u->Contrasena, u->Turno); // ← turno real
 				}
 			}
 		}
@@ -673,6 +674,7 @@ namespace LOGIN {
 		if (e->RowIndex >= 0 && this->dataGridView1->Rows[e->RowIndex]->Cells[1]->Value != nullptr) {
 			this->textBox1->Text = this->dataGridView1->Rows[e->RowIndex]->Cells[1]->Value->ToString();
 			this->textBox2->Text = this->dataGridView1->Rows[e->RowIndex]->Cells[2]->Value->ToString();
+			this->textBox3->Text = this->dataGridView1->Rows[e->RowIndex]->Cells[3]->Value->ToString(); // ← turno real
 		}
 	}
 
@@ -681,16 +683,15 @@ namespace LOGIN {
 		if (this->dataGridView1->CurrentRow == nullptr) return;
 
 		try {
-			GemeloDigitalController::AdministradorController^ contr = gcnew GemeloDigitalController::AdministradorController();
+			AdministradorController^ contr = gcnew AdministradorController();
 			String^ nombreViejo = this->dataGridView1->CurrentRow->Cells[1]->Value->ToString();
 			String^ nombreNuevo = this->textBox1->Text->Trim();
-			String^ passActual = this->textBox2->Text->Trim();
 			int nivelAcceso = (this->button5->Tag != nullptr) ? Int32::Parse(this->button5->Tag->ToString()) : 1;
 
 			// Buscamos el ID original
-			for each (GemeloDigitalModel::AdministradorModel ^ u in contr->obtenerTodos()) {
+			for each (AdministradorModel ^ u in contr->obtenerTodos()) {
 				if (u->Nombre->Trim()->Equals(nombreViejo, StringComparison::OrdinalIgnoreCase)) {
-					contr->modificar(u->Id, nombreNuevo, passActual, nivelAcceso);
+					contr->modificar(u->Id, nombreNuevo, u->Contrasena, nivelAcceso, u->Turno);  // ← turno sin cambio
 					MessageBox::Show("Nombre modificado con éxito.", "Éxito");
 					break;
 				}
@@ -702,15 +703,15 @@ namespace LOGIN {
 
 		   // === BOTÓN 8: MODIFICAR CONTRASEÑA ===
 	private: System::Void button8_Click(System::Object^ sender, System::EventArgs^ e) {
-		String^ usuario = this->textBox1->Text->Trim();
+		String^ usuario = this->dataGridView1->CurrentRow->Cells[1]->Value->ToString();
 		String^ nuevaPassword = this->textBox2->Text->Trim();
 		int nivelAcceso = (this->button5->Tag != nullptr) ? Int32::Parse(this->button5->Tag->ToString()) : 1;
 
 		try {
-			GemeloDigitalController::AdministradorController^ contr = gcnew GemeloDigitalController::AdministradorController();
-			for each (GemeloDigitalModel::AdministradorModel ^ u in contr->obtenerTodos()) {
+			AdministradorController^ contr = gcnew AdministradorController();
+			for each (AdministradorModel ^ u in contr->obtenerTodos()) {
 				if (u->Nombre->Trim()->Equals(usuario, StringComparison::OrdinalIgnoreCase)) {
-					contr->modificar(u->Id, u->Nombre, nuevaPassword, nivelAcceso);
+					contr->modificar(u->Id, u->Nombre, nuevaPassword, nivelAcceso, u->Turno); // ← turno sin cambio
 					MessageBox::Show("Contraseña actualizada.", "Éxito");
 					break;
 				}
@@ -722,14 +723,14 @@ namespace LOGIN {
 
 		   // === BOTÓN 6: ELIMINAR USUARIO ===
 	private: System::Void button6_Click(System::Object^ sender, System::EventArgs^ e) {
-		String^ usuarioAEliminar = this->textBox1->Text->Trim();
-		if (usuarioAEliminar == "" || usuarioAEliminar->ToLower() == "admin") return;
+		String^ usuarioAEliminar = this->dataGridView1->CurrentRow->Cells[1]->Value->ToString();
+		if (usuarioAEliminar == "" || usuarioAEliminar->ToLower() == "admin") return; // Evitar eliminar al admin principal
 
 		try {
-			GemeloDigitalController::AdministradorController^ contr = gcnew GemeloDigitalController::AdministradorController();
+			AdministradorController^ contr = gcnew AdministradorController();
 			int nivelAcceso = (this->button5->Tag != nullptr) ? Int32::Parse(this->button5->Tag->ToString()) : 1;
 
-			for each (GemeloDigitalModel::AdministradorModel ^ u in contr->obtenerTodos()) {
+			for each (AdministradorModel ^ u in contr->obtenerTodos()) {
 				if (u->Nombre->Trim()->Equals(usuarioAEliminar, StringComparison::OrdinalIgnoreCase)) {
 					if (MessageBox::Show("¿Eliminar permanentemente?", "Confirmar", MessageBoxButtons::YesNo) == System::Windows::Forms::DialogResult::Yes) {
 						contr->eliminar(u->Id);

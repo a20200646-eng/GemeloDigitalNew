@@ -18,11 +18,11 @@ namespace GemeloDigitalController {
         }
 
         // CREATE
-        bool agregar(String^ id, String^ material, double peso,
-            LadoPanel lado, int puntosAnclaje) {
+		bool agregar(String^ id, String^ material, double peso, LadoPanel lado,
+            int puntosAnclaje,String^ estacionId) {
             if (buscarPorId(id) != nullptr) return false;
             repositorio->Add(gcnew PanelLateralModel(
-                id, material, peso, lado, puntosAnclaje));
+                id, material, peso, lado, puntosAnclaje, estacionId));
             guardarArchivo();
             return true;
         }
@@ -42,13 +42,14 @@ namespace GemeloDigitalController {
         // UPDATE - reemplaza todos los atributos modificables
         // Lado no se modifica — es estructural igual que Tipo en PiezaModel
         bool modificar(String^ id, String^ material, double peso,
-            EstadoPieza estado, int puntosAnclaje) {
+            EstadoPieza estado, int puntosAnclaje, String^ estacionId) {
             PanelLateralModel^ p = buscarPorId(id);
             if (p == nullptr) return false;
             p->Material = material;
             p->Peso = peso;
             p->Estado = estado;
             p->PuntosAnclaje = puntosAnclaje;
+            p->EstacionId = estacionId;
             guardarArchivo();
             return true;
         }
@@ -67,9 +68,9 @@ namespace GemeloDigitalController {
             Directory::CreateDirectory("datos");
             StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
             for each (PanelLateralModel ^ p in repositorio)
-                sw->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}|{5}",
+                sw->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}",
                     p->Id, p->Material, p->Peso,
-                    (int)p->Estado, (int)p->Lado, p->PuntosAnclaje));
+                    (int)p->Estado, (int)p->Lado, p->PuntosAnclaje, p->EstacionId));
             sw->Close();
         }
 
@@ -81,9 +82,10 @@ namespace GemeloDigitalController {
             while ((linea = sr->ReadLine()) != nullptr) {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
+                String^ estId = c->Length > 6 ? c[6] : "";
                 PanelLateralModel^ p = gcnew PanelLateralModel(
                     c[0], c[1], Double::Parse(c[2]),
-                    (LadoPanel)Int32::Parse(c[4]), Int32::Parse(c[5]));
+                    (LadoPanel)Int32::Parse(c[4]), Int32::Parse(c[5]), estId);
                 p->Estado = (EstadoPieza)Int32::Parse(c[3]);
                 repositorio->Add(p);
             }

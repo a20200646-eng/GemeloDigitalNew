@@ -19,10 +19,10 @@ namespace GemeloDigitalController {
 
         // CREATE
         bool agregar(String^ id, String^ material, double peso,
-            int puntosUnion, double anchura) {
+            int puntosUnion, double anchura, String^ estacionId) {
             if (buscarPorId(id) != nullptr) return false;
             repositorio->Add(gcnew EstructuraTechoModel(
-                id, material, peso, puntosUnion, anchura));
+                id, material, peso, puntosUnion, anchura, estacionId));
             guardarArchivo();
             return true;
         }
@@ -41,7 +41,7 @@ namespace GemeloDigitalController {
 
         // UPDATE - reemplaza todos los atributos modificables
         bool modificar(String^ id, String^ material, double peso,
-            EstadoPieza estado, int puntosUnion, double anchura) {
+            EstadoPieza estado, int puntosUnion, double anchura, String^ estacionId) {
             EstructuraTechoModel^ e = buscarPorId(id);
             if (e == nullptr) return false;
             e->Material = material;
@@ -49,6 +49,7 @@ namespace GemeloDigitalController {
             e->Estado = estado;
             e->PuntosUnion = puntosUnion;
             e->Anchura = anchura;
+            e->EstacionId = estacionId;
             guardarArchivo();
             return true;
         }
@@ -67,9 +68,9 @@ namespace GemeloDigitalController {
             Directory::CreateDirectory("datos");
             StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
             for each (EstructuraTechoModel ^ e in repositorio)
-                sw->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}|{5}",
+                sw->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}",
                     e->Id, e->Material, e->Peso,
-                    (int)e->Estado, e->PuntosUnion, e->Anchura));
+                    (int)e->Estado, e->PuntosUnion, e->Anchura, e->EstacionId));
             sw->Close();
         }
 
@@ -81,9 +82,10 @@ namespace GemeloDigitalController {
             while ((linea = sr->ReadLine()) != nullptr) {
                 if (linea->Trim()->Length == 0) continue;
                 array<String^>^ c = linea->Split('|');
+                String^ estId = c->Length > 6 ? c[6] : "";
                 EstructuraTechoModel^ e = gcnew EstructuraTechoModel(
                     c[0], c[1], Double::Parse(c[2]),
-                    Int32::Parse(c[4]), Double::Parse(c[5]));
+                    Int32::Parse(c[4]), Double::Parse(c[5]), estId);
                 e->Estado = (EstadoPieza)Int32::Parse(c[3]);
                 repositorio->Add(e);
             }

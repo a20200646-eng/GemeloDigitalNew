@@ -8,13 +8,15 @@ namespace GemeloDigitalModel {
     private:
         int    puntosUnion;
         double anchura;
+		String^ estacionId;
 
     public:
         EstructuraTechoModel(String^ id, String^ material, double peso,
-            int puntosUnion, double anchura)
+            int puntosUnion, double anchura, String^ estacionId)
             : PiezaModel(id, "Estructura Techo", material, peso, EstadoPieza::DISPONIBLE) {
             this->puntosUnion = puntosUnion;
             this->anchura = anchura;
+            this->estacionId = estacionId;
         }
 
         property int PuntosUnion {
@@ -27,6 +29,10 @@ namespace GemeloDigitalModel {
             void   set(double value) { anchura = value; }
         }
 
+		property String^ EstacionId {
+			String^ get() { return estacionId; }
+			void    set(String^ value) { estacionId = value; }
+		}
         virtual void dataReport() override {
             Console::WriteLine("=== ESTRUCTURA TECHO ===");
             Console::WriteLine("ID: " + Id);

@@ -1,4 +1,5 @@
 #pragma once
+#include "Enumeraciones.h"
 using namespace System;
 
 namespace GemeloDigitalModel {
@@ -6,35 +7,28 @@ namespace GemeloDigitalModel {
     public ref class EstacionTrabajoModel {
     private:
         String^ id;
-        String^ tipoPiezaAceptada;
-        bool    ocupada;
+		TipoEstacion tipo;
+        int     cantidadPiezas;
 
     public:
-        EstacionTrabajoModel(String^ id, String^ tipoPiezaAceptada, bool ocupada) {
+        EstacionTrabajoModel(String^ id, TipoEstacion tipo, int cantidadPiezas) {
             this->id = id;
-            this->tipoPiezaAceptada = tipoPiezaAceptada;
-            this->ocupada = ocupada;
+            this->tipo = tipo;
+            this->cantidadPiezas = cantidadPiezas;
         }
 
         property String^ Id {
             String^ get() { return id; }
         }
 
-        property String^ TipoPiezaAceptada {
-            String^ get() { return tipoPiezaAceptada; }
-            void    set(String^ value) { tipoPiezaAceptada = value; }
+        property TipoEstacion Tipo {
+            TipoEstacion get() { return tipo; }
+            void set(TipoEstacion value) { tipo = value; }
         }
 
-        property bool Ocupada {
-            bool get() { return ocupada; }
-            void set(bool value) { ocupada = value; }
-        }
-
-        void dataReport() {
-            Console::WriteLine("=== ESTACION DE TRABAJO ===");
-            Console::WriteLine("ID: " + Id);
-            Console::WriteLine("|Tipo Pieza Aceptada: " + TipoPiezaAceptada);
-            Console::WriteLine("|Ocupada: " + Ocupada);
+        property int CantidadPiezas {
+            int get() { return cantidadPiezas; }
+			void set(int value) { cantidadPiezas = value; }
         }
     };
 }
