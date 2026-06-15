@@ -31,3 +31,4 @@
 #include "EventoErrorModel.h"
 #include "EstacionTrabajoModel.h"
 #include "LineaEnsamblajeModel.h"
+#include "CicloModel.h"

@@ -14,7 +14,7 @@ namespace GemeloDigitalModel {
         CALIBRANDO,
         POSICIONANDO,
         SOLDANDO,
-        ERROR,
+        EN_ERROR,
         PAUSA
     };
 
@@ -23,6 +23,12 @@ namespace GemeloDigitalModel {
         EN_PROCESO,
         ENSAMBLADA,
         DEFECTUOSA
+    };
+
+    public enum class TipoEstacion {
+        PANEL_IZQ, 
+        PANEL_DER, 
+        TECHO 
     };
 
     public enum class RolUsuario {

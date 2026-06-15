@@ -6,26 +6,36 @@ namespace GemeloDigitalModel {
 
     public ref class EventoModel abstract {
     protected:
-        int id;
+        String^ id;
         String^ timestamp;
         String^ descripcion;
         NivelEvento nivel;
 
     public:
-        EventoModel(int id, String^ timestamp, String^ descripcion, NivelEvento nivel) {
+        EventoModel(String^ id, String^ timestamp, String^ descripcion, NivelEvento nivel) {
             this->id = id;
             this->timestamp = timestamp;
             this->descripcion = descripcion;
             this->nivel = nivel;
         }
 
-        int getId() { return id; }
-        String^ getTimestamp() { return timestamp; }
-        String^ getDescripcion() { return descripcion; }
-        NivelEvento getNivel() { return nivel; }
+        property String^ Id {
+            String^ get() { return id; }
+        }
 
-        void setDescripcion(String^ d) { descripcion = d; }
-        void setNivel(NivelEvento n) { nivel = n; }
+        property String^ Timestamp {
+            String^ get() { return timestamp; }
+        }
+
+        property String^ Descripcion {
+            String^ get() { return descripcion; }
+            void    set(String^ value) { descripcion = value; }
+        }
+
+        property NivelEvento Nivel {
+            NivelEvento get() { return nivel; }
+            void        set(NivelEvento value) { nivel = value; }
+        }
 
         virtual void dataReport() = 0;
     };

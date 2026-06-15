@@ -6,27 +6,32 @@ namespace GemeloDigitalModel {
 
     public ref class EventoTareaModel : public EventoModel {
     private:
-        int tareaId;
+        String^ tareaId;
         String^ resultado;
 
     public:
-        EventoTareaModel(int id, String^ timestamp, String^ descripcion,
-            int tareaId, String^ resultado)
+        EventoTareaModel(String^ id, String^ timestamp, String^ descripcion,
+            String^ tareaId, String^ resultado)
             : EventoModel(id, timestamp, descripcion, NivelEvento::INFO) {
             this->tareaId = tareaId;
             this->resultado = resultado;
         }
 
-        int getTareaId() { return tareaId; }
-        String^ getResultado() { return resultado; }
-        void setResultado(String^ r) { resultado = r; }
+        property String^ TareaId {
+            String^ get() { return tareaId; }
+        }
+
+        property String^ Resultado {
+            String^ get() { return resultado; }
+            void    set(String^ value) { resultado = value; }
+        }
 
         virtual void dataReport() override {
             Console::WriteLine("=== EVENTO TAREA ===");
-            Console::WriteLine("ID: " + id + " | " + timestamp);
-            Console::WriteLine("|Nivel: " + nivel.ToString());
-            Console::WriteLine("|Tarea ID: " + tareaId + " | Resultado: " + resultado);
-            Console::WriteLine("|Desc: " + descripcion);
+            Console::WriteLine("ID: " + Id + " | " + Timestamp);
+            Console::WriteLine("|Nivel: " + Nivel.ToString());
+            Console::WriteLine("|Tarea ID: " + TareaId + " | Resultado: " + Resultado);
+            Console::WriteLine("|Desc: " + Descripcion);
         }
     };
 }

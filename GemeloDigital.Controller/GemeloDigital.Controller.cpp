@@ -26,3 +26,4 @@
 #include "RegistroEventosController.h"
 #include "ReporteController.h"
 #include "ControladorSistema.h"
+#include "CicloController.h"

@@ -16,23 +16,19 @@ namespace GemeloDigitalController {
             sistemaActivo = false;
         }
 
-        // Asignar estacion al controlador
-        void setEstacion(EstacionBodyFramingModel^ e) {
-            estacion = e;
+        property EstacionBodyFramingModel^ Estacion {
+            EstacionBodyFramingModel^ get() { return estacion; }
+            void                      set(EstacionBodyFramingModel^ value) { estacion = value; }
         }
 
-        EstacionBodyFramingModel^ getEstacion() {
-            return estacion;
-        }
-
-        bool getSistemaActivo() {
-            return sistemaActivo;
+        property bool SistemaActivo {
+            bool get() { return sistemaActivo; }
         }
 
         // Iniciar ciclo de operacion
         bool iniciarCiclo() {
             if (estacion != nullptr && !sistemaActivo) {
-                estacion->setEstadoSistema(EstadoSistema::INICIALIZANDO);
+                estacion->EstadoSistemaActual = EstadoSistema::INICIALIZANDO;
                 sistemaActivo = true;
                 Console::WriteLine("[SISTEMA] Ciclo iniciado.");
                 return true;
@@ -44,7 +40,7 @@ namespace GemeloDigitalController {
         // Pasar a estado operativo
         bool activar() {
             if (estacion != nullptr && sistemaActivo) {
-                estacion->setEstadoSistema(EstadoSistema::OPERATIVO);
+                estacion->EstadoSistemaActual = EstadoSistema::OPERATIVO;
                 Console::WriteLine("[SISTEMA] Sistema operativo.");
                 return true;
             }
@@ -54,7 +50,7 @@ namespace GemeloDigitalController {
         // Pausar sistema
         bool pausar() {
             if (estacion != nullptr && sistemaActivo) {
-                estacion->setEstadoSistema(EstadoSistema::PAUSADO);
+                estacion->EstadoSistemaActual = EstadoSistema::PAUSADO;
                 Console::WriteLine("[SISTEMA] Sistema pausado.");
                 return true;
             }
@@ -64,7 +60,7 @@ namespace GemeloDigitalController {
         // Reanudar sistema
         bool reanudar() {
             if (estacion != nullptr && sistemaActivo) {
-                estacion->setEstadoSistema(EstadoSistema::OPERATIVO);
+                estacion->EstadoSistemaActual = EstadoSistema::OPERATIVO;
                 Console::WriteLine("[SISTEMA] Sistema reanudado.");
                 return true;
             }
@@ -74,7 +70,7 @@ namespace GemeloDigitalController {
         // Detener emergencia
         bool detenerEmergencia() {
             if (estacion != nullptr) {
-                estacion->setEstadoSistema(EstadoSistema::EMERGENCIA);
+                estacion->EstadoSistemaActual = EstadoSistema::EMERGENCIA;
                 sistemaActivo = false;
                 Console::WriteLine("[SISTEMA] DETENCION DE EMERGENCIA ACTIVADA.");
                 return true;
@@ -85,7 +81,7 @@ namespace GemeloDigitalController {
         // Finalizar ciclo
         bool finalizarCiclo() {
             if (estacion != nullptr && sistemaActivo) {
-                estacion->setEstadoSistema(EstadoSistema::INACTIVO);
+                estacion->EstadoSistemaActual = EstadoSistema::INACTIVO;
                 sistemaActivo = false;
                 Console::WriteLine("[SISTEMA] Ciclo finalizado.");
                 return true;
@@ -95,13 +91,11 @@ namespace GemeloDigitalController {
 
         void dataReport() {
             Console::WriteLine("=== CONTROLADOR DEL SISTEMA ===");
-            Console::WriteLine("|Sistema Activo: " + sistemaActivo);
-            if (estacion != nullptr) {
-                estacion->dataReport();
-            }
-            else {
+            Console::WriteLine("|Sistema Activo: " + SistemaActivo);
+            if (Estacion != nullptr)
+                Estacion->dataReport();
+            else
                 Console::WriteLine("|Estacion: No asignada");
-            }
         }
     };
 }

@@ -1,35 +1,34 @@
 #pragma once
+#include "Enumeraciones.h"
 using namespace System;
 
 namespace GemeloDigitalModel {
 
     public ref class EstacionTrabajoModel {
     private:
-        int id;
-        String^ tipoPiezaAceptada;
-        bool ocupada;
+        String^ id;
+		TipoEstacion tipo;
+        int     cantidadPiezas;
 
     public:
-        EstacionTrabajoModel(int id, String^ tipoPiezaAceptada, bool ocupada) {
+        EstacionTrabajoModel(String^ id, TipoEstacion tipo, int cantidadPiezas) {
             this->id = id;
-            this->tipoPiezaAceptada = tipoPiezaAceptada;
-            this->ocupada = ocupada;
+            this->tipo = tipo;
+            this->cantidadPiezas = cantidadPiezas;
         }
 
-        // Getters
-        int getId() { return id; }
-        String^ getTipoPiezaAceptada() { return tipoPiezaAceptada; }
-        bool getOcupada() { return ocupada; }
+        property String^ Id {
+            String^ get() { return id; }
+        }
 
-        // Setters - id no se modifica
-        void setTipoPiezaAceptada(String^ t) { tipoPiezaAceptada = t; }
-        void setOcupada(bool o) { ocupada = o; }
+        property TipoEstacion Tipo {
+            TipoEstacion get() { return tipo; }
+            void set(TipoEstacion value) { tipo = value; }
+        }
 
-        void dataReport() {
-            Console::WriteLine("=== ESTACION DE TRABAJO ===");
-            Console::WriteLine("ID: " + id);
-            Console::WriteLine("|Tipo Pieza Aceptada: " + tipoPiezaAceptada);
-            Console::WriteLine("|Ocupada: " + ocupada);
+        property int CantidadPiezas {
+            int get() { return cantidadPiezas; }
+			void set(int value) { cantidadPiezas = value; }
         }
     };
 }

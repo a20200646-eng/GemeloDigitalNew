@@ -10,21 +10,26 @@ namespace GemeloDigitalModel {
         int totalRequerido;
 
     public:
-        TareaCoordinadaModel(int id, int totalRequerido)
+        TareaCoordinadaModel(String^ id, int totalRequerido)
             : TareaModel(id, "PENDIENTE") {
             this->totalConfirmado = 0;
             this->totalRequerido = totalRequerido;
         }
 
-        int getTotalConfirmado() { return totalConfirmado; }
-        int getTotalRequerido() { return totalRequerido; }
-        void setTotalConfirmado(int t) { totalConfirmado = t; }
-        void setTotalRequerido(int t) { totalRequerido = t; }
+        property int TotalConfirmado {
+            int  get() { return totalConfirmado; }
+            void set(int value) { totalConfirmado = value; }
+        }
+
+        property int TotalRequerido {
+            int  get() { return totalRequerido; }
+            void set(int value) { totalRequerido = value; }
+        }
 
         virtual void dataReport() override {
             Console::WriteLine("=== TAREA COORDINADA ===");
-            Console::WriteLine("ID: " + id + " | Estado: " + estado);
-            Console::WriteLine("|Confirmados: " + totalConfirmado + " / " + totalRequerido);
+            Console::WriteLine("ID: " + Id + " | Estado: " + Estado);
+            Console::WriteLine("|Confirmados: " + TotalConfirmado + " / " + TotalRequerido);
         }
     };
 }

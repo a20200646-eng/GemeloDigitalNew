@@ -2,7 +2,6 @@
 #include "ComponenteRoboticoModel.h"
 using namespace System;
 
-
 namespace GemeloDigitalModel {
 
     public ref class ArticulacionModel : public ComponenteRoboticoModel {
@@ -12,7 +11,7 @@ namespace GemeloDigitalModel {
         double anguloMaximo;
 
     public:
-        ArticulacionModel(int id, String^ nombre, bool activo,
+        ArticulacionModel(String^ id, String^ nombre, bool activo,
             double anguloActual, double anguloMinimo, double anguloMaximo)
             : ComponenteRoboticoModel(id, nombre, activo) {
             this->anguloActual = anguloActual;
@@ -20,21 +19,26 @@ namespace GemeloDigitalModel {
             this->anguloMaximo = anguloMaximo;
         }
 
-        // Getters
-        double getAnguloActual() { return anguloActual; }
-        double getAnguloMinimo() { return anguloMinimo; }
-        double getAnguloMaximo() { return anguloMaximo; }
+        property double AnguloActual {
+            double get() { return anguloActual; }
+            void   set(double value) { anguloActual = value; }
+        }
 
-        // Setters
-        void setAnguloActual(double a) { anguloActual = a; }
-        void setAnguloMinimo(double a) { anguloMinimo = a; }
-        void setAnguloMaximo(double a) { anguloMaximo = a; }
+        property double AnguloMinimo {
+            double get() { return anguloMinimo; }
+            void   set(double value) { anguloMinimo = value; }
+        }
+
+        property double AnguloMaximo {
+            double get() { return anguloMaximo; }
+            void   set(double value) { anguloMaximo = value; }
+        }
 
         virtual void dataReport() override {
-            Console::WriteLine("  [Articulacion] ID: " + id + " | Nombre: " + nombre);
-            Console::WriteLine("  |Activo: " + activo);
-            Console::WriteLine("  |Angulo Actual: " + anguloActual);
-            Console::WriteLine("  |Angulo Min: " + anguloMinimo + " | Angulo Max: " + anguloMaximo);
+            Console::WriteLine("  [Articulacion] ID: " + Id + " | Nombre: " + Nombre);
+            Console::WriteLine("  |Activo: " + Activo);
+            Console::WriteLine("  |Angulo Actual: " + AnguloActual);
+            Console::WriteLine("  |Angulo Min: " + AnguloMinimo + " | Angulo Max: " + AnguloMaximo);
         }
     };
 }

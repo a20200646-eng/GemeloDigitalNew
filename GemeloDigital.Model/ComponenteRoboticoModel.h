@@ -1,4 +1,4 @@
-#pragma once
+/**/#pragma once
 #include "Enumeraciones.h"
 using namespace System;
 
@@ -6,25 +6,31 @@ namespace GemeloDigitalModel {
 
     public ref class ComponenteRoboticoModel abstract {
     protected:
-        int id;
+        String^ id;
         String^ nombre;
-        bool activo;
+        bool    activo;
 
     public:
-        ComponenteRoboticoModel(int id, String^ nombre, bool activo) {
+        ComponenteRoboticoModel(String^ id, String^ nombre, bool activo) {
             this->id = id;
             this->nombre = nombre;
             this->activo = activo;
         }
 
-        // Getters
-        int getId() { return id; }
-        String^ getNombre() { return nombre; }
-        bool getActivo() { return activo; }
+        // Properties
+        property String^ Id {
+            String^ get() { return id; }
+        }
 
-        // Setters - id no se modifica
-        void setNombre(String^ nombre) { this->nombre = nombre; }
-        void setActivo(bool activo) { this->activo = activo; }
+        property String^ Nombre {
+            String^ get() { return nombre; }
+            void    set(String^ value) { nombre = value; }
+        }
+
+        property bool Activo {
+            bool get() { return activo; }
+            void set(bool value) { activo = value; }
+        }
 
         // Metodo abstracto
         virtual void dataReport() = 0;

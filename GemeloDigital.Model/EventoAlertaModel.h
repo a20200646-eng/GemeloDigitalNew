@@ -6,27 +6,32 @@ namespace GemeloDigitalModel {
 
     public ref class EventoAlertaModel : public EventoModel {
     private:
-        int brazoId;
+        String^ brazoId;
         String^ tipoAlerta;
 
     public:
-        EventoAlertaModel(int id, String^ timestamp, String^ descripcion,
-            int brazoId, String^ tipoAlerta)
+        EventoAlertaModel(String^ id, String^ timestamp, String^ descripcion,
+            String^ brazoId, String^ tipoAlerta)
             : EventoModel(id, timestamp, descripcion, NivelEvento::ALERTA) {
             this->brazoId = brazoId;
             this->tipoAlerta = tipoAlerta;
         }
 
-        int getBrazoId() { return brazoId; }
-        String^ getTipoAlerta() { return tipoAlerta; }
-        void setTipoAlerta(String^ t) { tipoAlerta = t; }
+        property String^ BrazoId {
+            String^ get() { return brazoId; }
+        }
+
+        property String^ TipoAlerta {
+            String^ get() { return tipoAlerta; }
+            void    set(String^ value) { tipoAlerta = value; }
+        }
 
         virtual void dataReport() override {
             Console::WriteLine("=== EVENTO ALERTA ===");
-            Console::WriteLine("ID: " + id + " | " + timestamp);
-            Console::WriteLine("|Nivel: " + nivel.ToString());
-            Console::WriteLine("|Brazo ID: " + brazoId + " | Tipo: " + tipoAlerta);
-            Console::WriteLine("|Desc: " + descripcion);
+            Console::WriteLine("ID: " + Id + " | " + Timestamp);
+            Console::WriteLine("|Nivel: " + Nivel.ToString());
+            Console::WriteLine("|Brazo ID: " + BrazoId + " | Tipo: " + TipoAlerta);
+            Console::WriteLine("|Desc: " + Descripcion);
         }
     };
 }

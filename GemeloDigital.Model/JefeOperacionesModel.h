@@ -9,20 +9,22 @@ namespace GemeloDigitalModel {
         int nivelAutorizacion;
 
     public:
-        JefeOperacionesModel(int id, String^ nombre, String^ contrasena, int nivelAutorizacion)
+        JefeOperacionesModel(String^ id, String^ nombre, String^ contrasena, int nivelAutorizacion)
             : UsuarioModel(id, nombre, contrasena, RolUsuario::JEFE) {
             this->nivelAutorizacion = nivelAutorizacion;
         }
 
-        int getNivelAutorizacion() { return nivelAutorizacion; }
-        void setNivelAutorizacion(int n) { nivelAutorizacion = n; }
+        property int NivelAutorizacion {
+            int  get() { return nivelAutorizacion; }
+            void set(int value) { nivelAutorizacion = value; }
+        }
 
         virtual void dataReport() override {
             Console::WriteLine("=== JEFE DE OPERACIONES ===");
-            Console::WriteLine("ID: " + id);
-            Console::WriteLine("|Nombre: " + nombre);
-            Console::WriteLine("|Rol: " + rol.ToString());
-            Console::WriteLine("|Nivel Autorizacion: " + nivelAutorizacion);
+            Console::WriteLine("ID: " + Id);
+            Console::WriteLine("|Nombre: " + Nombre);
+            Console::WriteLine("|Rol: " + Rol.ToString());
+            Console::WriteLine("|Nivel Autorizacion: " + NivelAutorizacion);
         }
     };
 }

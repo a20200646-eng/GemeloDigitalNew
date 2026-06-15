@@ -1,6 +1,7 @@
 #pragma once
 using namespace System;
 using namespace System::Collections::Generic;
+using namespace System::IO;
 using namespace GemeloDigitalModel;
 
 namespace GemeloDigitalController {
@@ -8,27 +9,26 @@ namespace GemeloDigitalController {
     public ref class TareaCoordinadaController {
     private:
         List<TareaCoordinadaModel^>^ repositorio;
+        static String^ RUTA = "datos\\tareas_coordinadas.dat";
 
     public:
         TareaCoordinadaController() {
             repositorio = gcnew List<TareaCoordinadaModel^>();
+            cargarArchivo();
         }
 
         // CREATE
-        bool agregar(int id, int totalRequerido) {
-            TareaCoordinadaModel^ t = buscarPorId(id);
-            if (t == nullptr) {
-                repositorio->Add(gcnew TareaCoordinadaModel(id, totalRequerido));
-                return true;
-            }
-            return false;
+        bool agregar(String^ id, int totalRequerido) {
+            if (buscarPorId(id) != nullptr) return false;
+            repositorio->Add(gcnew TareaCoordinadaModel(id, totalRequerido));
+            guardarArchivo();
+            return true;
         }
 
         // READ - por ID
-        TareaCoordinadaModel^ buscarPorId(int id) {
-            for each (TareaCoordinadaModel ^ t in repositorio) {
-                if (t->getId() == id) return t;
-            }
+        TareaCoordinadaModel^ buscarPorId(String^ id) {
+            for each (TareaCoordinadaModel ^ t in repositorio)
+                if (t->Id->Equals(id)) return t;
             return nullptr;
         }
 
@@ -37,27 +37,52 @@ namespace GemeloDigitalController {
             return repositorio;
         }
 
-        // UPDATE - E: estado | TC: totalConfirmado | TR: totalRequerido
-        bool modificar(int id, String^ opcion, String^ valor) {
+        // UPDATE - reemplaza todos los atributos modificables
+        bool modificar(String^ id, String^ estado, int totalConfirmado, int totalRequerido) {
             TareaCoordinadaModel^ t = buscarPorId(id);
-            if (t != nullptr) {
-                if (opcion->Equals("E"))       t->setEstado(valor);
-                else if (opcion->Equals("TC")) t->setTotalConfirmado(Convert::ToInt32(valor));
-                else if (opcion->Equals("TR")) t->setTotalRequerido(Convert::ToInt32(valor));
-                else return false;
-                return true;
-            }
-            return false;
+            if (t == nullptr) return false;
+            t->Estado = estado;
+            t->TotalConfirmado = totalConfirmado;
+            t->TotalRequerido = totalRequerido;
+            guardarArchivo();
+            return true;
         }
 
         // DELETE
-        bool eliminar(int id) {
+        bool eliminar(String^ id) {
             TareaCoordinadaModel^ t = buscarPorId(id);
-            if (t != nullptr) {
-                repositorio->Remove(t);
-                return true;
+            if (t == nullptr) return false;
+            repositorio->Remove(t);
+            guardarArchivo();
+            return true;
+        }
+
+        // Formato: id|estado|totalConfirmado|totalRequerido
+        void guardarArchivo() {
+            Directory::CreateDirectory("datos");
+            StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
+            for each (TareaCoordinadaModel ^ t in repositorio)
+                sw->WriteLine(String::Format("{0}|{1}|{2}|{3}",
+                    t->Id, t->Estado,
+                    t->TotalConfirmado, t->TotalRequerido));
+            sw->Close();
+        }
+
+        void cargarArchivo() {
+            if (!File::Exists(RUTA)) return;
+            repositorio->Clear();
+            StreamReader^ sr = gcnew StreamReader(RUTA, Text::Encoding::UTF8);
+            String^ linea;
+            while ((linea = sr->ReadLine()) != nullptr) {
+                if (linea->Trim()->Length == 0) continue;
+                array<String^>^ c = linea->Split('|');
+                TareaCoordinadaModel^ t = gcnew TareaCoordinadaModel(
+                    c[0], Int32::Parse(c[3]));
+                t->Estado = c[1];
+                t->TotalConfirmado = Int32::Parse(c[2]);
+                repositorio->Add(t);
             }
-            return false;
+            sr->Close();
         }
     };
 }

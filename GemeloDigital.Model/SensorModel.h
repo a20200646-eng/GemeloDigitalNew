@@ -8,7 +8,7 @@ namespace GemeloDigitalModel {
 
     public ref class SensorModel abstract : public ComponenteRoboticoModel {
     public:
-        SensorModel(int id, String^ nombre, bool activo)
+        SensorModel(String^ id, String^ nombre, bool activo)
             : ComponenteRoboticoModel(id, nombre, activo) {
         }
 

@@ -10,24 +10,29 @@ namespace GemeloDigitalModel {
         String^ fase;
 
     public:
-        EventoErrorModel(int id, String^ timestamp, String^ descripcion,
+        EventoErrorModel(String^ id, String^ timestamp, String^ descripcion,
             String^ codigoError, String^ fase)
             : EventoModel(id, timestamp, descripcion, NivelEvento::ERROR) {
             this->codigoError = codigoError;
             this->fase = fase;
         }
 
-        String^ getCodigoError() { return codigoError; }
-        String^ getFase() { return fase; }
-        void setCodigoError(String^ c) { codigoError = c; }
-        void setFase(String^ f) { fase = f; }
+        property String^ CodigoError {
+            String^ get() { return codigoError; }
+            void    set(String^ value) { codigoError = value; }
+        }
+
+        property String^ Fase {
+            String^ get() { return fase; }
+            void    set(String^ value) { fase = value; }
+        }
 
         virtual void dataReport() override {
             Console::WriteLine("=== EVENTO ERROR ===");
-            Console::WriteLine("ID: " + id + " | " + timestamp);
-            Console::WriteLine("|Nivel: " + nivel.ToString());
-            Console::WriteLine("|Codigo: " + codigoError + " | Fase: " + fase);
-            Console::WriteLine("|Desc: " + descripcion);
+            Console::WriteLine("ID: " + Id + " | " + Timestamp);
+            Console::WriteLine("|Nivel: " + Nivel.ToString());
+            Console::WriteLine("|Codigo: " + CodigoError + " | Fase: " + Fase);
+            Console::WriteLine("|Desc: " + Descripcion);
         }
     };
 }

@@ -6,28 +6,36 @@ namespace GemeloDigitalModel {
 
     public ref class UsuarioModel abstract {
     protected:
-        int id;
+        String^ id;
         String^ nombre;
         String^ contrasena;
         RolUsuario rol;
 
     public:
-        UsuarioModel(int id, String^ nombre, String^ contrasena, RolUsuario rol) {
+        UsuarioModel(String^ id, String^ nombre, String^ contrasena, RolUsuario rol) {
             this->id = id;
             this->nombre = nombre;
             this->contrasena = contrasena;
             this->rol = rol;
         }
 
-        // Getters
-        int getId() { return id; }
-        String^ getNombre() { return nombre; }
-        String^ getContrasena() { return contrasena; }
-        RolUsuario getRol() { return rol; }
+        property String^ Id {
+            String^ get() { return id; }
+        }
 
-        // Setters - id no se modifica
-        void setNombre(String^ n) { nombre = n; }
-        void setContrasena(String^ c) { contrasena = c; }
+        property String^ Nombre {
+            String^ get() { return nombre; }
+            void    set(String^ value) { nombre = value; }
+        }
+
+        property String^ Contrasena {
+            String^ get() { return contrasena; }
+            void    set(String^ value) { contrasena = value; }
+        }
+
+        property RolUsuario Rol {
+            RolUsuario get() { return rol; }
+        }
 
         virtual void dataReport() = 0;
     };

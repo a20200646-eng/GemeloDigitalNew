@@ -2,7 +2,6 @@
 #include "SensorModel.h"
 using namespace System;
 
-
 namespace GemeloDigitalModel {
 
     public ref class SensorPosicionModel : public SensorModel {
@@ -11,26 +10,28 @@ namespace GemeloDigitalModel {
         double tolerancia;
 
     public:
-        SensorPosicionModel(int id, String^ nombre, bool activo,
+        SensorPosicionModel(String^ id, String^ nombre, bool activo,
             double anguloMedido, double tolerancia)
             : SensorModel(id, nombre, activo) {
             this->anguloMedido = anguloMedido;
             this->tolerancia = tolerancia;
         }
 
-        // Getters
-        double getAnguloMedido() { return anguloMedido; }
-        double getTolerancia() { return tolerancia; }
+        property double AnguloMedido {
+            double get() { return anguloMedido; }
+            void   set(double value) { anguloMedido = value; }
+        }
 
-        // Setters
-        void setAnguloMedido(double a) { anguloMedido = a; }
-        void setTolerancia(double t) { tolerancia = t; }
+        property double Tolerancia {
+            double get() { return tolerancia; }
+            void   set(double value) { tolerancia = value; }
+        }
 
         virtual void dataReport() override {
-            Console::WriteLine("  [SensorPosicion] ID: " + id + " | Nombre: " + nombre);
-            Console::WriteLine("  |Activo: " + activo);
-            Console::WriteLine("  |Angulo Medido: " + anguloMedido);
-            Console::WriteLine("  |Tolerancia: " + tolerancia);
+            Console::WriteLine("  [SensorPosicion] ID: " + Id + " | Nombre: " + Nombre);
+            Console::WriteLine("  |Activo: " + Activo);
+            Console::WriteLine("  |Angulo Medido: " + AnguloMedido);
+            Console::WriteLine("  |Tolerancia: " + Tolerancia);
         }
     };
 }

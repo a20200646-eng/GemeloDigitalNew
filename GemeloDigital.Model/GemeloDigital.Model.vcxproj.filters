@@ -114,6 +114,9 @@
     <ClInclude Include="LineaEnsamblajeModel.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="CicloModel.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GemeloDigital.Model.cpp">

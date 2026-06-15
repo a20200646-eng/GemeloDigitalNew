@@ -6,14 +6,14 @@ namespace GemeloDigitalModel {
 
     public ref class PiezaModel abstract {
     protected:
-        int id;
+        String^ id;
         String^ tipo;
         String^ material;
-        double peso;
+        double      peso;
         EstadoPieza estado;
 
     public:
-        PiezaModel(int id, String^ tipo, String^ material, double peso, EstadoPieza estado) {
+        PiezaModel(String^ id, String^ tipo, String^ material, double peso, EstadoPieza estado) {
             this->id = id;
             this->tipo = tipo;
             this->material = material;
@@ -21,15 +21,28 @@ namespace GemeloDigitalModel {
             this->estado = estado;
         }
 
-        int getId() { return id; }
-        String^ getTipo() { return tipo; }
-        String^ getMaterial() { return material; }
-        double getPeso() { return peso; }
-        EstadoPieza getEstado() { return estado; }
+        property String^ Id {
+            String^ get() { return id; }
+        }
 
-        void setMaterial(String^ m) { material = m; }
-        void setPeso(double p) { peso = p; }
-        void setEstado(EstadoPieza e) { estado = e; }
+        property String^ Tipo {
+            String^ get() { return tipo; }
+        }
+
+        property String^ Material {
+            String^ get() { return material; }
+            void    set(String^ value) { material = value; }
+        }
+
+        property double Peso {
+            double get() { return peso; }
+            void   set(double value) { peso = value; }
+        }
+
+        property EstadoPieza Estado {
+            EstadoPieza get() { return estado; }
+            void        set(EstadoPieza value) { estado = value; }
+        }
 
         virtual void dataReport() = 0;
     };
