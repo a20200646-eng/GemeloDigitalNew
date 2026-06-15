@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "FormRegistro.h"
 using namespace GemeloDigitalController;
 using namespace GemeloDigitalModel;
@@ -73,30 +73,6 @@ namespace LOGIN {
 	protected:
 
 	protected:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	protected:
 
@@ -268,6 +244,7 @@ namespace LOGIN {
 			this->dataGridView1->RowTemplate->Height = 24;
 			this->dataGridView1->Size = System::Drawing::Size(950, 160);
 			this->dataGridView1->TabIndex = 19;
+			this->dataGridView1->CellContentClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &FormMenuAdmin::dataGridView1_CellContentClick);
 			// 
 			// Column1
 			// 
@@ -595,20 +572,18 @@ namespace LOGIN {
 		CargarUsuariosPorRol(3);
 	}
 
-	private: System::Void button4_Click(System::Object^ sender, System::EventArgs^ e) { // Gestores (¡El tuyo!)
+	private: System::Void button4_Click(System::Object^ sender, System::EventArgs^ e) { // Gestores
 		this->label3->Text = "AGREGAR NUEVO GESTOR";
 		this->textBox1->Clear(); this->textBox2->Clear(); this->textBox3->Clear();
 		this->button5->Tag = "4"; // Nivel 4 = Gestor
-
 		CargarUsuariosPorRol(4);
 	}
 
 		   // === BOTÓN ACCIÓN: AGREGAR / GUARDAR USUARIO ===
 	private: System::Void button5_Click(System::Object^ sender, System::EventArgs^ e) {
-		
 		String^ usuario = this->textBox1->Text->Trim();
 		String^ password = this->textBox2->Text->Trim();
-		String^ turno = this->textBox3->Text->Trim();  // ← aquí arriba
+		String^ turno = this->textBox3->Text->Trim();
 
 		if (usuario == "" || password == "" || turno == "") {
 			MessageBox::Show("Rellene todos los campos.", "Campos Vacíos",
@@ -620,34 +595,28 @@ namespace LOGIN {
 				"Seguridad", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 			return;
 		}
-		if (usuario->Contains("|") || password->Contains("|") || turno->Contains("|")) {
-			MessageBox::Show("No se permite el carácter pipe ( | ).",
-				"Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
-			return;
-		}
 
 		try {
-			AdministradorController^ contr =
-				gcnew AdministradorController();
+			AdministradorController^ contr = gcnew AdministradorController();
 			int nivelAcceso = (this->button5->Tag != nullptr)
 				? Int32::Parse(this->button5->Tag->ToString()) : 1;
-			int nuevoId = contr->obtenerTodos()->Count + 1;
 
-			if (contr->agregar(nuevoId.ToString(), usuario, password, nivelAcceso, turno)) {
+			// Le mandamos un Guid temporal; la base de datos lo ignorará y calculará el U00X real
+			String^ nuevoId = Guid::NewGuid().ToString();
+
+			if (contr->agregar(nuevoId, usuario, password, nivelAcceso, turno)) {
 				MessageBox::Show("¡Usuario '" + usuario + "' registrado con éxito!",
 					"Éxito", MessageBoxButtons::OK, MessageBoxIcon::Information);
 				this->textBox1->Clear(); this->textBox2->Clear(); this->textBox3->Clear();
 				CargarUsuariosPorRol(nivelAcceso);
 			}
 			else {
-				MessageBox::Show("No se pudo registrar. El ID ya existe.", "Error");
+				MessageBox::Show("No se pudo registrar. Es posible que el nombre de usuario ya exista.", "Error");
 			}
 		}
 		catch (Exception^ ex) {
 			MessageBox::Show("Error: " + ex->Message, "Error Crítico");
 		}
-
-
 	}
 
 		   // === FUNCIÓN AUXILIAR: CARGAR Y FILTRAR TABLA DESDE EL CONTROLADOR ===
@@ -659,8 +628,8 @@ namespace LOGIN {
 
 			for each (AdministradorModel ^ u in lista) {
 				if (u->NivelAcceso == nivelFiltrar) {
-					String^ idSimulado = "U00" + u->Id;
-					this->dataGridView1->Rows->Add(idSimulado, u->Nombre, u->Contrasena, u->Turno); // ← turno real
+					// ¡SOLUCIONADO! Usamos directamente u->Id porque SQL ya nos da el formato 'U001', 'U002', etc.
+					this->dataGridView1->Rows->Add(u->Id, u->Nombre, u->Contrasena, u->Turno);
 				}
 			}
 		}
@@ -674,7 +643,7 @@ namespace LOGIN {
 		if (e->RowIndex >= 0 && this->dataGridView1->Rows[e->RowIndex]->Cells[1]->Value != nullptr) {
 			this->textBox1->Text = this->dataGridView1->Rows[e->RowIndex]->Cells[1]->Value->ToString();
 			this->textBox2->Text = this->dataGridView1->Rows[e->RowIndex]->Cells[2]->Value->ToString();
-			this->textBox3->Text = this->dataGridView1->Rows[e->RowIndex]->Cells[3]->Value->ToString(); // ← turno real
+			this->textBox3->Text = this->dataGridView1->Rows[e->RowIndex]->Cells[3]->Value->ToString();
 		}
 	}
 
@@ -684,14 +653,13 @@ namespace LOGIN {
 
 		try {
 			AdministradorController^ contr = gcnew AdministradorController();
-			String^ nombreViejo = this->dataGridView1->CurrentRow->Cells[1]->Value->ToString();
+			String^ idSeleccionado = this->dataGridView1->CurrentRow->Cells[0]->Value->ToString();
 			String^ nombreNuevo = this->textBox1->Text->Trim();
 			int nivelAcceso = (this->button5->Tag != nullptr) ? Int32::Parse(this->button5->Tag->ToString()) : 1;
 
-			// Buscamos el ID original
 			for each (AdministradorModel ^ u in contr->obtenerTodos()) {
-				if (u->Nombre->Trim()->Equals(nombreViejo, StringComparison::OrdinalIgnoreCase)) {
-					contr->modificar(u->Id, nombreNuevo, u->Contrasena, nivelAcceso, u->Turno);  // ← turno sin cambio
+				if (u->Id->Equals(idSeleccionado)) {
+					contr->modificar(u->Id, nombreNuevo, u->Contrasena, nivelAcceso, u->Turno);
 					MessageBox::Show("Nombre modificado con éxito.", "Éxito");
 					break;
 				}
@@ -703,15 +671,17 @@ namespace LOGIN {
 
 		   // === BOTÓN 8: MODIFICAR CONTRASEÑA ===
 	private: System::Void button8_Click(System::Object^ sender, System::EventArgs^ e) {
-		String^ usuario = this->dataGridView1->CurrentRow->Cells[1]->Value->ToString();
+		if (this->dataGridView1->CurrentRow == nullptr) return;
+
+		String^ idSeleccionado = this->dataGridView1->CurrentRow->Cells[0]->Value->ToString();
 		String^ nuevaPassword = this->textBox2->Text->Trim();
 		int nivelAcceso = (this->button5->Tag != nullptr) ? Int32::Parse(this->button5->Tag->ToString()) : 1;
 
 		try {
 			AdministradorController^ contr = gcnew AdministradorController();
 			for each (AdministradorModel ^ u in contr->obtenerTodos()) {
-				if (u->Nombre->Trim()->Equals(usuario, StringComparison::OrdinalIgnoreCase)) {
-					contr->modificar(u->Id, u->Nombre, nuevaPassword, nivelAcceso, u->Turno); // ← turno sin cambio
+				if (u->Id->Equals(idSeleccionado)) {
+					contr->modificar(u->Id, u->Nombre, nuevaPassword, nivelAcceso, u->Turno);
 					MessageBox::Show("Contraseña actualizada.", "Éxito");
 					break;
 				}
@@ -723,25 +693,26 @@ namespace LOGIN {
 
 		   // === BOTÓN 6: ELIMINAR USUARIO ===
 	private: System::Void button6_Click(System::Object^ sender, System::EventArgs^ e) {
+		if (this->dataGridView1->CurrentRow == nullptr) return;
+
+		String^ idSeleccionado = this->dataGridView1->CurrentRow->Cells[0]->Value->ToString();
 		String^ usuarioAEliminar = this->dataGridView1->CurrentRow->Cells[1]->Value->ToString();
-		if (usuarioAEliminar == "" || usuarioAEliminar->ToLower() == "admin") return; // Evitar eliminar al admin principal
+		if (usuarioAEliminar->ToLower() == "admin") return;
 
 		try {
 			AdministradorController^ contr = gcnew AdministradorController();
 			int nivelAcceso = (this->button5->Tag != nullptr) ? Int32::Parse(this->button5->Tag->ToString()) : 1;
 
-			for each (AdministradorModel ^ u in contr->obtenerTodos()) {
-				if (u->Nombre->Trim()->Equals(usuarioAEliminar, StringComparison::OrdinalIgnoreCase)) {
-					if (MessageBox::Show("¿Eliminar permanentemente?", "Confirmar", MessageBoxButtons::YesNo) == System::Windows::Forms::DialogResult::Yes) {
-						contr->eliminar(u->Id);
-						this->textBox1->Clear(); this->textBox2->Clear();
-						CargarUsuariosPorRol(nivelAcceso);
-					}
-					break;
-				}
+			if (MessageBox::Show("¿Eliminar permanentemente al usuario?", "Confirmar", MessageBoxButtons::YesNo) == System::Windows::Forms::DialogResult::Yes) {
+				contr->eliminar(idSeleccionado);
+				this->textBox1->Clear(); this->textBox2->Clear(); this->textBox3->Clear();
+				CargarUsuariosPorRol(nivelAcceso);
 			}
 		}
 		catch (Exception^ ex) { MessageBox::Show("Error al eliminar: " + ex->Message); }
+	}
+
+	private: System::Void dataGridView1_CellContentClick(System::Object^ sender, System::Windows::Forms::DataGridViewCellEventArgs^ e) {
 	}
 };
 }
