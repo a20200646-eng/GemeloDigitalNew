@@ -449,10 +449,6 @@ namespace LOGIN {
 		}
 #pragma endregion
 	private: System::Void comboBox1_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
-
-		// Al cambiar la selección del ComboBox, cargar los detalles del brazo seleccionado
-		this->comboBox1->SelectedIndexChanged += gcnew EventHandler(
-			this, &Brazos_Operador::comboBox1_SelectedIndexChanged);
 		CargarBrazoSeleccionado();
 	}
 
@@ -564,8 +560,6 @@ namespace LOGIN {
 
 private: System::Void Brazos_Operador_Load(System::Object^ sender, System::EventArgs^ e) {
 	CargarComboBox();
-
-
 }
 };
 }

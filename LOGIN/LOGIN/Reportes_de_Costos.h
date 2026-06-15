@@ -297,9 +297,9 @@ namespace LOGIN {
 				// Fila en la tabla
 				dataGridView2->Rows->Add(
 					r->Id,
-					r->CiclosCompletados.ToString(),
-					r->TiempoOperativo.ToString("F1") + " hrs",
-					"$" + r->CostoPorCiclo.ToString("F2"),
+					r->CiclosIncluidos.ToString(),
+					r->HorasTotales.ToString("F1") + " hrs",
+					"$" + r->CostoPorHora.ToString("F2"),
 					"$" + costoTotal.ToString("F2")
 				);
 

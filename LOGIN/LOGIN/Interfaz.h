@@ -384,7 +384,7 @@ namespace LOGIN {
 
 			// --- 1. BRAZOS ROBOTICOS ---
 			BrazoRoboticoController^ ctrlBrazo = gcnew BrazoRoboticoController();
-			if (ctrlBrazo->obtenerTodos()->Count == 0)
+			if (ctrlBrazo->obtenerTodos()->Count == 0) //sembrar solo si no hay ningún dato del ciclo registrado
 			{
 				// Brazo 1: Lateral Izquierdo — posiciona panel izquierdo
 				ctrlBrazo->agregar("IDB1", RolBrazo::LATERAL_IZQ);
@@ -421,10 +421,10 @@ namespace LOGIN {
 			EstacionTrabajoController^ ctrlEst2 = gcnew EstacionTrabajoController();
 			if (ctrlEst2->obtenerTodos()->Count == 0)
 			{
-				ctrlEst2->agregar("EST-001", "Panel Lateral", false);
-				ctrlEst2->agregar("EST-002", "Estructura Techo", false);
-				ctrlEst2->agregar("EST-003", "Panel Lateral", true);
-				ctrlEst2->agregar("EST-004", "Estructura Techo", true);
+				ctrlEst2->agregar("EST-001", TipoEstacion::PANEL_IZQ, 5);
+				ctrlEst2->agregar("EST-002", TipoEstacion::PANEL_DER, 5);
+				ctrlEst2->agregar("EST-003", TipoEstacion::TECHO, 3);
+				ctrlEst2->agregar("EST-004", TipoEstacion::TECHO, 3);
 			}
 
 			// --- 2. PIEZAS — Paneles laterales y estructura de techo ---
@@ -432,29 +432,27 @@ namespace LOGIN {
 			if (ctrlPanel->obtenerTodos()->Count == 0)
 			{
 				// Panel izquierdo — ciclo 1 ensamblado, ciclo 2 en proceso
-				ctrlPanel->agregar("PL-001", "Acero Galvanizado", 18.5, LadoPanel::IZQUIERDO, 6);
-				ctrlPanel->modificar("PL-001", "Acero Galvanizado", 18.5, EstadoPieza::ENSAMBLADA, 6);
+				ctrlPanel->agregar("PL-001", "Acero Galvanizado", 18.5, LadoPanel::IZQUIERDO, 6, "EST-001");
+				ctrlPanel->modificar("PL-001", "Acero Galvanizado", 18.5, EstadoPieza::ENSAMBLADA, 6, "EST-001");
 
-				ctrlPanel->agregar("PL-002", "Acero Galvanizado", 18.5, LadoPanel::IZQUIERDO, 6);
-				ctrlPanel->modificar("PL-002", "Acero Galvanizado", 18.5, EstadoPieza::EN_PROCESO, 6);
+				ctrlPanel->agregar("PL-002", "Acero Galvanizado", 18.5, LadoPanel::IZQUIERDO, 6, "EST-001");
+				ctrlPanel->modificar("PL-002", "Acero Galvanizado", 18.5, EstadoPieza::EN_PROCESO, 6, "EST-001");
 
-				// Panel derecho — ciclo 1 ensamblado, ciclo 2 en proceso
-				ctrlPanel->agregar("PL-003", "Acero Galvanizado", 17.2, LadoPanel::DERECHO, 6);
-				ctrlPanel->modificar("PL-003", "Acero Galvanizado", 17.2, EstadoPieza::ENSAMBLADA, 6);
+				ctrlPanel->agregar("PL-003", "Acero Galvanizado", 17.2, LadoPanel::DERECHO, 6, "EST-002");
+				ctrlPanel->modificar("PL-003", "Acero Galvanizado", 17.2, EstadoPieza::ENSAMBLADA, 6, "EST-002");
 
-				ctrlPanel->agregar("PL-004", "Acero Galvanizado", 17.2, LadoPanel::DERECHO, 6);
-				ctrlPanel->modificar("PL-004", "Acero Galvanizado", 17.2, EstadoPieza::EN_PROCESO, 6);
+				ctrlPanel->agregar("PL-004", "Acero Galvanizado", 17.2, LadoPanel::DERECHO, 6, "EST-002");
+				ctrlPanel->modificar("PL-004", "Acero Galvanizado", 17.2, EstadoPieza::EN_PROCESO, 6, "EST-002");
 			}
 
 			EstructuraTechoController^ ctrlTecho = gcnew EstructuraTechoController();
 			if (ctrlTecho->obtenerTodos()->Count == 0)
 			{
 				// Techo ciclo 1 — ensamblado
-				ctrlTecho->agregar("ET-001", "Aluminio Reforzado", 12.0, 8, 140.0);
-				ctrlTecho->modificar("ET-001", "Aluminio Reforzado", 12.0, EstadoPieza::ENSAMBLADA, 8, 140.0);
+				ctrlTecho->agregar("ET-001", "Aluminio Reforzado", 12.0, 8, 140.0, "EST-003");
+				ctrlTecho->modificar("ET-001", "Aluminio Reforzado", 12.0, EstadoPieza::ENSAMBLADA, 8, 140.0, "EST-003");
 
-				// Techo ciclo 2 — disponible, esperando posicionamiento
-				ctrlTecho->agregar("ET-002", "Aluminio Reforzado", 12.0, 8, 140.0);
+				ctrlTecho->agregar("ET-002", "Aluminio Reforzado", 12.0, 8, 140.0, "EST-003");
 			}
 
 			// --- LINEA DE ENSAMBLAJE ---
@@ -472,6 +470,10 @@ namespace LOGIN {
 				if (pl002 != nullptr) ctrlLinea->agregarPieza("1", pl002);
 				if (pl004 != nullptr) ctrlLinea->agregarPieza("1", pl004);
 				if (et002 != nullptr) ctrlLinea->agregarPieza("1", et002);
+
+				if (pl002 != nullptr) ctrlPanel->modificar("PL-002", pl002->Material, pl002->Peso, EstadoPieza::EN_PROCESO, pl002->PuntosAnclaje, pl002->EstacionId);
+				if (pl004 != nullptr) ctrlPanel->modificar("PL-004", pl004->Material, pl004->Peso, EstadoPieza::EN_PROCESO, pl004->PuntosAnclaje, pl004->EstacionId);
+				if (et002 != nullptr) ctrlTecho->modificar("ET-002", et002->Material, et002->Peso, EstadoPieza::EN_PROCESO, et002->PuntosUnion, et002->Anchura, et002->EstacionId);
 
 				ctrlLinea->modificar("1", 0, false);
 				ctrlLinea->modificar("2", 0, false);
@@ -529,14 +531,19 @@ namespace LOGIN {
 			if (ctrlEst->obtenerTodos()->Count == 0)
 				ctrlEst->agregar("1");
 
-			// --- 6. REPORTE DE COSTOS ---
-			// Ciclo 1: completado, 38 min, costo por ciclo $115
-			// Ciclo 2: en curso (parcial)
+			// --- 6. REPORTES Y CICLOS ---
 			ReporteController^ ctrlReporte = gcnew ReporteController();
-			if (ctrlReporte->obtenerTodos()->Count == 0)
-			{
-				ctrlReporte->agregar("REP1", 1, 38.0, 115.0);  // Ciclo completado
-				ctrlReporte->agregar("REP2", 0, 12.5, 115.0);  // Ciclo en curso
+			CicloController^ ctrlCiclo = gcnew CicloController();
+
+			if (ctrlCiclo->obtenerTodos()->Count == 0) {
+				ctrlCiclo->agregar("1", 0.5, "REPORTADO");
+				ctrlCiclo->agregar("2", 0.5, "REPORTADO");
+				ctrlCiclo->agregar("3", 0.5, "PENDIENTE");
+				ctrlCiclo->agregar("4", 0.5, "PENDIENTE");
+			}
+
+			if (ctrlReporte->obtenerTodos()->Count == 0) {
+				ctrlReporte->agregar("REP1", 2, 1.0, 115.0); // 2 ciclos reportados
 			}
 
 			// --- 7. EVENTOS ---
@@ -607,7 +614,7 @@ namespace LOGIN {
 
 			
 
-
+			//Cambiar y cargar datos desde el .dat
 
 		}
 

@@ -1,6 +1,5 @@
 #pragma once
-using namespace GemeloDigitalController;
-using namespace GemeloDigitalModel;
+
 namespace LOGIN {
 
 	using namespace System;
@@ -9,6 +8,8 @@ namespace LOGIN {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace GemeloDigitalController;
+	using namespace GemeloDigitalModel;
 
 	/// <summary>
 	/// Resumen de Linea_de_Ensamblaje
@@ -23,16 +24,10 @@ namespace LOGIN {
 			//TODO: agregar código de constructor aquí
 			//
 			// Inicializar controllers
+			ctrlLinea = gcnew LineaEnsamblajeController();
 			ctrlPanel = gcnew PanelLateralController();
 			ctrlTecho = gcnew EstructuraTechoController();
-			ctrlLinea = gcnew LineaEnsamblajeController();
-			ctrlLinea->cargarArchivo(ctrlPanel, ctrlTecho);
-
-			// Conectar eventos
-			this->Load += gcnew System::EventHandler(this, &Linea_de_Ensamblaje::Linea_de_Ensamblaje_Load);
-			this->button1->Click += gcnew System::EventHandler(this, &Linea_de_Ensamblaje::button1_Click);
-			this->button2->Click += gcnew System::EventHandler(this, &Linea_de_Ensamblaje::button2_Click);
-			this->dataGridView1->SelectionChanged += gcnew System::EventHandler(this, &Linea_de_Ensamblaje::dataGridView1_SelectionChanged);
+			
 		}
 
 	protected:
@@ -370,7 +365,15 @@ namespace LOGIN {
 			this->dataGridView1->RowTemplate->Height = 24;
 			this->dataGridView1->Size = System::Drawing::Size(275, 108);
 			this->dataGridView1->TabIndex = 25;
+			// Configuración necesaria para que SelectionChanged funcione correctamente al cambiar filas.
+			// FullRowSelect garantiza que al hacer clic en cualquier celda se seleccione la fila completa.
+			// MultiSelect = false evita selecciones múltiples que complican la lógica del handler.
+			this->dataGridView1->MultiSelect = false;
+			
+			this->dataGridView1->SelectionMode = System::Windows::Forms::DataGridViewSelectionMode::FullRowSelect;
+			//
 			this->dataGridView1->CellContentClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &Linea_de_Ensamblaje::dataGridView1_CellContentClick);
+			this->dataGridView1->SelectionChanged += gcnew System::EventHandler(this, &Linea_de_Ensamblaje::dataGridView1_SelectionChanged);
 			// 
 			// Column1
 			// 
@@ -684,6 +687,19 @@ private: System::Void Linea_de_Ensamblaje_Load(System::Object^ sender, System::E
 private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
 
 	if (lineaSeleccionada == nullptr) return;
+
+	// Validar que no haya otra línea ya aprobada
+	for each (LineaEnsamblajeModel ^ l in ctrlLinea->obtenerTodos())
+	{
+		if (l->SecuenciaAprobada && l->Id != lineaSeleccionada->Id)
+		{
+			MessageBox::Show("Ya hay una línea aprobada activa: L-" + l->Id +
+				"\nDesapruébala primero antes de aprobar otra.",
+				"Línea activa", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+			return;
+		}
+	}
+
 	ctrlLinea->modificar(lineaSeleccionada->Id, lineaSeleccionada->IndiceActual, true);
 	ctrlLinea->cargarArchivo(ctrlPanel, ctrlTecho);
 	lineaSeleccionada = ctrlLinea->buscarPorId(lineaSeleccionada->Id);
@@ -698,7 +714,9 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 }
 private: System::Void dataGridView1_CellContentClick(System::Object^ sender, System::Windows::Forms::DataGridViewCellEventArgs^ e) {
 }
-
+	   // Al cambiar la fila seleccionada, se actualiza lineaSeleccionada con la línea correspondiente
+	   // y se recargan los KPIs y la cola de piezas del dataGridView2.
+	   // lineaSeleccionada es el campo que mantiene el estado de la línea activa en este form.
 private: System::Void dataGridView1_SelectionChanged(System::Object^ sender, System::EventArgs^ e) {
 	if (dataGridView1->SelectedRows->Count == 0) return;
 

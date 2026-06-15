@@ -23,7 +23,7 @@ namespace LOGIN {
 			//
 			//TODO: agregar código de constructor aquí
 			// Inicializar los controladores para manejar la lógica de cada componente del brazo robótico
-		
+				
 		
 			ctrl_brazo1 = gcnew BrazoRoboticoController();
 
@@ -847,11 +847,8 @@ private: System::Void FormMenuJefe_Load(System::Object^ sender, System::EventArg
 	label19->Text = totalEventos.ToString();   // label secundario
 
 	// ── 4. CICLOS COMPLETADOS ─────────────────────────────────────
-	ReporteController^ ctrlReporte = gcnew ReporteController();
-	int totalCiclos = 0;
-	for each (ReporteCostos ^ r in ctrlReporte->obtenerTodos())
-		totalCiclos += r->CiclosCompletados;
-
+	CicloController^ ctrlCiclo = gcnew CicloController();
+	int totalCiclos = ctrlCiclo->obtenerTodos()->Count;
 	label12->Text = totalCiclos.ToString();    // KPI card ciclos
 
 	// ── 5. LÍNEA DE ENSAMBLAJE ────────────────────────────────────

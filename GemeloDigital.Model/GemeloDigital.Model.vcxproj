@@ -126,6 +126,7 @@
     <ClInclude Include="AdministradorModel.h" />
     <ClInclude Include="ArticulacionModel.h" />
     <ClInclude Include="BrazoRoboticoModel.h" />
+    <ClInclude Include="CicloModel.h" />
     <ClInclude Include="ComponenteRoboticoModel.h" />
     <ClInclude Include="Enumeraciones.h" />
     <ClInclude Include="EstacionBodyFramingModel.h" />

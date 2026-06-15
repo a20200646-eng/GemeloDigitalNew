@@ -1,6 +1,5 @@
 ﻿#pragma once
-using namespace GemeloDigitalController;
-using namespace GemeloDigitalModel;
+
 
 namespace LOGIN {
 
@@ -11,6 +10,8 @@ namespace LOGIN {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace GemeloDigitalController;
+	using namespace GemeloDigitalModel;
 
 	/// <summary>
 	/// Resumen de Estacion_ciclo
@@ -34,8 +35,10 @@ namespace LOGIN {
 				this, &Estacion_ciclo::pictureBox1_Paint);
 			ctrlBrazo = gcnew BrazoRoboticoController();
 
-			// Cargar estado inicial
-			CargarEstado();
+			// Obtener ciclo activo al iniciar la forma
+			cicloActivoSufijo = nullptr;
+			cicloActivoSufijo = CicloController::obtenerCicloActivo(); // reemplaza File::ReadAllText
+			CargarEstado(); // cargar estado del ciclo activo (si existe) y actualizar UI
 		}
 
 	protected:
@@ -64,8 +67,8 @@ namespace LOGIN {
 	private: System::Windows::Forms::Button^ button5;
 	private: System::Windows::Forms::Button^ button4;
 	private: System::Windows::Forms::Button^ button3;
-	private: System::Windows::Forms::Button^ button2;
-	private: System::Windows::Forms::Button^ button6;
+
+
 	private: System::Windows::Forms::Label^ label4;
 	private: System::Windows::Forms::Panel^ panel2;
 	private: System::Windows::Forms::CheckBox^ checkBox1;
@@ -115,11 +118,9 @@ namespace LOGIN {
 			this->checkBox2 = (gcnew System::Windows::Forms::CheckBox());
 			this->checkBox1 = (gcnew System::Windows::Forms::CheckBox());
 			this->label4 = (gcnew System::Windows::Forms::Label());
-			this->button6 = (gcnew System::Windows::Forms::Button());
 			this->button5 = (gcnew System::Windows::Forms::Button());
 			this->button4 = (gcnew System::Windows::Forms::Button());
 			this->button3 = (gcnew System::Windows::Forms::Button());
-			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->panel1->SuspendLayout();
 			this->panel2->SuspendLayout();
@@ -156,11 +157,9 @@ namespace LOGIN {
 			this->panel1->Controls->Add(this->panel2);
 			this->panel1->Controls->Add(this->checkBox1);
 			this->panel1->Controls->Add(this->label4);
-			this->panel1->Controls->Add(this->button6);
 			this->panel1->Controls->Add(this->button5);
 			this->panel1->Controls->Add(this->button4);
 			this->panel1->Controls->Add(this->button3);
-			this->panel1->Controls->Add(this->button2);
 			this->panel1->Controls->Add(this->button1);
 			this->panel1->Controls->Add(this->label3);
 			this->panel1->Controls->Add(this->label2);
@@ -299,23 +298,6 @@ namespace LOGIN {
 			this->label4->Text = L"OPERATIVO";
 			this->label4->Click += gcnew System::EventHandler(this, &Estacion_ciclo::label4_Click);
 			// 
-			// button6
-			// 
-			this->button6->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(220)), static_cast<System::Int32>(static_cast<System::Byte>(38)),
-				static_cast<System::Int32>(static_cast<System::Byte>(38)));
-			this->button6->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-			this->button6->FlatAppearance->BorderColor = System::Drawing::Color::White;
-			this->button6->FlatAppearance->BorderSize = 0;
-			this->button6->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
-			this->button6->Location = System::Drawing::Point(620, 152);
-			this->button6->Margin = System::Windows::Forms::Padding(2);
-			this->button6->Name = L"button6";
-			this->button6->Size = System::Drawing::Size(194, 48);
-			this->button6->TabIndex = 10;
-			this->button6->Text = L"!! DETENER EMERGENCIA !!";
-			this->button6->UseVisualStyleBackColor = false;
-			this->button6->Click += gcnew System::EventHandler(this, &Estacion_ciclo::button6_Click);
-			// 
 			// button5
 			// 
 			this->button5->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
@@ -324,7 +306,7 @@ namespace LOGIN {
 			this->button5->FlatAppearance->BorderColor = System::Drawing::Color::White;
 			this->button5->FlatAppearance->BorderSize = 0;
 			this->button5->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
-			this->button5->Location = System::Drawing::Point(499, 171);
+			this->button5->Location = System::Drawing::Point(679, 171);
 			this->button5->Margin = System::Windows::Forms::Padding(2);
 			this->button5->Name = L"button5";
 			this->button5->Size = System::Drawing::Size(93, 28);
@@ -341,7 +323,7 @@ namespace LOGIN {
 			this->button4->FlatAppearance->BorderColor = System::Drawing::Color::White;
 			this->button4->FlatAppearance->BorderSize = 0;
 			this->button4->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
-			this->button4->Location = System::Drawing::Point(382, 171);
+			this->button4->Location = System::Drawing::Point(430, 171);
 			this->button4->Margin = System::Windows::Forms::Padding(2);
 			this->button4->Name = L"button4";
 			this->button4->Size = System::Drawing::Size(93, 28);
@@ -358,7 +340,7 @@ namespace LOGIN {
 			this->button3->FlatAppearance->BorderColor = System::Drawing::Color::White;
 			this->button3->FlatAppearance->BorderSize = 0;
 			this->button3->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
-			this->button3->Location = System::Drawing::Point(272, 171);
+			this->button3->Location = System::Drawing::Point(228, 171);
 			this->button3->Margin = System::Windows::Forms::Padding(2);
 			this->button3->Name = L"button3";
 			this->button3->Size = System::Drawing::Size(93, 28);
@@ -366,23 +348,6 @@ namespace LOGIN {
 			this->button3->Text = L"3. Pausar";
 			this->button3->UseVisualStyleBackColor = false;
 			this->button3->Click += gcnew System::EventHandler(this, &Estacion_ciclo::button3_Click);
-			// 
-			// button2
-			// 
-			this->button2->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(245)), static_cast<System::Int32>(static_cast<System::Byte>(158)),
-				static_cast<System::Int32>(static_cast<System::Byte>(11)));
-			this->button2->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-			this->button2->FlatAppearance->BorderColor = System::Drawing::Color::White;
-			this->button2->FlatAppearance->BorderSize = 0;
-			this->button2->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
-			this->button2->Location = System::Drawing::Point(152, 171);
-			this->button2->Margin = System::Windows::Forms::Padding(2);
-			this->button2->Name = L"button2";
-			this->button2->Size = System::Drawing::Size(93, 28);
-			this->button2->TabIndex = 6;
-			this->button2->Text = L"2. Activar";
-			this->button2->UseVisualStyleBackColor = false;
-			this->button2->Click += gcnew System::EventHandler(this, &Estacion_ciclo::button2_Click);
 			// 
 			// button1
 			// 
@@ -423,18 +388,9 @@ namespace LOGIN {
 
 		private:
 			BrazoRoboticoController^ ctrlBrazo;
+			String^ cicloActivoSufijo;
 
-			// Devuelve el color según estado del brazo
-			Color GetColorEstado(GemeloDigitalModel::EstadoBrazo estado) {
-				switch (estado) {
-				case GemeloDigitalModel::EstadoBrazo::REPOSO:      return Color::FromArgb(80, 90, 110);
-				case GemeloDigitalModel::EstadoBrazo::POSICIONANDO: return Color::FromArgb(50, 100, 200);
-				case GemeloDigitalModel::EstadoBrazo::SOLDANDO:    return Color::FromArgb(180, 100, 20);
-				case GemeloDigitalModel::EstadoBrazo::EN_ERROR:    return Color::FromArgb(200, 40, 40);
-				case GemeloDigitalModel::EstadoBrazo::PAUSA:       return Color::FromArgb(130, 80, 180);
-				default:                                            return Color::Gray;
-				}
-			}
+			
 
 			void CargarEstado() {
 				List<BrazoRoboticoModel^>^ brazos = ctrlBrazo->obtenerTodos();
@@ -467,27 +423,59 @@ namespace LOGIN {
 	}
 
 private: System::Void button5_Click(System::Object^ sender, System::EventArgs^ e) {
+	// Finalizar ciclo: limpiar ciclo activo, poner brazos en reposo, registrar ciclo completado y refrescar UI
+	cicloActivoSufijo = nullptr;
+	CicloController::limpiarCicloActivo(); // reemplaza File::Delete
 
-	// 5. Finalizar → REPOSO
+	// Poner todos los brazos en REPOSO
 	for each (BrazoRoboticoModel ^ b in ctrlBrazo->obtenerTodos())
 		ctrlBrazo->modificar(b->Id, GemeloDigitalModel::EstadoBrazo::REPOSO);
+
+	// Registrar ciclo completado
+	CicloController^ ctrlCiclo = gcnew CicloController();
+	String^ nuevoCicloId = (ctrlCiclo->obtenerTodos()->Count + 1).ToString();
+	ctrlCiclo->agregar(nuevoCicloId, 0.5, "PENDIENTE");
+
 	CargarEstado();
+	MessageBox::Show(
+		"Ciclo #" + nuevoCicloId + " completado.\n" +
+		"0.5 hrs registradas — estado: PENDIENTE.",
+		"Ciclo finalizado", MessageBoxButtons::OK, MessageBoxIcon::Information);
+	cicloActivoSufijo = nullptr;
 }
 private: System::Void label4_Click(System::Object^ sender, System::EventArgs^ e) {
 
 }
 
-	   private: System::Void pictureBox1_Paint(System::Object^ sender,
-		   System::Windows::Forms::PaintEventArgs^ e) {
+	   String^ GetEstadoVisualBrazo(String^ brazoId) {
+		   if (cicloActivoSufijo == nullptr) return "REPOSO";
+		   TareaCoordinadaController^ ctrlCoo = gcnew TareaCoordinadaController();
+		   for each (TareaCoordinadaModel ^ t in ctrlCoo->obtenerTodos())
+		   {
+			   if (t->Id->Contains(cicloActivoSufijo) && t->Id->Contains(brazoId))
+			   {
+				   if (t->Estado == "COMPLETADA") return "COORDINADO";
+				   return "EN PROCESO";
+			   }
+		   }
+		   return "REPOSO";
+	   }
+
+	   Color GetColorEstadoVisual(String^ estado) {
+		   if (estado == "COORDINADO") return Color::FromArgb(0, 180, 90);
+		   if (estado == "EN PROCESO") return Color::FromArgb(50, 100, 200);
+		   return Color::FromArgb(80, 90, 110);
+	   }
+
+	   private: System::Void pictureBox1_Paint(System::Object^ sender,System::Windows::Forms::PaintEventArgs^ e) {
+
 		   Graphics^ g = e->Graphics;
 		   g->SmoothingMode = Drawing2D::SmoothingMode::AntiAlias;
-
-		   List<BrazoRoboticoModel^>^ brazos = ctrlBrazo->obtenerTodos();
 
 		   int w = pictureBox1->Width;
 		   int h = pictureBox1->Height;
 
-		   // Chasis — centro
+		   // Chasis
 		   Drawing::Rectangle rChasis = Drawing::Rectangle(w / 2 - 100, h / 2 - 50, 200, 100);
 		   g->FillRectangle(gcnew SolidBrush(Color::FromArgb(50, 60, 80)), rChasis);
 		   g->DrawRectangle(gcnew Pen(Color::FromArgb(80, 90, 110), 1), rChasis);
@@ -497,42 +485,32 @@ private: System::Void label4_Click(System::Object^ sender, System::EventArgs^ e)
 		   g->DrawString("CHASIS", gcnew Drawing::Font("Segoe UI", 10, FontStyle::Bold),
 			   gcnew SolidBrush(Color::FromArgb(120, 130, 150)), rChasis, sf);
 
-		   // Posiciones fijas de los 3 brazos según rol
-		   // IZQ=izquierda, DER=derecha, CENT=arriba centro
-		   for each (BrazoRoboticoModel ^ b in brazos) {
-			   Drawing::Rectangle rBrazo;
-			   String^ etiqueta;
+		   // Brazos
+		   array<String^>^ brazos = { "LATERAL_IZQ", "LATERAL_DER", "CENTRAL_SUP" };
+		   array<String^>^ etiquetas = { "BRAZO IZQ", "BRAZO DER", "BRAZO CENT" };
+		   array<Drawing::Rectangle>^ rects = {
+			   Drawing::Rectangle(30, h / 2 - 50, 140, 100),
+			   Drawing::Rectangle(w - 170, h / 2 - 50, 140, 100),
+			   Drawing::Rectangle(w / 2 - 70, 20, 140, 90)
+		   };
 
-			   switch (b->Rol) {
-			   case GemeloDigitalModel::RolBrazo::LATERAL_IZQ:
-				   rBrazo = Drawing::Rectangle(30, h / 2 - 50, 140, 100);
-				   etiqueta = "BRAZO IZQ\n" + b->Estado.ToString();
-				   break;
-			   case GemeloDigitalModel::RolBrazo::LATERAL_DER:
-				   rBrazo = Drawing::Rectangle(w - 170, h / 2 - 50, 140, 100);
-				   etiqueta = "BRAZO DER\n" + b->Estado.ToString();
-				   break;
-			   case GemeloDigitalModel::RolBrazo::CENTRAL_SUP:
-			   default:
-				   rBrazo = Drawing::Rectangle(w / 2 - 70, 20, 140, 90);
-				   etiqueta = "BRAZO CENT\n" + b->Estado.ToString();
-				   break;
-			   }
-
-			   Color colorBrazo = GetColorEstado(b->Estado);
-			   g->FillRectangle(gcnew SolidBrush(colorBrazo), rBrazo);
-			   g->DrawRectangle(gcnew Pen(Color::FromArgb(200, 200, 200), 1), rBrazo);
-			   g->DrawString(etiqueta,
+		   for (int i = 0; i < brazos->Length; i++)
+		   {
+			   String^ estadoVisual = GetEstadoVisualBrazo(brazos[i]);
+			   Color colorBrazo = GetColorEstadoVisual(estadoVisual);
+			   g->FillRectangle(gcnew SolidBrush(colorBrazo), rects[i]);
+			   g->DrawRectangle(gcnew Pen(Color::FromArgb(200, 200, 200), 1), rects[i]);
+			   g->DrawString(etiquetas[i] + "\n" + estadoVisual,
 				   gcnew Drawing::Font("Segoe UI", 8, FontStyle::Bold),
-				   gcnew SolidBrush(Color::White), rBrazo, sf);
+				   gcnew SolidBrush(Color::White), rects[i], sf);
 		   }
 
-		   // Leyenda inferior
-		   array<String^>^ textos = { "REPOSO", "POSICIONANDO", "SOLDANDO", "EN_ERROR", "PAUSA" };
+		   // Leyenda
+		   array<String^>^ textos = { "REPOSO", "EN PROCESO", "COORDINADO" };
 		   array<Color>^ colores = {
-			   Color::FromArgb(80,90,110), Color::FromArgb(50,100,200),
-			   Color::FromArgb(180,100,20), Color::FromArgb(200,40,40),
-			   Color::FromArgb(130,80,180)
+			   Color::FromArgb(80, 90, 110),
+			   Color::FromArgb(50, 100, 200),
+			   Color::FromArgb(0, 180, 90)
 		   };
 		   int xLey = 20;
 		   for (int i = 0; i < textos->Length; i++) {
@@ -544,13 +522,79 @@ private: System::Void label4_Click(System::Object^ sender, System::EventArgs^ e)
 				   Drawing::PointF(xLey + 20, h - 25));
 			   xLey += 160;
 		   }
+		   
+		   
 	   }
 
 private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
-	// 1. Iniciar ciclo → CALIBRANDO
+	// Validar secuencia aprobada
+	PanelLateralController^ ctrlPanel = gcnew PanelLateralController();
+	EstructuraTechoController^ ctrlTecho = gcnew EstructuraTechoController();
+	LineaEnsamblajeController^ ctrlLinea = gcnew LineaEnsamblajeController();
+	ctrlLinea->cargarArchivo(ctrlPanel, ctrlTecho);
+
+	LineaEnsamblajeModel^ lineaActiva = nullptr;
+	for each (LineaEnsamblajeModel ^ l in ctrlLinea->obtenerTodos())
+		if (l->SecuenciaAprobada) { lineaActiva = l; break; }
+
+	if (lineaActiva == nullptr) {
+		MessageBox::Show("No hay línea con secuencia aprobada.",
+			"Sin línea aprobada", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+		return;
+	}
+
+	// Limpiar tareas anteriores
+	// Limpiar tareas anteriores
+	TareaPosicionarController^ ctrlPos = gcnew TareaPosicionarController();
+	TareaSostenerController^ ctrlSos = gcnew TareaSostenerController();
+	TareaSoldarController^ ctrlSol = gcnew TareaSoldarController();
+	TareaCoordinadaController^ ctrlCoo = gcnew TareaCoordinadaController();
+
+	List<String^>^ idsPos = gcnew List<String^>();
+	List<String^>^ idsSos = gcnew List<String^>();
+	List<String^>^ idsSol = gcnew List<String^>();
+	List<String^>^ idsCoo = gcnew List<String^>();
+
+	for each (TareaPosicionarModel ^ t in ctrlPos->obtenerTodos()) idsPos->Add(t->Id);
+	for each (TareaSostenerModel ^ t in ctrlSos->obtenerTodos()) idsSos->Add(t->Id);
+	for each (TareaSoldarModel ^ t in ctrlSol->obtenerTodos()) idsSol->Add(t->Id);
+	for each (TareaCoordinadaModel ^ t in ctrlCoo->obtenerTodos()) idsCoo->Add(t->Id);
+
+	for each (String ^ id in idsPos) ctrlPos->eliminar(id);
+	for each (String ^ id in idsSos) ctrlSos->eliminar(id);
+	for each (String ^ id in idsSol) ctrlSol->eliminar(id);
+	for each (String ^ id in idsCoo) ctrlCoo->eliminar(id);
+
+	// Generar tareas por cada pieza en la cola
+	CicloController^ ctrlCiclo = gcnew CicloController();
+	int numCiclo = ctrlCiclo->obtenerTodos()->Count + 1;
+	String^ cicloSufijo = lineaActiva->Id + "-C" + numCiclo.ToString("D3");
+	cicloActivoSufijo = cicloSufijo;
+	CicloController::guardarCicloActivo(cicloSufijo); // reemplaza File::WriteAllText
+
+	for each (PiezaModel ^ pieza in lineaActiva->ColaPiezas)
+	{
+		String^ brazo;
+		PanelLateralModel^ pl = dynamic_cast<PanelLateralModel^>(pieza);
+		if (pl != nullptr)
+			brazo = (pl->Lado == LadoPanel::IZQUIERDO) ? "LATERAL_IZQ" : "LATERAL_DER";
+		else
+			brazo = "CENTRAL_SUP";
+
+		ctrlPos->agregar("POS-" + cicloSufijo + "-" + brazo, 90.0, 0.5);
+		ctrlSos->agregar("SOS-" + cicloSufijo + "-" + brazo, 10.0, 5);
+		ctrlSol->agregar("SOL-" + cicloSufijo + "-" + brazo, 3, 250.0);
+		ctrlCoo->agregar("COO-" + cicloSufijo + "-" + brazo, 1);
+	}
+
+	// Brazos a POSICIONANDO
 	for each (BrazoRoboticoModel ^ b in ctrlBrazo->obtenerTodos())
-		ctrlBrazo->modificar(b->Id, GemeloDigitalModel::EstadoBrazo::CALIBRANDO);
+		ctrlBrazo->modificar(b->Id, GemeloDigitalModel::EstadoBrazo::POSICIONANDO);
+
 	CargarEstado();
+	MessageBox::Show("Ciclo iniciado. Tareas generadas correctamente.",
+		"Ciclo iniciado", MessageBoxButtons::OK, MessageBoxIcon::Information);
+
 
 }
 private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {

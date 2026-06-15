@@ -65,9 +65,9 @@ namespace LOGIN {
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column5;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column3;
 	private: System::Windows::Forms::DataGridView^ dataGridView2;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ dataGridViewTextBoxColumn1;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ dataGridViewTextBoxColumn2;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ dataGridViewTextBoxColumn3;
+
+
+
 	private: System::Windows::Forms::Label^ label4;
 	private: System::Windows::Forms::Label^ label5;
 	private: System::Windows::Forms::Panel^ panel1;
@@ -94,7 +94,10 @@ namespace LOGIN {
 		PanelLateralController^ ctrlPanel;
 		EstructuraTechoController^ ctrlTecho;
 		EstacionTrabajoController^ ctrlEstacion;
-		LineaEnsamblajeController^ ctrlLinea;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ dataGridViewTextBoxColumn1;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ dataGridViewTextBoxColumn2;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ dataGridViewTextBoxColumn3;
+		   LineaEnsamblajeController^ ctrlLinea;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -130,9 +133,6 @@ namespace LOGIN {
 			this->Column5 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Column3 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->dataGridView2 = (gcnew System::Windows::Forms::DataGridView());
-			this->dataGridViewTextBoxColumn1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->dataGridViewTextBoxColumn2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->dataGridViewTextBoxColumn3 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->label4 = (gcnew System::Windows::Forms::Label());
 			this->label5 = (gcnew System::Windows::Forms::Label());
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
@@ -144,6 +144,9 @@ namespace LOGIN {
 			this->label15 = (gcnew System::Windows::Forms::Label());
 			this->label14 = (gcnew System::Windows::Forms::Label());
 			this->label13 = (gcnew System::Windows::Forms::Label());
+			this->dataGridViewTextBoxColumn1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->dataGridViewTextBoxColumn2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->dataGridViewTextBoxColumn3 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->panel5->SuspendLayout();
 			this->panel3->SuspendLayout();
 			this->panel7->SuspendLayout();
@@ -405,7 +408,7 @@ namespace LOGIN {
 			this->dataGridView1->EnableHeadersVisualStyles = false;
 			this->dataGridView1->GridColor = System::Drawing::SystemColors::ActiveCaptionText;
 			this->dataGridView1->Location = System::Drawing::Point(39, 175);
-			this->dataGridView1->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+			this->dataGridView1->Margin = System::Windows::Forms::Padding(2);
 			this->dataGridView1->Name = L"dataGridView1";
 			this->dataGridView1->RowHeadersBorderStyle = System::Windows::Forms::DataGridViewHeaderBorderStyle::Single;
 			dataGridViewCellStyle1->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
@@ -469,7 +472,7 @@ namespace LOGIN {
 			this->dataGridView2->EnableHeadersVisualStyles = false;
 			this->dataGridView2->GridColor = System::Drawing::SystemColors::ActiveCaptionText;
 			this->dataGridView2->Location = System::Drawing::Point(39, 321);
-			this->dataGridView2->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+			this->dataGridView2->Margin = System::Windows::Forms::Padding(2);
 			this->dataGridView2->Name = L"dataGridView2";
 			this->dataGridView2->RowHeadersBorderStyle = System::Windows::Forms::DataGridViewHeaderBorderStyle::Single;
 			dataGridViewCellStyle2->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
@@ -487,24 +490,6 @@ namespace LOGIN {
 			this->dataGridView2->RowTemplate->Height = 24;
 			this->dataGridView2->Size = System::Drawing::Size(659, 106);
 			this->dataGridView2->TabIndex = 30;
-			// 
-			// dataGridViewTextBoxColumn1
-			// 
-			this->dataGridViewTextBoxColumn1->HeaderText = L"ID";
-			this->dataGridViewTextBoxColumn1->MinimumWidth = 6;
-			this->dataGridViewTextBoxColumn1->Name = L"dataGridViewTextBoxColumn1";
-			// 
-			// dataGridViewTextBoxColumn2
-			// 
-			this->dataGridViewTextBoxColumn2->HeaderText = L"Tipo Pieza Aceptada";
-			this->dataGridViewTextBoxColumn2->MinimumWidth = 6;
-			this->dataGridViewTextBoxColumn2->Name = L"dataGridViewTextBoxColumn2";
-			// 
-			// dataGridViewTextBoxColumn3
-			// 
-			this->dataGridViewTextBoxColumn3->HeaderText = L"Ocupada";
-			this->dataGridViewTextBoxColumn3->MinimumWidth = 6;
-			this->dataGridViewTextBoxColumn3->Name = L"dataGridViewTextBoxColumn3";
 			// 
 			// label4
 			// 
@@ -543,7 +528,7 @@ namespace LOGIN {
 			this->panel1->Controls->Add(this->label14);
 			this->panel1->Controls->Add(this->label13);
 			this->panel1->Location = System::Drawing::Point(46, 496);
-			this->panel1->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+			this->panel1->Margin = System::Windows::Forms::Padding(2);
 			this->panel1->Name = L"panel1";
 			this->panel1->Size = System::Drawing::Size(634, 79);
 			this->panel1->TabIndex = 32;
@@ -648,6 +633,24 @@ namespace LOGIN {
 			this->label13->TabIndex = 33;
 			this->label13->Text = L"Línea activa";
 			// 
+			// dataGridViewTextBoxColumn1
+			// 
+			this->dataGridViewTextBoxColumn1->HeaderText = L"ID";
+			this->dataGridViewTextBoxColumn1->MinimumWidth = 6;
+			this->dataGridViewTextBoxColumn1->Name = L"dataGridViewTextBoxColumn1";
+			// 
+			// dataGridViewTextBoxColumn2
+			// 
+			this->dataGridViewTextBoxColumn2->HeaderText = L"Tipo Pieza Aceptada";
+			this->dataGridViewTextBoxColumn2->MinimumWidth = 6;
+			this->dataGridViewTextBoxColumn2->Name = L"dataGridViewTextBoxColumn2";
+			// 
+			// dataGridViewTextBoxColumn3
+			// 
+			this->dataGridViewTextBoxColumn3->HeaderText = L"Cant. Piezas";
+			this->dataGridViewTextBoxColumn3->MinimumWidth = 6;
+			this->dataGridViewTextBoxColumn3->Name = L"dataGridViewTextBoxColumn3";
+			// 
 			// Dashboard_Inventario
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -670,7 +673,7 @@ namespace LOGIN {
 			this->Controls->Add(this->panel6);
 			this->Controls->Add(this->panel2);
 			this->Controls->Add(this->label1);
-			this->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+			this->Margin = System::Windows::Forms::Padding(2);
 			this->Name = L"Dashboard_Inventario";
 			this->Text = L"Dashboard_Inventario";
 			this->Load += gcnew System::EventHandler(this, &Dashboard_Inventario::Dashboard_Inventario_Load);
@@ -717,7 +720,7 @@ namespace LOGIN {
 			   // Estaciones libres
 			   int estLibres = 0;
 			   for each (EstacionTrabajoModel ^ e in ctrlEstacion->obtenerTodos())
-				   if (!e->Ocupada) estLibres++;
+				   if (e->CantidadPiezas == 0) estLibres++;
 			   label10->Text = estLibres.ToString();
 
 			   // Piezas en cola (total en línea de ensamblaje)
@@ -765,13 +768,14 @@ namespace LOGIN {
 			   {
 				   int idx = dataGridView2->Rows->Add(
 					   e->Id,
-					   e->TipoPiezaAceptada,
-					   e->Ocupada ? "Sí" : "No");
+					   (e->Tipo == TipoEstacion::PANEL_IZQ ? "Panel Izq" :
+						   e->Tipo == TipoEstacion::PANEL_DER ? "Panel Der" : "Techo"),
+					   e->CantidadPiezas.ToString());
 
 				   dataGridView2->Rows[idx]->Cells[2]->Style->ForeColor =
-					   e->Ocupada
-					   ? Color::FromArgb(230, 160, 0)   // naranja — ocupada
-					   : Color::FromArgb(0, 200, 100);  // verde — libre
+					   e->CantidadPiezas > 0
+					   ? Color::FromArgb(230, 160, 0)
+					   : Color::FromArgb(0, 200, 100);
 			   }
 		   }
 

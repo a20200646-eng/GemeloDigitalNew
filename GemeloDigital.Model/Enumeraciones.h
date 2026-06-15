@@ -25,6 +25,12 @@ namespace GemeloDigitalModel {
         DEFECTUOSA
     };
 
+    public enum class TipoEstacion {
+        PANEL_IZQ, 
+        PANEL_DER, 
+        TECHO 
+    };
+
     public enum class RolUsuario {
         JEFE,
         OPERADOR,
