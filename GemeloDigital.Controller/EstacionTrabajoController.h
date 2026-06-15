@@ -1,119 +1,211 @@
 #pragma once
+
 using namespace System;
 using namespace System::Collections::Generic;
-using namespace System::IO;
+using namespace System::Data;
+using namespace System::Data::SqlClient;
 using namespace GemeloDigitalModel;
 
 namespace GemeloDigitalController {
 
     public ref class EstacionTrabajoController {
     private:
-        List<EstacionTrabajoModel^>^ repositorio;
-        static String^ RUTA = "datos\\estaciones_trabajo.dat";
+        // Cadena de conexión configurada exactamente con tus datos de AWS RDS
+        String^ connectionString = "Server=bdmijael23.cczveeoo8rq2.us-east-1.rds.amazonaws.com,1433;" +
+            "Database=bdmijael23;" +
+            "User Id=admin;" +
+            "Password=abcd1234;";
 
     public:
         EstacionTrabajoController() {
-            repositorio = gcnew List<EstacionTrabajoModel^>();
-            cargarArchivo();
+            // No requiere lógica de inicialización para archivos locales
         }
 
-        // CREATE
+        // ==========================================================
+        // 1. CREATE: AGREGAR ESTACIÓN DE TRABAJO
+        // ==========================================================
         bool agregar(String^ id, TipoEstacion tipo, int cantidadPiezas) {
-            if (buscarPorId(id) != nullptr) return false;
-            repositorio->Add(gcnew EstacionTrabajoModel(id, tipo, cantidadPiezas));
-            guardarArchivo();
-            return true;
-        }
+            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlCommand^ cmd = gcnew SqlCommand("sp_EstacionesTrabajo_Insertar", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
 
-        // READ - por ID
-        EstacionTrabajoModel^ buscarPorId(String^ id) {
-            for each (EstacionTrabajoModel ^ e in repositorio)
-                if (e->Id->Equals(id)) return e;
-            return nullptr;
-        }
-		//READ - por tipo (devuelve la primera estación del tipo que tenga piezas disponibles)
-        EstacionTrabajoModel^ buscarPorTipo(TipoEstacion tipo) {
-            for each (EstacionTrabajoModel ^ e in repositorio)
-                if (e->Tipo == tipo && e->CantidadPiezas > 0) return e;
-            return nullptr;
-        }
+            cmd->Parameters->AddWithValue("@Id", id);
+            cmd->Parameters->AddWithValue("@Tipo", static_cast<int>(tipo));
+            cmd->Parameters->AddWithValue("@CantidadPiezas", cantidadPiezas);
 
-        // READ - todos
-        List<EstacionTrabajoModel^>^ obtenerTodos() {
-            return repositorio;
-        }
-
-        // UPDATE - reemplaza todos los atributos modificables
-        bool modificar(String^ id, TipoEstacion tipo, int cantidadPiezas) {
-            EstacionTrabajoModel^ e = buscarPorId(id);
-            if (e == nullptr) return false;
-            e->Tipo = tipo;
-            e->CantidadPiezas = cantidadPiezas;
-            guardarArchivo();
-            return true;
-        }
-
-
-
-        // DELETE
-        bool eliminar(String^ id) {
-            EstacionTrabajoModel^ e = buscarPorId(id);
-            if (e == nullptr) return false;
-            repositorio->Remove(e);
-            guardarArchivo();
-            return true;
-        }
-
-        // Formato: id|tipoPiezaAceptada|ocupada
-        void guardarArchivo() {
-            Directory::CreateDirectory("datos");
-            StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
-            for each (EstacionTrabajoModel ^ e in repositorio)
-                sw->WriteLine(String::Format("{0}|{1}|{2}",
-                    e->Id, (int)e->Tipo, e->CantidadPiezas));
-            sw->Close();
-        }
-
-        void cargarArchivo() {
-            if (!File::Exists(RUTA)) return;
-            repositorio->Clear();
-            StreamReader^ sr = gcnew StreamReader(RUTA, Text::Encoding::UTF8);
-            String^ linea;
-            while ((linea = sr->ReadLine()) != nullptr) {
-                if (linea->Trim()->Length == 0) continue;
-                array<String^>^ c = linea->Split('|');
-                if (c->Length < 3) continue;
-
-                String^ id = c[0]->Trim();
-                String^ tipoStr = c[1]->Trim();
-                String^ cantStr = c[2]->Trim();
-
-                // Parsear tipo: primero intentar entero, si falla intentar nombre del enum
-                TipoEstacion tipo;
-                int tipoInt;
-                if (Int32::TryParse(tipoStr, tipoInt)) {
-                    tipo = (TipoEstacion)tipoInt;
-                }
-                else {
-                    try {
-                        tipo = (TipoEstacion)Enum::Parse(TipoEstacion::typeid, tipoStr);
-                    }
-                    catch (Exception^) {
-                        // Línea con tipo inválido, saltarla
-                        continue;
-                    }
-                }
-
-                // Parsear cantidad de piezas
-                int cantidad;
-                if (!Int32::TryParse(cantStr, cantidad)) {
-                    // Línea con cantidad inválida, saltarla
-                    continue;
-                }
-
-                repositorio->Add(gcnew EstacionTrabajoModel(id, tipo, cantidad));
+            try {
+                conn->Open();
+                cmd->ExecuteNonQuery();
+                return true;
             }
-            sr->Close();
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al agregar estación en SQL: " + ex->Message);
+                return false;
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
+        }
+
+        // ==========================================================
+        // 2. READ: BUSCAR POR ID (CORREGIDO Y BLINDADO)
+        // ==========================================================
+        EstacionTrabajoModel^ buscarPorId(String^ id) {
+            EstacionTrabajoModel^ estacion = nullptr;
+            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlCommand^ cmd = gcnew SqlCommand("sp_EstacionesTrabajo_BuscarPorId", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+
+            cmd->Parameters->AddWithValue("@Id", id);
+
+            try {
+                conn->Open();
+                SqlDataReader^ reader = cmd->ExecuteReader();
+
+                if (reader->Read()) {
+                    String^ resId = reader->GetString(0);
+
+                    // --- LEER TIPO DE FORMA SEGURA (EVITA COLGADAS) ---
+                    TipoEstacion resTipo = TipoEstacion::PANEL_IZQ; // Valor por defecto en caso falle
+                    Object^ objTipo = reader->GetValue(1);
+                    if (objTipo != nullptr && objTipo != DBNull::Value) {
+                        int tipoInt;
+                        if (Int32::TryParse(objTipo->ToString(), tipoInt)) {
+                            resTipo = static_cast<TipoEstacion>(tipoInt);
+                        }
+                        else {
+                            try {
+                                resTipo = static_cast<TipoEstacion>(Enum::Parse(TipoEstacion::typeid, objTipo->ToString()));
+                            }
+                            catch (Exception^) {}
+                        }
+                    }
+
+                    int resCantidad = reader->GetInt32(2);
+                    estacion = gcnew EstacionTrabajoModel(resId, resTipo, resCantidad);
+                }
+                reader->Close();
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al buscar estación por ID: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
+            return estacion;
+        }
+
+        // ==========================================================
+        // 3. READ: BUSCAR POR TIPO (Primera con stock libre)
+        // ==========================================================
+        EstacionTrabajoModel^ buscarPorTipo(TipoEstacion tipo) {
+            List<EstacionTrabajoModel^>^ lista = obtenerTodos();
+            for each (EstacionTrabajoModel ^ e in lista) {
+                if (e->Tipo == tipo && e->CantidadPiezas > 0) {
+                    return e;
+                }
+            }
+            return nullptr;
+        }
+
+        // ==========================================================
+        // 4. READ: OBTENER TODAS LAS ESTACIONES (CORREGIDO Y BLINDADO)
+        // ==========================================================
+        List<EstacionTrabajoModel^>^ obtenerTodos() {
+            List<EstacionTrabajoModel^>^ lista = gcnew List<EstacionTrabajoModel^>();
+            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlCommand^ cmd = gcnew SqlCommand("sp_EstacionesTrabajo_ObtenerTodos", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+
+            try {
+                conn->Open();
+                SqlDataReader^ reader = cmd->ExecuteReader();
+
+                while (reader->Read()) {
+                    String^ id = reader->GetString(0);
+
+                    // --- LEER TIPO DE FORMA SEGURA PARA EVITAR INVALIDCAST ---
+                    TipoEstacion tipo = TipoEstacion::PANEL_IZQ; // Valor por defecto
+                    Object^ objTipo = reader->GetValue(1);
+                    if (objTipo != nullptr && objTipo != DBNull::Value) {
+                        int tipoInt;
+                        // Caso A: Si en la base de datos viene como número entero (0, 1, 2)
+                        if (Int32::TryParse(objTipo->ToString(), tipoInt)) {
+                            tipo = static_cast<TipoEstacion>(tipoInt);
+                        }
+                        // Caso B: Si en la base de datos viene como texto del Enum ("PANEL_IZQ", etc.)
+                        else {
+                            try {
+                                tipo = static_cast<TipoEstacion>(Enum::Parse(TipoEstacion::typeid, objTipo->ToString()));
+                            }
+                            catch (Exception^) {
+                                // Mantiene el valor por defecto si ocurre algún error imprevisto
+                            }
+                        }
+                    }
+
+                    int cantidad = reader->GetInt32(2);
+                    lista->Add(gcnew EstacionTrabajoModel(id, tipo, cantidad));
+                }
+                reader->Close();
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al obtener estaciones desde SQL: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
+            return lista;
+        }
+
+        // ==========================================================
+        // 5. UPDATE: MODIFICAR ESTACIÓN
+        // ==========================================================
+        bool modificar(String^ id, TipoEstacion tipo, int cantidadPiezas) {
+            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlCommand^ cmd = gcnew SqlCommand("sp_EstacionesTrabajo_Modificar", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+
+            cmd->Parameters->AddWithValue("@Id", id);
+            cmd->Parameters->AddWithValue("@Tipo", static_cast<int>(tipo));
+            cmd->Parameters->AddWithValue("@CantidadPiezas", cantidadPiezas);
+
+            try {
+                conn->Open();
+                int filasAfectadas = cmd->ExecuteNonQuery();
+                return (filasAfectadas > 0);
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al modificar estación en SQL: " + ex->Message);
+                return false;
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
+        }
+
+        // ==========================================================
+        // 6. DELETE: ELIMINAR ESTACIÓN
+        // ==========================================================
+        bool eliminar(String^ id) {
+            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlCommand^ cmd = gcnew SqlCommand("sp_EstacionesTrabajo_Eliminar", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+
+            cmd->Parameters->AddWithValue("@Id", id);
+
+            try {
+                conn->Open();
+                int filasAfectadas = cmd->ExecuteNonQuery();
+                return (filasAfectadas > 0);
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al eliminar estación en SQL: " + ex->Message);
+                return false;
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
         }
     };
 }

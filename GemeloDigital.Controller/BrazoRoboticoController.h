@@ -1,233 +1,383 @@
 #pragma once
 using namespace System;
 using namespace System::Collections::Generic;
-using namespace System::IO;
+using namespace System::Data;
+using namespace System::Data::SqlClient;
 using namespace GemeloDigitalModel;
 
 namespace GemeloDigitalController {
 
     public ref class BrazoRoboticoController {
     private:
-        List<BrazoRoboticoModel^>^ repositorio;
-
-        static String^ RUTA_BRAZOS = "datos\\brazos.dat";
-        static String^ RUTA_ARTS = "datos\\brazo_articulaciones.dat";
-        static String^ RUTA_GRIPPERS = "datos\\brazo_grippers.dat";
-        static String^ RUTA_SENS_POS = "datos\\brazo_sensores_pos.dat";
-        static String^ RUTA_SENS_FUE = "datos\\brazo_sensores_fuerza.dat";
+        // Usamos la misma cadena de conexión de LineaEnsamblajeController
+        String^ connectionString = "Server=bdmijael23.cczveeoo8rq2.us-east-1.rds.amazonaws.com,1433;" +
+            "Database=bdmijael23;" +
+            "User Id=admin;" +
+            "Password=abcd1234;";
 
     public:
-        BrazoRoboticoController() {
-            repositorio = gcnew List<BrazoRoboticoModel^>();
-            cargarArchivo();
-        }
+        BrazoRoboticoController() {}
 
-        // CREATE
+        // Método vacío para mantener compatibilidad con las invocaciones de la UI original
+        void cargarArchivo() {}
+
+        // ==========================================================
+        // CREATE: AGREGAR BRAZO ROBÓTICO
+        // ==========================================================
         bool agregar(String^ id, RolBrazo rol) {
             if (buscarPorId(id) != nullptr) return false;
-            repositorio->Add(gcnew BrazoRoboticoModel(id, rol));
-            guardarArchivo();
-            return true;
+
+            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlCommand^ cmd = gcnew SqlCommand("sp_BrazosRoboticos_Insertar", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+
+            cmd->Parameters->AddWithValue("@Id", id);
+            cmd->Parameters->AddWithValue("@Rol", (int)rol);
+            cmd->Parameters->AddWithValue("@Estado", (int)EstadoBrazo::REPOSO);
+
+            try {
+                conn->Open();
+                cmd->ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al agregar brazo robótico: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
         }
 
-        // READ - por ID
+        // ==========================================================
+        // READ: BUSCAR BRAZO POR ID (Carga el brazo y sus componentes)
+        // ==========================================================
         BrazoRoboticoModel^ buscarPorId(String^ id) {
-            for each (BrazoRoboticoModel ^ b in repositorio)
-                if (b->Id->Equals(id)) return b;
-            return nullptr;
+            BrazoRoboticoModel^ brazoObj = nullptr;
+            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlCommand^ cmd = gcnew SqlCommand("sp_BrazosRoboticos_BuscarPorId", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+            cmd->Parameters->AddWithValue("@Id", id);
+
+            try {
+                conn->Open();
+                SqlDataReader^ reader = cmd->ExecuteReader();
+
+                if (reader->Read()) {
+                    String^ resId = reader->GetValue(0)->ToString();
+                    RolBrazo resRol = (RolBrazo)Int32::Parse(reader->GetValue(1)->ToString());
+                    EstadoBrazo resEstado = (EstadoBrazo)Int32::Parse(reader->GetValue(2)->ToString());
+
+                    brazoObj = gcnew BrazoRoboticoModel(resId, resRol);
+                    brazoObj->Estado = resEstado;
+                    brazoObj->Gripper = nullptr; // Inicializar vacío para inyección posterior
+                }
+                reader->Close();
+
+                // Si el brazo existe, inyectamos relacionalmente sus subcomponentes
+                if (brazoObj != nullptr) {
+                    CargarArticulacionesParaBrazo(brazoObj, conn);
+                    CargarGripperParaBrazo(brazoObj, conn);
+                    CargarSensoresParaBrazo(brazoObj, conn);
+                }
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al buscar brazo por ID: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
+            return brazoObj;
         }
 
-        // READ - todos
+        // ==========================================================
+        // READ: OBTENER TODOS LOS BRAZOS
+        // ==========================================================
         List<BrazoRoboticoModel^>^ obtenerTodos() {
-            return repositorio;
+            List<BrazoRoboticoModel^>^ lista = gcnew List<BrazoRoboticoModel^>();
+            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlCommand^ cmd = gcnew SqlCommand("sp_BrazosRoboticos_ObtenerTodos", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+
+            try {
+                conn->Open();
+                SqlDataReader^ reader = cmd->ExecuteReader();
+
+                while (reader->Read()) {
+                    String^ id = reader->GetValue(0)->ToString();
+                    RolBrazo rol = (RolBrazo)Int32::Parse(reader->GetValue(1)->ToString());
+                    EstadoBrazo estado = (EstadoBrazo)Int32::Parse(reader->GetValue(2)->ToString());
+
+                    BrazoRoboticoModel^ b = gcnew BrazoRoboticoModel(id, rol);
+                    b->Estado = estado;
+                    b->Gripper = nullptr;
+                    lista->Add(b);
+                }
+                reader->Close();
+
+                // Hidratamos los componentes internos de cada brazo en la lista
+                for each (BrazoRoboticoModel ^ b in lista) {
+                    CargarArticulacionesParaBrazo(b, conn);
+                    CargarGripperParaBrazo(b, conn);
+                    CargarSensoresParaBrazo(b, conn);
+                }
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al obtener todos los brazos: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
+            return lista;
         }
 
-        // UPDATE - solo Estado es modificable en un brazo
-        // Rol es estructural y no cambia una vez creado el brazo
+        // ==========================================================
+        // UPDATE: MODIFICAR ESTADO DEL BRAZO (Crítico para operación)
+        // ==========================================================
         bool modificar(String^ id, EstadoBrazo nuevoEstado) {
-            BrazoRoboticoModel^ b = buscarPorId(id);
-            if (b == nullptr) return false;
-            b->Estado = nuevoEstado;
-            guardarArchivo();
-            return true;
+            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlCommand^ cmd = gcnew SqlCommand("sp_BrazosRoboticos_ModificarEstado", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+
+            cmd->Parameters->AddWithValue("@Id", id);
+            cmd->Parameters->AddWithValue("@Estado", (int)nuevoEstado);
+
+            try {
+                conn->Open();
+                int filasAfectadas = cmd->ExecuteNonQuery();
+                return (filasAfectadas > 0);
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al actualizar estado del brazo: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
         }
 
-        // DELETE
+        // ==========================================================
+        // DELETE: ELIMINAR BRAZO (Mantiene la firma pública)
+        // ==========================================================
         bool eliminar(String^ id) {
-            BrazoRoboticoModel^ b = buscarPorId(id);
-            if (b == nullptr) return false;
-            repositorio->Remove(b);
-            guardarArchivo();
-            return true;
+            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlCommand^ cmd = gcnew SqlCommand("sp_BrazosRoboticos_Eliminar", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+            cmd->Parameters->AddWithValue("@Id", id);
+
+            try {
+                conn->Open();
+                int filasAfectadas = cmd->ExecuteNonQuery();
+                return (filasAfectadas > 0);
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al eliminar brazo robótico: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
         }
 
-        // Gestion de componentes internos
+        // ==========================================================
+        // GESTIÓN DE COMPONENTES INTERNOS (Inserciones directas a SQL)
+        // ==========================================================
         bool agregarArticulacion(String^ idBrazo, String^ idArt, String^ nombre,
             double anguloActual, double anguloMin, double anguloMax) {
-            BrazoRoboticoModel^ b = buscarPorId(idBrazo);
-            if (b == nullptr) return false;
-            b->agregarArticulacion(gcnew ArticulacionModel(
-                idArt, nombre, true, anguloActual, anguloMin, anguloMax));
-            guardarArchivo();
-            return true;
+
+            if (buscarPorId(idBrazo) == nullptr) return false;
+
+            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlCommand^ cmd = gcnew SqlCommand("sp_BrazoArticulaciones_Insertar", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+
+            cmd->Parameters->AddWithValue("@BrazoId", idBrazo);
+            cmd->Parameters->AddWithValue("@IdArt", idArt);
+            cmd->Parameters->AddWithValue("@Nombre", nombre);
+            cmd->Parameters->AddWithValue("@Activo", 1);
+            cmd->Parameters->AddWithValue("@AnguloActual", anguloActual);
+            cmd->Parameters->AddWithValue("@AnguloMin", anguloMin);
+            cmd->Parameters->AddWithValue("@AnguloMax", anguloMax);
+
+            try {
+                conn->Open();
+                cmd->ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al registrar articulación: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
         }
 
         bool asignarGripper(String^ idBrazo, String^ idGripper, String^ nombre,
             double apertura, double fuerzaAgarre, bool abierto) {
-            BrazoRoboticoModel^ b = buscarPorId(idBrazo);
-            if (b == nullptr) return false;
-            b->Gripper = gcnew GripperModel(
-                idGripper, nombre, true, apertura, fuerzaAgarre, abierto);
-            guardarArchivo();
-            return true;
+
+            if (buscarPorId(idBrazo) == nullptr) return false;
+
+            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlCommand^ cmd = gcnew SqlCommand("sp_BrazoGrippers_Asignar", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+
+            cmd->Parameters->AddWithValue("@BrazoId", idBrazo);
+            cmd->Parameters->AddWithValue("@IdGripper", idGripper);
+            cmd->Parameters->AddWithValue("@Nombre", nombre);
+            cmd->Parameters->AddWithValue("@Activo", 1);
+            cmd->Parameters->AddWithValue("@Apertura", apertura);
+            cmd->Parameters->AddWithValue("@FuerzaAgarre", fuerzaAgarre);
+            cmd->Parameters->AddWithValue("@Abierto", abierto ? 1 : 0);
+
+            try {
+                conn->Open();
+                cmd->ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al asignar gripper: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
         }
 
         bool agregarSensorPosicion(String^ idBrazo, String^ idSensor, String^ nombre,
             double anguloMedido, double tolerancia) {
-            BrazoRoboticoModel^ b = buscarPorId(idBrazo);
-            if (b == nullptr) return false;
-            b->agregarSensor(gcnew SensorPosicionModel(
-                idSensor, nombre, true, anguloMedido, tolerancia));
-            guardarArchivo();
-            return true;
+
+            if (buscarPorId(idBrazo) == nullptr) return false;
+
+            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlCommand^ cmd = gcnew SqlCommand("sp_BrazoSensoresPos_Insertar", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+
+            cmd->Parameters->AddWithValue("@BrazoId", idBrazo);
+            cmd->Parameters->AddWithValue("@IdSensor", idSensor);
+            cmd->Parameters->AddWithValue("@Nombre", nombre);
+            cmd->Parameters->AddWithValue("@Activo", 1);
+            cmd->Parameters->AddWithValue("@AnguloMedido", anguloMedido);
+            cmd->Parameters->AddWithValue("@Tolerancia", tolerancia);
+
+            try {
+                conn->Open();
+                cmd->ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al registrar sensor de posición: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
         }
 
         bool agregarSensorFuerza(String^ idBrazo, String^ idSensor, String^ nombre,
             double fuerzaActual, double fuerzaMin, double fuerzaMax) {
-            BrazoRoboticoModel^ b = buscarPorId(idBrazo);
-            if (b == nullptr) return false;
-            b->agregarSensor(gcnew SensorFuerzaModel(
-                idSensor, nombre, true, fuerzaActual, fuerzaMin, fuerzaMax));
-            guardarArchivo();
-            return true;
+
+            if (buscarPorId(idBrazo) == nullptr) return false;
+
+            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlCommand^ cmd = gcnew SqlCommand("sp_BrazoSensoresFue_Insertar", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+
+            cmd->Parameters->AddWithValue("@BrazoId", idBrazo);
+            cmd->Parameters->AddWithValue("@IdSensor", idSensor);
+            cmd->Parameters->AddWithValue("@Nombre", nombre);
+            cmd->Parameters->AddWithValue("@Activo", 1);
+            cmd->Parameters->AddWithValue("@FuerzaActual", fuerzaActual);
+            cmd->Parameters->AddWithValue("@FuerzaMin", fuerzaMin);
+            cmd->Parameters->AddWithValue("@FuerzaMax", fuerzaMax);
+
+            try {
+                conn->Open();
+                cmd->ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al registrar sensor de fuerza: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
         }
 
-        // ── Persistencia ─────────────────────────────────────────
-        // brazos.dat      → id|rol|estado
-        // articulaciones  → brazoId|id|nombre|activo|anguloActual|anguloMin|anguloMax
-        // grippers        → brazoId|id|nombre|activo|apertura|fuerzaAgarre|abierto
-        // sensores pos    → brazoId|id|nombre|activo|anguloMedido|tolerancia
-        // sensores fuerza → brazoId|id|nombre|activo|fuerzaActual|fuerzaMin|fuerzaMax
-        void guardarArchivo() {
-            Directory::CreateDirectory("datos");
-            StreamWriter^ swB = gcnew StreamWriter(RUTA_BRAZOS, false, Text::Encoding::UTF8);
-            StreamWriter^ swA = gcnew StreamWriter(RUTA_ARTS, false, Text::Encoding::UTF8);
-            StreamWriter^ swG = gcnew StreamWriter(RUTA_GRIPPERS, false, Text::Encoding::UTF8);
-            StreamWriter^ swSP = gcnew StreamWriter(RUTA_SENS_POS, false, Text::Encoding::UTF8);
-            StreamWriter^ swSF = gcnew StreamWriter(RUTA_SENS_FUE, false, Text::Encoding::UTF8);
+    private:
+        // ==========================================================
+        // MÉTODOS PRIVADOS DE HIDRATACIÓN RELACIONAL (SUB-QUERIES)
+        // ==========================================================
+        void CargarArticulacionesParaBrazo(BrazoRoboticoModel^ b, SqlConnection^ conn) {
+            SqlCommand^ cmd = gcnew SqlCommand("sp_BrazoArticulaciones_ObtenerPorBrazo", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+            cmd->Parameters->AddWithValue("@BrazoId", b->Id);
 
-            for each (BrazoRoboticoModel ^ b in repositorio) {
-                // Brazo — Gripper se guarda en su propio archivo
-                swB->WriteLine(String::Format("{0}|{1}|{2}",
-                    b->Id, (int)b->Rol, (int)b->Estado));
-
-                // Articulaciones
-                for each (ArticulacionModel ^ a in b->Articulaciones)
-                    swA->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}",
-                        b->Id, a->Id, a->Nombre, (a->Activo ? 1 : 0),
-                        a->AnguloActual, a->AnguloMinimo, a->AnguloMaximo));
-
-                // Gripper
-                GripperModel^ g = b->Gripper;
-                if (g != nullptr)
-                    swG->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}",
-                        b->Id, g->Id, g->Nombre, (g->Activo ? 1 : 0),
-                        g->Apertura, g->FuerzaAgarre, (g->Abierto ? 1 : 0)));
-
-                // Sensores — distinguir tipo con dynamic_cast
-                for each (SensorModel ^ s in b->Sensores) {
-                    SensorPosicionModel^ sp = dynamic_cast<SensorPosicionModel^>(s);
-                    SensorFuerzaModel^ sf = dynamic_cast<SensorFuerzaModel^>(s);
-                    if (sp != nullptr)
-                        swSP->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}|{5}",
-                            b->Id, sp->Id, sp->Nombre, (sp->Activo ? 1 : 0),
-                            sp->AnguloMedido, sp->Tolerancia));
-                    else if (sf != nullptr)
-                        swSF->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}",
-                            b->Id, sf->Id, sf->Nombre, (sf->Activo ? 1 : 0),
-                            sf->FuerzaActual, sf->FuerzaMinima, sf->FuerzaMaxima));
-                }
+            SqlDataReader^ reader = cmd->ExecuteReader();
+            while (reader->Read()) {
+                ArticulacionModel^ a = gcnew ArticulacionModel(
+                    reader->GetValue(0)->ToString(),
+                    reader->GetValue(1)->ToString(),
+                    Int32::Parse(reader->GetValue(2)->ToString()) == 1,
+                    Double::Parse(reader->GetValue(3)->ToString()),
+                    Double::Parse(reader->GetValue(4)->ToString()),
+                    Double::Parse(reader->GetValue(5)->ToString())
+                );
+                b->Articulaciones->Add(a);
             }
-            swB->Close(); swA->Close(); swG->Close(); swSP->Close(); swSF->Close();
+            reader->Close();
         }
 
-        void cargarArchivo() {
-            if (!File::Exists(RUTA_BRAZOS)) return;
-            repositorio->Clear();
+        void CargarGripperParaBrazo(BrazoRoboticoModel^ b, SqlConnection^ conn) {
+            SqlCommand^ cmd = gcnew SqlCommand("sp_BrazoGrippers_ObtenerPorBrazo", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+            cmd->Parameters->AddWithValue("@BrazoId", b->Id);
 
-            // PASO 1: reconstruir brazos
-            StreamReader^ sr = gcnew StreamReader(RUTA_BRAZOS, Text::Encoding::UTF8);
-            String^ linea;
-            while ((linea = sr->ReadLine()) != nullptr) {
-                if (linea->Trim()->Length == 0) continue;
-                array<String^>^ c = linea->Split('|');
-                BrazoRoboticoModel^ b = gcnew BrazoRoboticoModel(
-                    c[0], (RolBrazo)Int32::Parse(c[1]));
-                b->Estado = (EstadoBrazo)Int32::Parse(c[2]);
-                b->Gripper = nullptr;
-                repositorio->Add(b);
+            SqlDataReader^ reader = cmd->ExecuteReader();
+            if (reader->Read()) {
+                b->Gripper = gcnew GripperModel(
+                    reader->GetValue(0)->ToString(),
+                    reader->GetValue(1)->ToString(),
+                    Int32::Parse(reader->GetValue(2)->ToString()) == 1,
+                    Double::Parse(reader->GetValue(3)->ToString()),
+                    Double::Parse(reader->GetValue(4)->ToString()),
+                    Int32::Parse(reader->GetValue(5)->ToString()) == 1
+                );
             }
-            sr->Close();
+            reader->Close();
+        }
 
-            // PASO 2: reinyectar articulaciones
-            if (File::Exists(RUTA_ARTS)) {
-                sr = gcnew StreamReader(RUTA_ARTS, Text::Encoding::UTF8);
-                while ((linea = sr->ReadLine()) != nullptr) {
-                    if (linea->Trim()->Length == 0) continue;
-                    array<String^>^ c = linea->Split('|');
-                    ArticulacionModel^ a = gcnew ArticulacionModel(
-                        c[1], c[2], c[3]->Equals("1"),
-                        Double::Parse(c[4]), Double::Parse(c[5]), Double::Parse(c[6]));
-                    BrazoRoboticoModel^ b = buscarPorId(c[0]);
-                    if (b != nullptr) b->Articulaciones->Add(a);
-                }
-                sr->Close();
-            }
+        void CargarSensoresParaBrazo(BrazoRoboticoModel^ b, SqlConnection^ conn) {
+            // 1. Cargar Sensores de Posición
+            SqlCommand^ cmdPos = gcnew SqlCommand("sp_BrazoSensoresPos_ObtenerPorBrazo", conn);
+            cmdPos->CommandType = CommandType::StoredProcedure;
+            cmdPos->Parameters->AddWithValue("@BrazoId", b->Id);
 
-            // PASO 3: reinyectar grippers
-            if (File::Exists(RUTA_GRIPPERS)) {
-                sr = gcnew StreamReader(RUTA_GRIPPERS, Text::Encoding::UTF8);
-                while ((linea = sr->ReadLine()) != nullptr) {
-                    if (linea->Trim()->Length == 0) continue;
-                    array<String^>^ c = linea->Split('|');
-                    GripperModel^ g = gcnew GripperModel(
-                        c[1], c[2], c[3]->Equals("1"),
-                        Double::Parse(c[4]), Double::Parse(c[5]), c[6]->Equals("1"));
-                    BrazoRoboticoModel^ b = buscarPorId(c[0]);
-                    if (b != nullptr) b->Gripper = g;
-                }
-                sr->Close();
+            SqlDataReader^ readerPos = cmdPos->ExecuteReader();
+            while (readerPos->Read()) {
+                SensorPosicionModel^ sp = gcnew SensorPosicionModel(
+                    readerPos->GetValue(0)->ToString(),
+                    readerPos->GetValue(1)->ToString(),
+                    Int32::Parse(readerPos->GetValue(2)->ToString()) == 1,
+                    Double::Parse(readerPos->GetValue(3)->ToString()),
+                    Double::Parse(readerPos->GetValue(4)->ToString())
+                );
+                b->Sensores->Add(sp);
             }
+            readerPos->Close();
 
-            // PASO 4: reinyectar sensores de posicion
-            if (File::Exists(RUTA_SENS_POS)) {
-                sr = gcnew StreamReader(RUTA_SENS_POS, Text::Encoding::UTF8);
-                while ((linea = sr->ReadLine()) != nullptr) {
-                    if (linea->Trim()->Length == 0) continue;
-                    array<String^>^ c = linea->Split('|');
-                    SensorPosicionModel^ s = gcnew SensorPosicionModel(
-                        c[1], c[2], c[3]->Equals("1"),
-                        Double::Parse(c[4]), Double::Parse(c[5]));
-                    BrazoRoboticoModel^ b = buscarPorId(c[0]);
-                    if (b != nullptr) b->Sensores->Add(s);
-                }
-                sr->Close();
-            }
+            // 2. Cargar Sensores de Fuerza
+            SqlCommand^ cmdFue = gcnew SqlCommand("sp_BrazoSensoresFue_ObtenerPorBrazo", conn);
+            cmdFue->CommandType = CommandType::StoredProcedure;
+            cmdFue->Parameters->AddWithValue("@BrazoId", b->Id);
 
-            // PASO 5: reinyectar sensores de fuerza
-            if (File::Exists(RUTA_SENS_FUE)) {
-                sr = gcnew StreamReader(RUTA_SENS_FUE, Text::Encoding::UTF8);
-                while ((linea = sr->ReadLine()) != nullptr) {
-                    if (linea->Trim()->Length == 0) continue;
-                    array<String^>^ c = linea->Split('|');
-                    SensorFuerzaModel^ s = gcnew SensorFuerzaModel(
-                        c[1], c[2], c[3]->Equals("1"),
-                        Double::Parse(c[4]), Double::Parse(c[5]), Double::Parse(c[6]));
-                    BrazoRoboticoModel^ b = buscarPorId(c[0]);
-                    if (b != nullptr) b->Sensores->Add(s);
-                }
-                sr->Close();
+            SqlDataReader^ readerFue = cmdFue->ExecuteReader();
+            while (readerFue->Read()) {
+                SensorFuerzaModel^ sf = gcnew SensorFuerzaModel(
+                    readerFue->GetValue(0)->ToString(),
+                    readerFue->GetValue(1)->ToString(),
+                    Int32::Parse(readerFue->GetValue(2)->ToString()) == 1,
+                    Double::Parse(readerFue->GetValue(3)->ToString()),
+                    Double::Parse(readerFue->GetValue(4)->ToString()),
+                    Double::Parse(readerFue->GetValue(5)->ToString())
+                );
+                b->Sensores->Add(sf);
             }
+            readerFue->Close();
         }
     };
 }

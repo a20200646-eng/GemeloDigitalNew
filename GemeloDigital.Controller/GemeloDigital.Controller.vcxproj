@@ -127,6 +127,7 @@
     <ClInclude Include="BrazoRoboticoController.h" />
     <ClInclude Include="CicloController.h" />
     <ClInclude Include="ControladorSistema.h" />
+    <ClInclude Include="DBConnection.h" />
     <ClInclude Include="EstacionBodyFramingController.h" />
     <ClInclude Include="EstacionTrabajoController.h" />
     <ClInclude Include="EstructuraTechoController.h" />
