@@ -1,87 +1,172 @@
 #pragma once
+#include "DBConnection.h" 
+
 using namespace System;
 using namespace System::Collections::Generic;
-using namespace System::IO;
+using namespace System::Data;
+using namespace System::Data::SqlClient;
 using namespace GemeloDigitalModel;
 
 namespace GemeloDigitalController {
 
     public ref class AdministradorController {
-    private:
-        List<AdministradorModel^>^ repositorio;
-        static String^ RUTA = "datos\\administradores.dat";
-
     public:
-        AdministradorController() {
-            repositorio = gcnew List<AdministradorModel^>();
-            cargarArchivo();
-        }
+        AdministradorController() {}
 
-        // CREATE
+        // CREATE — ahora lee el Id real generado por el SP
         bool agregar(String^ id, String^ nombre, String^ contrasena, int nivelAcceso, String^ turno) {
-            if (buscarPorId(id) != nullptr) return false;
-            repositorio->Add(gcnew AdministradorModel(id, nombre, contrasena, nivelAcceso, turno));
-            guardarArchivo();
-            return true;
+            // REMOVIDO: buscarPorId(id) — era inútil porque id era un GUID temporal.
+            // El SP ahora detecta duplicados por Usuario y devuelve @NuevoId = NULL si ya existe.
+
+            SqlConnection^ conn = DBConnection::GetConnection();
+            try {
+                conn->Open();
+                SqlCommand^ cmd = gcnew SqlCommand("sp_Usuarios_Insertar", conn);
+                cmd->CommandType = CommandType::StoredProcedure;
+
+                cmd->Parameters->AddWithValue("@Id", id);           // el SP lo ignora, pero evita error de parámetro faltante
+                cmd->Parameters->AddWithValue("@Nombre", nombre);
+                cmd->Parameters->AddWithValue("@Usuario", nombre);  // igual que antes
+                cmd->Parameters->AddWithValue("@Contrasena", String::IsNullOrEmpty(contrasena) ? "" : contrasena);
+                cmd->Parameters->AddWithValue("@NivelAcceso", nivelAcceso.ToString());
+                cmd->Parameters->AddWithValue("@Turno", turno);
+
+                // Parámetro OUTPUT para recibir el Id real generado
+                SqlParameter^ paramNuevoId = gcnew SqlParameter("@NuevoId", SqlDbType::VarChar, 50);
+                paramNuevoId->Direction = ParameterDirection::Output;
+                cmd->Parameters->Add(paramNuevoId);
+
+                cmd->ExecuteNonQuery();
+
+                // Si el SP devolvió NULL → duplicado de usuario
+                if (paramNuevoId->Value == DBNull::Value || paramNuevoId->Value == nullptr)
+                    return false;
+
+                // idGenerado contiene el U001/U002 real por si el Form lo necesita en el futuro
+                String^ idGenerado = paramNuevoId->Value->ToString();
+                return true;
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al insertar en BD: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
         }
 
-        // READ - por ID
+        // READ - por ID (CON LECTURA BLINDADA)
         AdministradorModel^ buscarPorId(String^ id) {
-            for each (AdministradorModel ^ a in repositorio)
-                if (a->Id->Equals(id)) return a;
-            return nullptr;
+            SqlConnection^ conn = DBConnection::GetConnection();
+            AdministradorModel^ admin = nullptr;
+            try {
+                conn->Open();
+                SqlCommand^ cmd = gcnew SqlCommand("sp_Usuarios_BuscarPorId", conn);
+                cmd->CommandType = CommandType::StoredProcedure;
+                cmd->Parameters->AddWithValue("@Id", id);
+
+                SqlDataReader^ reader = cmd->ExecuteReader();
+                if (reader->Read()) {
+                    String^ dbId = reader->GetValue(0)->ToString();
+                    String^ dbNombre = reader->GetValue(1)->ToString();
+                    String^ dbContrasena = reader->GetValue(3)->ToString();
+
+                    // BLINDAJE: Conversión segura sin importar si en SQL es INT o VARCHAR
+                    int dbNivel = 0;
+                    Int32::TryParse(reader->GetValue(4)->ToString(), dbNivel);
+
+                    String^ dbTurno = reader->IsDBNull(5) ? "" : reader->GetValue(5)->ToString();
+
+                    admin = gcnew AdministradorModel(dbId, dbNombre, dbContrasena, dbNivel, dbTurno);
+                }
+                reader->Close();
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error de conexión al buscar ID: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
+            return admin;
         }
 
-        // READ - todos
+        // READ - todos (CON LECTURA BLINDADA)
         List<AdministradorModel^>^ obtenerTodos() {
-            return repositorio;
+            SqlConnection^ conn = DBConnection::GetConnection();
+            List<AdministradorModel^>^ lista = gcnew List<AdministradorModel^>();
+            try {
+                conn->Open();
+                SqlCommand^ cmd = gcnew SqlCommand("sp_Usuarios_ObtenerTodos", conn);
+                cmd->CommandType = CommandType::StoredProcedure;
+
+                SqlDataReader^ reader = cmd->ExecuteReader();
+                while (reader->Read()) {
+                    String^ dbId = reader->GetValue(0)->ToString();
+                    String^ dbNombre = reader->GetValue(1)->ToString();
+                    String^ dbContrasena = reader->GetValue(3)->ToString();
+
+                    // BLINDAJE: Conversión segura sin importar si en SQL es INT o VARCHAR
+                    int dbNivel = 0;
+                    Int32::TryParse(reader->GetValue(4)->ToString(), dbNivel);
+
+                    String^ dbTurno = reader->IsDBNull(5) ? "" : reader->GetValue(5)->ToString();
+
+                    lista->Add(gcnew AdministradorModel(dbId, dbNombre, dbContrasena, dbNivel, dbTurno));
+                }
+                reader->Close();
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al obtener todos: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
+            return lista;
         }
 
-        // UPDATE - reemplaza todos los atributos modificables
+        // UPDATE
         bool modificar(String^ id, String^ nombre, String^ contrasena, int nivelAcceso, String^ turno) {
-            AdministradorModel^ a = buscarPorId(id);
-            if (a == nullptr) return false;
-            a->Nombre = nombre;
-            a->Contrasena = contrasena;
-            a->NivelAcceso = nivelAcceso;
-            a->Turno = turno;
-            guardarArchivo();
-            return true;
+            SqlConnection^ conn = DBConnection::GetConnection();
+            try {
+                conn->Open();
+                SqlCommand^ cmd = gcnew SqlCommand("sp_Usuarios_Modificar", conn);
+                cmd->CommandType = CommandType::StoredProcedure;
+
+                cmd->Parameters->AddWithValue("@Id", id);
+                cmd->Parameters->AddWithValue("@Nombre", nombre);
+                cmd->Parameters->AddWithValue("@Usuario", nombre);
+                cmd->Parameters->AddWithValue("@Contrasena", String::IsNullOrEmpty(contrasena) ? "" : contrasena);
+                cmd->Parameters->AddWithValue("@NivelAcceso", nivelAcceso.ToString());
+                cmd->Parameters->AddWithValue("@Turno", turno);
+
+                cmd->ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al modificar: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
         }
 
         // DELETE
         bool eliminar(String^ id) {
-            AdministradorModel^ a = buscarPorId(id);
-            if (a == nullptr) return false;
-            repositorio->Remove(a);
-            guardarArchivo();
-            return true;
-        }
+            SqlConnection^ conn = DBConnection::GetConnection();
+            try {
+                conn->Open();
+                SqlCommand^ cmd = gcnew SqlCommand("sp_Usuarios_Eliminar", conn);
+                cmd->CommandType = CommandType::StoredProcedure;
+                cmd->Parameters->AddWithValue("@Id", id);
 
-        // PERSIST - guardar
-        // Formato: id|nombre|contrasena|nivelAcceso
-        void guardarArchivo() {
-            Directory::CreateDirectory("datos");
-            StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
-            for each (AdministradorModel ^ a in repositorio)
-                sw->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}",
-                    a->Id, a->Nombre, a->Contrasena, a->NivelAcceso, a->Turno));
-            sw->Close();
-        }
-
-        // PERSIST - cargar
-        void cargarArchivo() {
-            if (!File::Exists(RUTA)) return;
-            repositorio->Clear();
-            StreamReader^ sr = gcnew StreamReader(RUTA, Text::Encoding::UTF8);
-            String^ linea;
-            while ((linea = sr->ReadLine()) != nullptr) {   
-                if (linea->Trim()->Length == 0) continue;
-                array<String^>^ c = linea->Split('|');
-                repositorio->Add(gcnew AdministradorModel(
-                    c[0], c[1], c[2], Int32::Parse(c[3]), c[4]));
+                cmd->ExecuteNonQuery();
+                return true;
             }
-            sr->Close();
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al eliminar: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
         }
     };
 }
