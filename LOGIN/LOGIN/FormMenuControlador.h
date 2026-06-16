@@ -685,25 +685,47 @@ namespace LOGIN {
 
 
 
-	void cargarPaneles() 
-	{
-		dataGridView1->Rows->Clear();
-
-		for each (PanelLateralModel ^ p in panelController->obtenerTodos())
+		void cargarPaneles()
 		{
-			dataGridView1->Rows->Add(p->Id, p->Material, p->Peso, p->Estado.ToString(), p->Lado.ToString(), p->PuntosAnclaje);
+			dataGridView1->Rows->Clear();
+
+			for each (PanelLateralModel ^ p in panelController->obtenerTodos())
+			{
+				// Estado legible
+				String^ estadoStr;
+				switch (p->Estado) {
+				case EstadoPieza::DISPONIBLE:  estadoStr = "DISPONIBLE";  break;
+				case EstadoPieza::EN_PROCESO:  estadoStr = "EN_PROCESO";  break;
+				case EstadoPieza::ENSAMBLADA:  estadoStr = "ENSAMBLADA";  break;
+				case EstadoPieza::DEFECTUOSA:  estadoStr = "DEFECTUOSA";  break;
+				default:                       estadoStr = "DESCONOCIDO"; break;
+				}
+
+				// Lado legible
+				String^ ladoStr = (p->Lado == LadoPanel::IZQUIERDO) ? "IZQUIERDO" : "DERECHO";
+
+				dataGridView1->Rows->Add(p->Id, p->Material, p->Peso, estadoStr, ladoStr, p->PuntosAnclaje);
+			}
 		}
-	}
 
-	void cargarTechos()
-	{
-		dataGridView1->Rows->Clear();
-
-		for each (EstructuraTechoModel ^ t in techoController->obtenerTodos())
+		void cargarTechos()
 		{
-			dataGridView1->Rows->Add(t->Id, t->Material, t->Peso, t->Estado.ToString(), t->PuntosUnion, t->Anchura);
+			dataGridView1->Rows->Clear();
+
+			for each (EstructuraTechoModel ^ t in techoController->obtenerTodos())
+			{
+				String^ estadoStr;
+				switch (t->Estado) {
+				case EstadoPieza::DISPONIBLE:  estadoStr = "DISPONIBLE";  break;
+				case EstadoPieza::EN_PROCESO:  estadoStr = "EN_PROCESO";  break;
+				case EstadoPieza::ENSAMBLADA:  estadoStr = "ENSAMBLADA";  break;
+				case EstadoPieza::DEFECTUOSA:  estadoStr = "DEFECTUOSA";  break;
+				default:                       estadoStr = "DESCONOCIDO"; break;
+				}
+
+				dataGridView1->Rows->Add(t->Id, t->Material, t->Peso, estadoStr, t->PuntosUnion, t->Anchura);
+			}
 		}
-	}
 
 	void actualizarResumen() 
 	{
