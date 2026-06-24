@@ -10,14 +10,10 @@ namespace GemeloDigitalController {
 
     public ref class GestorInventarioController {
     private:
-        String^ connectionString;
 
     public:
         GestorInventarioController() {
-            connectionString = "Server=bdmijael23.cczveeoo8rq2.us-east-1.rds.amazonaws.com,1433;" +
-                "Database=bdmijael23;" +
-                "User Id=admin;" +
-                "Password=abcd1234;";
+            
         }
 
         void cargarArchivo() {}
@@ -28,7 +24,7 @@ namespace GemeloDigitalController {
         bool agregar(String^ id, String^ nombre, String^ contrasena) {
             if (buscarPorId(id) != nullptr) return false;
 
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             // Insertamos usando las columnas reales descubiertas: Usuario y [Contraseña]
             String^ query = "INSERT INTO Usuarios (Id, Nombre, Usuario, [Contraseña], NivelAcceso, Turno) " +
                 "VALUES (@Id, @Nombre, @Usuario, @Contrasena, 2, 'Mañana');";
@@ -57,7 +53,7 @@ namespace GemeloDigitalController {
         // ==========================================================
         GestorInventarioModel^ buscarPorId(String^ id) {
             GestorInventarioModel^ gestor = nullptr;
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             SqlCommand^ cmd = gcnew SqlCommand("sp_Usuarios_BuscarPorId", conn);
             cmd->CommandType = CommandType::StoredProcedure;
             cmd->Parameters->AddWithValue("@Id", id);
@@ -93,7 +89,7 @@ namespace GemeloDigitalController {
         // ==========================================================
         List<GestorInventarioModel^>^ obtenerTodos() {
             List<GestorInventarioModel^>^ lista = gcnew List<GestorInventarioModel^>();
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             String^ query = "SELECT Id, Nombre, [Contraseña] FROM Usuarios WHERE NivelAcceso = 2;";
             SqlCommand^ cmd = gcnew SqlCommand(query, conn);
 
@@ -125,7 +121,7 @@ namespace GemeloDigitalController {
         // 4. UPDATE: MODIFICAR GESTOR
         // ==========================================================
         bool modificar(String^ id, String^ nombre, String^ contrasena, int totalPiezasGestionadas) {
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             String^ query = "UPDATE Usuarios SET Nombre = @Nombre, [Contraseña] = @Contrasena WHERE Id = @Id;";
             SqlCommand^ cmd = gcnew SqlCommand(query, conn);
 
@@ -150,7 +146,7 @@ namespace GemeloDigitalController {
         // 5. DELETE: ELIMINAR GESTOR
         // ==========================================================
         bool eliminar(String^ id) {
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             SqlCommand^ cmd = gcnew SqlCommand("sp_Usuarios_Eliminar", conn);
             cmd->CommandType = CommandType::StoredProcedure;
             cmd->Parameters->AddWithValue("@Id", id);

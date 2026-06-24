@@ -10,11 +10,6 @@ namespace GemeloDigitalController {
 
     public ref class EstructuraTechoController {
     private:
-        // Cadena de conexión configurada exactamente con tus datos de AWS RDS
-        String^ connectionString = "Server=bdmijael23.cczveeoo8rq2.us-east-1.rds.amazonaws.com,1433;" +
-            "Database=bdmijael23;" +
-            "User Id=admin;" +
-            "Password=abcd1234;";
 
     public:
         EstructuraTechoController() {
@@ -27,7 +22,7 @@ namespace GemeloDigitalController {
         bool agregar(String^ id, String^ material, double peso,
             int puntosUnion, double anchura, String^ estacionId) {
 
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             SqlCommand^ cmd = gcnew SqlCommand("sp_EstructurasTecho_Insertar", conn);
             cmd->CommandType = CommandType::StoredProcedure;
 
@@ -61,7 +56,7 @@ namespace GemeloDigitalController {
         // ==========================================================
         EstructuraTechoModel^ buscarPorId(String^ id) {
             EstructuraTechoModel^ techo = nullptr;
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             SqlCommand^ cmd = gcnew SqlCommand("sp_EstructurasTecho_BuscarPorId", conn);
             cmd->CommandType = CommandType::StoredProcedure;
 
@@ -116,7 +111,7 @@ namespace GemeloDigitalController {
         // ==========================================================
         List<EstructuraTechoModel^>^ obtenerTodos() {
             List<EstructuraTechoModel^>^ lista = gcnew List<EstructuraTechoModel^>();
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             SqlCommand^ cmd = gcnew SqlCommand("sp_EstructurasTecho_ObtenerTodos", conn);
             cmd->CommandType = CommandType::StoredProcedure;
 
@@ -169,7 +164,7 @@ namespace GemeloDigitalController {
         bool modificar(String^ id, String^ material, double peso,
             EstadoPieza estado, int puntosUnion, double anchura, String^ estacionId) {
 
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             // Corregido directamente el nombre del Stored Procedure para evitar el try-catch anidado
             SqlCommand^ cmd = gcnew SqlCommand("sp_EstructurasTecho_Modificar", conn);
             cmd->CommandType = CommandType::StoredProcedure;
@@ -200,7 +195,7 @@ namespace GemeloDigitalController {
         // 5. DELETE: ELIMINAR ESTRUCTURA TECHO
         // ==========================================================
         bool eliminar(String^ id) {
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             SqlCommand^ cmd = gcnew SqlCommand("sp_EstructurasTecho_Eliminar", conn);
             cmd->CommandType = CommandType::StoredProcedure;
 

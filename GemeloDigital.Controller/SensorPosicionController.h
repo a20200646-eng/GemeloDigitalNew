@@ -1,90 +1,127 @@
 #pragma once
+#include "DBConnection.h"
 using namespace System;
 using namespace System::Collections::Generic;
-using namespace System::IO;
+using namespace System::Data;
+using namespace System::Data::SqlClient;
 using namespace GemeloDigitalModel;
 
 namespace GemeloDigitalController {
 
     public ref class SensorPosicionController {
-    private:
-        List<SensorPosicionModel^>^ repositorio;
-        static String^ RUTA = "datos\\sensores_posicion.dat";
-
     public:
-        SensorPosicionController() {
-            repositorio = gcnew List<SensorPosicionModel^>();
-            cargarArchivo();
-        }
+        SensorPosicionController() {}
 
-        // CREATE
+        // CREATE — uso principal: seed inicial
         bool agregar(String^ id, String^ nombre, bool activo,
-            double anguloMedido, double tolerancia) {
-            if (buscarPorId(id) != nullptr) return false;
-            repositorio->Add(gcnew SensorPosicionModel(
-                id, nombre, activo, anguloMedido, tolerancia));
-            guardarArchivo();
-            return true;
-        }
-
-        // READ - por ID
-        SensorPosicionModel^ buscarPorId(String^ id) {
-            for each (SensorPosicionModel ^ s in repositorio)
-                if (s->Id->Equals(id)) return s;
-            return nullptr;
-        }
-
-        // READ - todos
-        List<SensorPosicionModel^>^ obtenerTodos() {
-            return repositorio;
-        }
-
-        // UPDATE - reemplaza todos los atributos modificables
-        bool modificar(String^ id, String^ nombre, bool activo,
-            double anguloMedido, double tolerancia) {
-            SensorPosicionModel^ s = buscarPorId(id);
-            if (s == nullptr) return false;
-            s->Nombre = nombre;
-            s->Activo = activo;
-            s->AnguloMedido = anguloMedido;
-            s->Tolerancia = tolerancia;
-            guardarArchivo();
-            return true;
-        }
-
-        // DELETE
-        bool eliminar(String^ id) {
-            SensorPosicionModel^ s = buscarPorId(id);
-            if (s == nullptr) return false;
-            repositorio->Remove(s);
-            guardarArchivo();
-            return true;
-        }
-
-        // Formato: id|nombre|activo|anguloMedido|tolerancia
-        void guardarArchivo() {
-            Directory::CreateDirectory("datos");
-            StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
-            for each (SensorPosicionModel ^ s in repositorio)
-                sw->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}",
-                    s->Id, s->Nombre, (s->Activo ? 1 : 0),
-                    s->AnguloMedido, s->Tolerancia));
-            sw->Close();
-        }
-
-        void cargarArchivo() {
-            if (!File::Exists(RUTA)) return;
-            repositorio->Clear();
-            StreamReader^ sr = gcnew StreamReader(RUTA, Text::Encoding::UTF8);
-            String^ linea;
-            while ((linea = sr->ReadLine()) != nullptr) {
-                if (linea->Trim()->Length == 0) continue;
-                array<String^>^ c = linea->Split('|');
-                repositorio->Add(gcnew SensorPosicionModel(
-                    c[0], c[1], c[2]->Equals("1"),
-                    Double::Parse(c[3]), Double::Parse(c[4])));
+            double anguloMedido, double tolerancia, String^ brazoId) {
+            SqlConnection^ conn = DBConnection::GetConnection();
+            SqlCommand^ cmd = gcnew SqlCommand("sp_SensoresPosicion_Insertar", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+            cmd->Parameters->AddWithValue("@Id", id);
+            cmd->Parameters->AddWithValue("@Nombre", nombre);
+            cmd->Parameters->AddWithValue("@Activo", activo);
+            cmd->Parameters->AddWithValue("@AnguloMedido", anguloMedido);
+            cmd->Parameters->AddWithValue("@Tolerancia", tolerancia);
+            cmd->Parameters->AddWithValue("@BrazoId", brazoId);
+            try {
+                conn->Open();
+                cmd->ExecuteNonQuery();
+                return true;
             }
-            sr->Close();
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al agregar sensor de posicion en SQL: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
+        }
+
+        // READ — el sensor de posicion de un brazo (uso principal: poblar BrazoRoboticoModel)
+        List<SensorPosicionModel^>^ obtenerPorBrazoId(String^ brazoId) {
+            List<SensorPosicionModel^>^ lista = gcnew List<SensorPosicionModel^>();
+            SqlConnection^ conn = DBConnection::GetConnection();
+            SqlCommand^ cmd = gcnew SqlCommand("sp_SensoresPosicion_ObtenerPorBrazo", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+            cmd->Parameters->AddWithValue("@BrazoId", brazoId);
+            try {
+                conn->Open();
+                SqlDataReader^ reader = cmd->ExecuteReader();
+                while (reader->Read())
+                    lista->Add(LeerSensor(reader));
+                reader->Close();
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al obtener sensor de posicion por brazo: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
+            return lista;
+        }
+
+        // READ — por ID
+        SensorPosicionModel^ buscarPorId(String^ id) {
+            SensorPosicionModel^ s = nullptr;
+            SqlConnection^ conn = DBConnection::GetConnection();
+            SqlCommand^ cmd = gcnew SqlCommand("sp_SensoresPosicion_BuscarPorId", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+            cmd->Parameters->AddWithValue("@Id", id);
+            try {
+                conn->Open();
+                SqlDataReader^ reader = cmd->ExecuteReader();
+                if (reader->Read()) s = LeerSensor(reader);
+                reader->Close();
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al buscar sensor de posicion por ID: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
+            return s;
+        }
+
+        // UPDATE — solo AnguloMedido (campo dinamico)
+        // sp usa SET NOCOUNT ON -> verificar con buscarPorId()
+        bool modificar(String^ id, double nuevoAngulo) {
+            SqlConnection^ conn = DBConnection::GetConnection();
+            SqlCommand^ cmd = gcnew SqlCommand("sp_SensoresPosicion_ActualizarMedicion", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+            cmd->Parameters->AddWithValue("@Id", id);
+            cmd->Parameters->AddWithValue("@AnguloMedido", nuevoAngulo);
+            try {
+                conn->Open();
+                cmd->ExecuteNonQuery();
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al actualizar sensor de posicion: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
+
+            SensorPosicionModel^ verif = buscarPorId(id);
+            return (verif != nullptr && Math::Abs(verif->AnguloMedido - nuevoAngulo) < 0.0001);
+        }
+
+    private:
+        // Columnas: Id(0) Nombre(1) Activo(2) AnguloMedido(3) Tolerancia(4) BrazoId(5)
+        SensorPosicionModel^ LeerSensor(SqlDataReader^ reader) {
+            String^ id = reader->GetValue(0)->ToString();
+            String^ nombre = reader->GetValue(1)->ToString();
+
+            bool activo = false;
+            Object^ valActivo = reader->GetValue(2);
+            if (valActivo != nullptr && valActivo != DBNull::Value) {
+                String^ s = valActivo->ToString()->ToLower()->Trim();
+                activo = (s == "1" || s == "true");
+            }
+
+            double anguloMedido = 0.0; Double::TryParse(reader->GetValue(3)->ToString(), anguloMedido);
+            double tolerancia = 0.0; Double::TryParse(reader->GetValue(4)->ToString(), tolerancia);
+
+            return gcnew SensorPosicionModel(id, nombre, activo, anguloMedido, tolerancia);
         }
     };
 }

@@ -50,8 +50,10 @@ namespace GemeloDigitalController {
     public:
         RegistroEventosController() {
             repositorio = gcnew List<RegistroEventos^>();
-            // NOTA: cargarArchivo() requiere los 3 controllers de eventos
-            // Se llama manualmente desde AppContext despues de cargarlos
+            EventoTareaController^ ctrlTarea = gcnew EventoTareaController();
+            EventoAlertaController^ ctrlAlerta = gcnew EventoAlertaController();
+            EventoErrorController^ ctrlError = gcnew EventoErrorController();
+            cargarArchivo(ctrlTarea, ctrlAlerta, ctrlError);
         }
 
         // CREATE

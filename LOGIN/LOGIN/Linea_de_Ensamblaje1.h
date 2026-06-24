@@ -16,7 +16,9 @@ namespace LOGIN {
 	private:
 		LineaEnsamblajeController^ ctrlLinea;
 		PanelLateralController^ ctrlPanel;
-		EstructuraTechoController^ ctrlTecho;
+	private: System::Windows::Forms::Button^ btnRetirarPieza;
+	private: System::Windows::Forms::Button^ btnEliminarCola;
+		   EstructuraTechoController^ ctrlTecho;
 
 	public:
 		Linea_de_Ensamblaje1(void)
@@ -92,6 +94,7 @@ namespace LOGIN {
 			this->colEstado = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->labelSecAgregar = (gcnew System::Windows::Forms::Label());
 			this->panelAgregar = (gcnew System::Windows::Forms::Panel());
+			this->btnRetirarPieza = (gcnew System::Windows::Forms::Button());
 			this->labelSelPieza = (gcnew System::Windows::Forms::Label());
 			this->comboBoxPiezas = (gcnew System::Windows::Forms::ComboBox());
 			this->btnAgregarCola = (gcnew System::Windows::Forms::Button());
@@ -99,43 +102,66 @@ namespace LOGIN {
 			this->labelNota = (gcnew System::Windows::Forms::Label());
 			this->labelSecFlujo = (gcnew System::Windows::Forms::Label());
 			this->panelFlujo = (gcnew System::Windows::Forms::Panel());
+			this->btnEliminarCola = (gcnew System::Windows::Forms::Button());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dgvLineas))->BeginInit();
 			this->panelDetalle->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dgvCola))->BeginInit();
 			this->panelAgregar->SuspendLayout();
 			this->panelNota->SuspendLayout();
 			this->SuspendLayout();
+			// 
+			// labelTitulo
+			// 
 			this->labelTitulo->AutoSize = true;
-			this->labelTitulo->Font = (gcnew System::Drawing::Font(L"Segoe UI", 14, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->labelTitulo->Font = (gcnew System::Drawing::Font(L"Segoe UI", 14, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
 			this->labelTitulo->ForeColor = System::Drawing::Color::White;
 			this->labelTitulo->Location = System::Drawing::Point(20, 16);
 			this->labelTitulo->Name = L"labelTitulo";
 			this->labelTitulo->Size = System::Drawing::Size(198, 25);
 			this->labelTitulo->TabIndex = 0;
 			this->labelTitulo->Text = L"Lineas de Ensamblaje";
+			// 
+			// labelSecLineas
+			// 
 			this->labelSecLineas->AutoSize = true;
-			this->labelSecLineas->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			this->labelSecLineas->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(230)), static_cast<System::Int32>(static_cast<System::Byte>(160)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
+			this->labelSecLineas->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->labelSecLineas->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(230)), static_cast<System::Int32>(static_cast<System::Byte>(160)),
+				static_cast<System::Int32>(static_cast<System::Byte>(0)));
 			this->labelSecLineas->Location = System::Drawing::Point(20, 52);
 			this->labelSecLineas->Name = L"labelSecLineas";
 			this->labelSecLineas->Size = System::Drawing::Size(115, 15);
 			this->labelSecLineas->TabIndex = 1;
 			this->labelSecLineas->Text = L"Lineas configuradas";
+			// 
+			// dgvLineas
+			// 
 			this->dgvLineas->AllowUserToAddRows = false;
 			this->dgvLineas->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::Fill;
-			this->dgvLineas->BackgroundColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(28)), static_cast<System::Int32>(static_cast<System::Byte>(38)), static_cast<System::Int32>(static_cast<System::Byte>(54)));
+			this->dgvLineas->BackgroundColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(28)), static_cast<System::Int32>(static_cast<System::Byte>(38)),
+				static_cast<System::Int32>(static_cast<System::Byte>(54)));
 			this->dgvLineas->ColumnHeadersBorderStyle = System::Windows::Forms::DataGridViewHeaderBorderStyle::Single;
-			dataGridViewCellStyle1->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(15)), static_cast<System::Int32>(static_cast<System::Byte>(22)), static_cast<System::Int32>(static_cast<System::Byte>(32)));
-			dataGridViewCellStyle1->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			dataGridViewCellStyle1->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(230)), static_cast<System::Int32>(static_cast<System::Byte>(160)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
+			dataGridViewCellStyle1->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(15)), static_cast<System::Int32>(static_cast<System::Byte>(22)),
+				static_cast<System::Int32>(static_cast<System::Byte>(32)));
+			dataGridViewCellStyle1->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			dataGridViewCellStyle1->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(230)),
+				static_cast<System::Int32>(static_cast<System::Byte>(160)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
 			this->dgvLineas->ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
 			this->dgvLineas->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->dgvLineas->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(3) { this->colLineaId, this->colLineaIndice, this->colLineaSecuencia });
+			this->dgvLineas->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(3) {
+				this->colLineaId,
+					this->colLineaIndice, this->colLineaSecuencia
+			});
 			dataGridViewCellStyle2->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
-			dataGridViewCellStyle2->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(28)), static_cast<System::Int32>(static_cast<System::Byte>(38)), static_cast<System::Int32>(static_cast<System::Byte>(54)));
-			dataGridViewCellStyle2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			dataGridViewCellStyle2->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(28)), static_cast<System::Int32>(static_cast<System::Byte>(38)),
+				static_cast<System::Int32>(static_cast<System::Byte>(54)));
+			dataGridViewCellStyle2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
 			dataGridViewCellStyle2->ForeColor = System::Drawing::Color::White;
-			dataGridViewCellStyle2->SelectionBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(50)), static_cast<System::Int32>(static_cast<System::Byte>(80)), static_cast<System::Int32>(static_cast<System::Byte>(120)));
+			dataGridViewCellStyle2->SelectionBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(50)),
+				static_cast<System::Int32>(static_cast<System::Byte>(80)), static_cast<System::Int32>(static_cast<System::Byte>(120)));
 			dataGridViewCellStyle2->SelectionForeColor = System::Drawing::Color::White;
 			dataGridViewCellStyle2->WrapMode = System::Windows::Forms::DataGridViewTriState::False;
 			this->dgvLineas->DefaultCellStyle = dataGridViewCellStyle2;
@@ -152,20 +178,34 @@ namespace LOGIN {
 			this->dgvLineas->TabIndex = 2;
 			this->dgvLineas->CellContentClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &Linea_de_Ensamblaje1::dgvLineas_CellContentClick);
 			this->dgvLineas->SelectionChanged += gcnew System::EventHandler(this, &Linea_de_Ensamblaje1::dgvLineas_SelectionChanged);
+			// 
+			// colLineaId
+			// 
 			this->colLineaId->HeaderText = L"ID";
 			this->colLineaId->MinimumWidth = 60;
 			this->colLineaId->Name = L"colLineaId";
 			this->colLineaId->ReadOnly = true;
+			// 
+			// colLineaIndice
+			// 
 			this->colLineaIndice->HeaderText = L"Indice Actual";
 			this->colLineaIndice->Name = L"colLineaIndice";
 			this->colLineaIndice->ReadOnly = true;
+			// 
+			// colLineaSecuencia
+			// 
 			this->colLineaSecuencia->HeaderText = L"Secuencia Aprobada";
 			this->colLineaSecuencia->Name = L"colLineaSecuencia";
 			this->colLineaSecuencia->ReadOnly = true;
-			this->btnNuevaLinea->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(80)), static_cast<System::Int32>(static_cast<System::Byte>(80)), static_cast<System::Int32>(static_cast<System::Byte>(80)));
+			// 
+			// btnNuevaLinea
+			// 
+			this->btnNuevaLinea->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(0)), static_cast<System::Int32>(static_cast<System::Byte>(192)),
+				static_cast<System::Int32>(static_cast<System::Byte>(0)));
 			this->btnNuevaLinea->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
-			this->btnNuevaLinea->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			this->btnNuevaLinea->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(160)), static_cast<System::Int32>(static_cast<System::Byte>(160)), static_cast<System::Int32>(static_cast<System::Byte>(160)));
+			this->btnNuevaLinea->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->btnNuevaLinea->ForeColor = System::Drawing::Color::Black;
 			this->btnNuevaLinea->Location = System::Drawing::Point(20, 182);
 			this->btnNuevaLinea->Name = L"btnNuevaLinea";
 			this->btnNuevaLinea->Size = System::Drawing::Size(140, 34);
@@ -173,7 +213,11 @@ namespace LOGIN {
 			this->btnNuevaLinea->Text = L"Nueva linea";
 			this->btnNuevaLinea->UseVisualStyleBackColor = false;
 			this->btnNuevaLinea->Click += gcnew System::EventHandler(this, &Linea_de_Ensamblaje1::btnNuevaLinea_Click_1);
-			this->panelDetalle->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(28)), static_cast<System::Int32>(static_cast<System::Byte>(38)), static_cast<System::Int32>(static_cast<System::Byte>(54)));
+			// 
+			// panelDetalle
+			// 
+			this->panelDetalle->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(28)), static_cast<System::Int32>(static_cast<System::Byte>(38)),
+				static_cast<System::Int32>(static_cast<System::Byte>(54)));
 			this->panelDetalle->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->panelDetalle->Controls->Add(this->labelLineaSel);
 			this->panelDetalle->Controls->Add(this->labelSecuenciaHdr);
@@ -183,95 +227,154 @@ namespace LOGIN {
 			this->panelDetalle->Name = L"panelDetalle";
 			this->panelDetalle->Size = System::Drawing::Size(460, 100);
 			this->panelDetalle->TabIndex = 4;
+			// 
+			// labelLineaSel
+			// 
 			this->labelLineaSel->AutoSize = true;
-			this->labelLineaSel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->labelLineaSel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
 			this->labelLineaSel->ForeColor = System::Drawing::Color::White;
 			this->labelLineaSel->Location = System::Drawing::Point(10, 10);
 			this->labelLineaSel->Name = L"labelLineaSel";
-			this->labelLineaSel->Size = System::Drawing::Size(127, 15);
+			this->labelLineaSel->Size = System::Drawing::Size(125, 15);
 			this->labelLineaSel->TabIndex = 0;
 			this->labelLineaSel->Text = L"Linea seleccionada: --";
+			// 
+			// labelSecuenciaHdr
+			// 
 			this->labelSecuenciaHdr->AutoSize = true;
-			this->labelSecuenciaHdr->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(160)), static_cast<System::Int32>(static_cast<System::Byte>(180)), static_cast<System::Int32>(static_cast<System::Byte>(210)));
+			this->labelSecuenciaHdr->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(160)),
+				static_cast<System::Int32>(static_cast<System::Byte>(180)), static_cast<System::Int32>(static_cast<System::Byte>(210)));
 			this->labelSecuenciaHdr->Location = System::Drawing::Point(10, 40);
 			this->labelSecuenciaHdr->Name = L"labelSecuenciaHdr";
 			this->labelSecuenciaHdr->Size = System::Drawing::Size(61, 13);
 			this->labelSecuenciaHdr->TabIndex = 1;
 			this->labelSecuenciaHdr->Text = L"Secuencia:";
+			// 
+			// btnSecuencia
+			// 
 			this->btnSecuencia->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
-			this->btnSecuencia->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->btnSecuencia->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
 			this->btnSecuencia->Location = System::Drawing::Point(90, 34);
 			this->btnSecuencia->Name = L"btnSecuencia";
 			this->btnSecuencia->Size = System::Drawing::Size(130, 28);
 			this->btnSecuencia->TabIndex = 2;
 			this->btnSecuencia->Text = L"PENDIENTE";
 			this->btnSecuencia->UseVisualStyleBackColor = false;
+			// 
+			// labelSecuenciaNota
+			// 
 			this->labelSecuenciaNota->AutoSize = true;
-			this->labelSecuenciaNota->Font = (gcnew System::Drawing::Font(L"Segoe UI", 8, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			this->labelSecuenciaNota->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(160)), static_cast<System::Int32>(static_cast<System::Byte>(180)), static_cast<System::Int32>(static_cast<System::Byte>(210)));
+			this->labelSecuenciaNota->Font = (gcnew System::Drawing::Font(L"Segoe UI", 8, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->labelSecuenciaNota->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(160)),
+				static_cast<System::Int32>(static_cast<System::Byte>(180)), static_cast<System::Int32>(static_cast<System::Byte>(210)));
 			this->labelSecuenciaNota->Location = System::Drawing::Point(230, 40);
 			this->labelSecuenciaNota->Name = L"labelSecuenciaNota";
 			this->labelSecuenciaNota->Size = System::Drawing::Size(116, 13);
 			this->labelSecuenciaNota->TabIndex = 3;
 			this->labelSecuenciaNota->Text = L"(El Jefe debe aprobarla)";
+			// 
+			// labelSecCola
+			// 
 			this->labelSecCola->AutoSize = true;
-			this->labelSecCola->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			this->labelSecCola->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(230)), static_cast<System::Int32>(static_cast<System::Byte>(160)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
+			this->labelSecCola->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->labelSecCola->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(230)), static_cast<System::Int32>(static_cast<System::Byte>(160)),
+				static_cast<System::Int32>(static_cast<System::Byte>(0)));
 			this->labelSecCola->Location = System::Drawing::Point(20, 228);
 			this->labelSecCola->Name = L"labelSecCola";
-			this->labelSecCola->Size = System::Drawing::Size(153, 15);
+			this->labelSecCola->Size = System::Drawing::Size(149, 15);
 			this->labelSecCola->TabIndex = 5;
 			this->labelSecCola->Text = L"Cola de piezas -- Linea #--";
+			// 
+			// dgvCola
+			// 
 			this->dgvCola->AllowUserToAddRows = false;
 			this->dgvCola->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::Fill;
-			this->dgvCola->BackgroundColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(28)), static_cast<System::Int32>(static_cast<System::Byte>(38)), static_cast<System::Int32>(static_cast<System::Byte>(54)));
+			this->dgvCola->BackgroundColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(28)), static_cast<System::Int32>(static_cast<System::Byte>(38)),
+				static_cast<System::Int32>(static_cast<System::Byte>(54)));
 			this->dgvCola->ColumnHeadersBorderStyle = System::Windows::Forms::DataGridViewHeaderBorderStyle::Single;
 			this->dgvCola->ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
 			this->dgvCola->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->dgvCola->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(5) { this->colPos, this->colTipo, this->colPiezaId, this->colMaterial, this->colEstado });
+			this->dgvCola->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(5) {
+				this->colPos, this->colTipo,
+					this->colPiezaId, this->colMaterial, this->colEstado
+			});
 			dataGridViewCellStyle3->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
-			dataGridViewCellStyle3->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(28)), static_cast<System::Int32>(static_cast<System::Byte>(38)), static_cast<System::Int32>(static_cast<System::Byte>(54)));
-			dataGridViewCellStyle3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			dataGridViewCellStyle3->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(28)), static_cast<System::Int32>(static_cast<System::Byte>(38)),
+				static_cast<System::Int32>(static_cast<System::Byte>(54)));
+			dataGridViewCellStyle3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
 			dataGridViewCellStyle3->ForeColor = System::Drawing::Color::White;
-			dataGridViewCellStyle3->SelectionBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(50)), static_cast<System::Int32>(static_cast<System::Byte>(80)), static_cast<System::Int32>(static_cast<System::Byte>(120)));
+			dataGridViewCellStyle3->SelectionBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(50)),
+				static_cast<System::Int32>(static_cast<System::Byte>(80)), static_cast<System::Int32>(static_cast<System::Byte>(120)));
 			dataGridViewCellStyle3->SelectionForeColor = System::Drawing::Color::White;
 			dataGridViewCellStyle3->WrapMode = System::Windows::Forms::DataGridViewTriState::False;
 			this->dgvCola->DefaultCellStyle = dataGridViewCellStyle3;
 			this->dgvCola->EnableHeadersVisualStyles = false;
 			this->dgvCola->GridColor = System::Drawing::SystemColors::ActiveCaptionText;
 			this->dgvCola->Location = System::Drawing::Point(20, 250);
+			this->dgvCola->MultiSelect = false;
 			this->dgvCola->Name = L"dgvCola";
 			this->dgvCola->ReadOnly = true;
 			this->dgvCola->RowHeadersVisible = false;
 			this->dgvCola->RowTemplate->Height = 28;
+			this->dgvCola->SelectionMode = System::Windows::Forms::DataGridViewSelectionMode::FullRowSelect;
 			this->dgvCola->Size = System::Drawing::Size(1140, 160);
 			this->dgvCola->TabIndex = 6;
+			// 
+			// colPos
+			// 
 			this->colPos->HeaderText = L"Pos.";
 			this->colPos->MinimumWidth = 50;
 			this->colPos->Name = L"colPos";
 			this->colPos->ReadOnly = true;
+			// 
+			// colTipo
+			// 
 			this->colTipo->HeaderText = L"Tipo";
 			this->colTipo->Name = L"colTipo";
 			this->colTipo->ReadOnly = true;
+			// 
+			// colPiezaId
+			// 
 			this->colPiezaId->HeaderText = L"ID Pieza";
 			this->colPiezaId->Name = L"colPiezaId";
 			this->colPiezaId->ReadOnly = true;
+			// 
+			// colMaterial
+			// 
 			this->colMaterial->HeaderText = L"Material";
 			this->colMaterial->Name = L"colMaterial";
 			this->colMaterial->ReadOnly = true;
+			// 
+			// colEstado
+			// 
 			this->colEstado->HeaderText = L"Estado";
 			this->colEstado->Name = L"colEstado";
 			this->colEstado->ReadOnly = true;
+			// 
+			// labelSecAgregar
+			// 
 			this->labelSecAgregar->AutoSize = true;
-			this->labelSecAgregar->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			this->labelSecAgregar->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(230)), static_cast<System::Int32>(static_cast<System::Byte>(160)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
+			this->labelSecAgregar->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->labelSecAgregar->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(230)), static_cast<System::Int32>(static_cast<System::Byte>(160)),
+				static_cast<System::Int32>(static_cast<System::Byte>(0)));
 			this->labelSecAgregar->Location = System::Drawing::Point(20, 424);
 			this->labelSecAgregar->Name = L"labelSecAgregar";
 			this->labelSecAgregar->Size = System::Drawing::Size(130, 15);
 			this->labelSecAgregar->TabIndex = 7;
 			this->labelSecAgregar->Text = L"Agregar pieza a la cola";
-			this->panelAgregar->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(28)), static_cast<System::Int32>(static_cast<System::Byte>(38)), static_cast<System::Int32>(static_cast<System::Byte>(54)));
+			// 
+			// panelAgregar
+			// 
+			this->panelAgregar->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(28)), static_cast<System::Int32>(static_cast<System::Byte>(38)),
+				static_cast<System::Int32>(static_cast<System::Byte>(54)));
 			this->panelAgregar->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->panelAgregar->Controls->Add(this->btnRetirarPieza);
 			this->panelAgregar->Controls->Add(this->labelSelPieza);
 			this->panelAgregar->Controls->Add(this->comboBoxPiezas);
 			this->panelAgregar->Controls->Add(this->btnAgregarCola);
@@ -279,14 +382,37 @@ namespace LOGIN {
 			this->panelAgregar->Name = L"panelAgregar";
 			this->panelAgregar->Size = System::Drawing::Size(1140, 60);
 			this->panelAgregar->TabIndex = 8;
+			// 
+			// btnRetirarPieza
+			// 
+			this->btnRetirarPieza->BackColor = System::Drawing::Color::Red;
+			this->btnRetirarPieza->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
+			this->btnRetirarPieza->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->btnRetirarPieza->ForeColor = System::Drawing::Color::Black;
+			this->btnRetirarPieza->Location = System::Drawing::Point(986, 14);
+			this->btnRetirarPieza->Name = L"btnRetirarPieza";
+			this->btnRetirarPieza->Size = System::Drawing::Size(116, 34);
+			this->btnRetirarPieza->TabIndex = 3;
+			this->btnRetirarPieza->Text = L"Retirar de cola";
+			this->btnRetirarPieza->UseVisualStyleBackColor = false;
+			this->btnRetirarPieza->Click += gcnew System::EventHandler(this, &Linea_de_Ensamblaje1::btnRetirarPieza_Click);
+			// 
+			// labelSelPieza
+			// 
 			this->labelSelPieza->AutoSize = true;
-			this->labelSelPieza->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(160)), static_cast<System::Int32>(static_cast<System::Byte>(180)), static_cast<System::Int32>(static_cast<System::Byte>(210)));
+			this->labelSelPieza->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(160)), static_cast<System::Int32>(static_cast<System::Byte>(180)),
+				static_cast<System::Int32>(static_cast<System::Byte>(210)));
 			this->labelSelPieza->Location = System::Drawing::Point(10, 22);
 			this->labelSelPieza->Name = L"labelSelPieza";
 			this->labelSelPieza->Size = System::Drawing::Size(94, 13);
 			this->labelSelPieza->TabIndex = 0;
 			this->labelSelPieza->Text = L"Seleccionar pieza:";
-			this->comboBoxPiezas->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(41)), static_cast<System::Int32>(static_cast<System::Byte>(59)));
+			// 
+			// comboBoxPiezas
+			// 
+			this->comboBoxPiezas->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(41)),
+				static_cast<System::Int32>(static_cast<System::Byte>(59)));
 			this->comboBoxPiezas->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
 			this->comboBoxPiezas->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->comboBoxPiezas->ForeColor = System::Drawing::Color::White;
@@ -294,50 +420,94 @@ namespace LOGIN {
 			this->comboBoxPiezas->Name = L"comboBoxPiezas";
 			this->comboBoxPiezas->Size = System::Drawing::Size(700, 21);
 			this->comboBoxPiezas->TabIndex = 1;
-			this->btnAgregarCola->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(230)), static_cast<System::Int32>(static_cast<System::Byte>(160)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
+			// 
+			// btnAgregarCola
+			// 
+			this->btnAgregarCola->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(230)), static_cast<System::Int32>(static_cast<System::Byte>(160)),
+				static_cast<System::Int32>(static_cast<System::Byte>(0)));
 			this->btnAgregarCola->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
-			this->btnAgregarCola->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->btnAgregarCola->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
 			this->btnAgregarCola->ForeColor = System::Drawing::Color::Black;
 			this->btnAgregarCola->Location = System::Drawing::Point(840, 14);
 			this->btnAgregarCola->Name = L"btnAgregarCola";
-			this->btnAgregarCola->Size = System::Drawing::Size(180, 34);
+			this->btnAgregarCola->Size = System::Drawing::Size(116, 34);
 			this->btnAgregarCola->TabIndex = 2;
 			this->btnAgregarCola->Text = L"Agregar a cola";
 			this->btnAgregarCola->UseVisualStyleBackColor = false;
 			this->btnAgregarCola->Click += gcnew System::EventHandler(this, &Linea_de_Ensamblaje1::btnAgregarCola_Click_1);
-			this->panelNota->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(20)), static_cast<System::Int32>(static_cast<System::Byte>(40)), static_cast<System::Int32>(static_cast<System::Byte>(80)));
+			// 
+			// panelNota
+			// 
+			this->panelNota->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(20)), static_cast<System::Int32>(static_cast<System::Byte>(40)),
+				static_cast<System::Int32>(static_cast<System::Byte>(80)));
 			this->panelNota->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->panelNota->Controls->Add(this->labelNota);
 			this->panelNota->Location = System::Drawing::Point(20, 524);
 			this->panelNota->Name = L"panelNota";
 			this->panelNota->Size = System::Drawing::Size(1140, 36);
 			this->panelNota->TabIndex = 9;
+			// 
+			// labelNota
+			// 
 			this->labelNota->AutoSize = true;
-			this->labelNota->Font = (gcnew System::Drawing::Font(L"Segoe UI", 8.5F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			this->labelNota->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(100)), static_cast<System::Int32>(static_cast<System::Byte>(160)), static_cast<System::Int32>(static_cast<System::Byte>(255)));
+			this->labelNota->Font = (gcnew System::Drawing::Font(L"Segoe UI", 8.5F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->labelNota->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(100)), static_cast<System::Int32>(static_cast<System::Byte>(160)),
+				static_cast<System::Int32>(static_cast<System::Byte>(255)));
 			this->labelNota->Location = System::Drawing::Point(10, 10);
 			this->labelNota->Name = L"labelNota";
-			this->labelNota->Size = System::Drawing::Size(686, 15);
+			this->labelNota->Size = System::Drawing::Size(668, 15);
 			this->labelNota->TabIndex = 0;
-			this->labelNota->Text = L"El Gestor solo puede agregar piezas a la cola y crear lineas. La aprobacion de la secuencia es exclusiva del Jefe de Operaciones.";
+			this->labelNota->Text = L"El Gestor solo puede agregar piezas a la cola y crear lineas. La aprobacion de la"
+				L" secuencia es exclusiva del Jefe de Operaciones.";
+			// 
+			// labelSecFlujo
+			// 
 			this->labelSecFlujo->AutoSize = true;
-			this->labelSecFlujo->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			this->labelSecFlujo->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(230)), static_cast<System::Int32>(static_cast<System::Byte>(160)), static_cast<System::Int32>(static_cast<System::Byte>(0)));
+			this->labelSecFlujo->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->labelSecFlujo->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(230)), static_cast<System::Int32>(static_cast<System::Byte>(160)),
+				static_cast<System::Int32>(static_cast<System::Byte>(0)));
 			this->labelSecFlujo->Location = System::Drawing::Point(20, 574);
 			this->labelSecFlujo->Name = L"labelSecFlujo";
 			this->labelSecFlujo->Size = System::Drawing::Size(236, 15);
 			this->labelSecFlujo->TabIndex = 10;
 			this->labelSecFlujo->Text = L"Flujo completo de una pieza en el sistema";
-			this->panelFlujo->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(18)), static_cast<System::Int32>(static_cast<System::Byte>(26)), static_cast<System::Int32>(static_cast<System::Byte>(38)));
+			// 
+			// panelFlujo
+			// 
+			this->panelFlujo->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(18)), static_cast<System::Int32>(static_cast<System::Byte>(26)),
+				static_cast<System::Int32>(static_cast<System::Byte>(38)));
 			this->panelFlujo->Location = System::Drawing::Point(20, 598);
 			this->panelFlujo->Name = L"panelFlujo";
 			this->panelFlujo->Size = System::Drawing::Size(1140, 80);
 			this->panelFlujo->TabIndex = 11;
 			this->panelFlujo->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Linea_de_Ensamblaje1::panelFlujo_Paint);
+			// 
+			// btnEliminarCola
+			// 
+			this->btnEliminarCola->BackColor = System::Drawing::Color::Red;
+			this->btnEliminarCola->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
+			this->btnEliminarCola->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->btnEliminarCola->ForeColor = System::Drawing::Color::Black;
+			this->btnEliminarCola->Location = System::Drawing::Point(183, 182);
+			this->btnEliminarCola->Name = L"btnEliminarCola";
+			this->btnEliminarCola->Size = System::Drawing::Size(116, 34);
+			this->btnEliminarCola->TabIndex = 4;
+			this->btnEliminarCola->Text = L"Eliminar Linea";
+			this->btnEliminarCola->UseVisualStyleBackColor = false;
+			this->btnEliminarCola->Click += gcnew System::EventHandler(this, &Linea_de_Ensamblaje1::btnEliminarCola_Click);
+			// 
+			// Linea_de_Ensamblaje1
+			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(18)), static_cast<System::Int32>(static_cast<System::Byte>(26)), static_cast<System::Int32>(static_cast<System::Byte>(38)));
+			this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(18)), static_cast<System::Int32>(static_cast<System::Byte>(26)),
+				static_cast<System::Int32>(static_cast<System::Byte>(38)));
 			this->ClientSize = System::Drawing::Size(1200, 700);
+			this->Controls->Add(this->btnEliminarCola);
 			this->Controls->Add(this->labelTitulo);
 			this->Controls->Add(this->labelSecLineas);
 			this->Controls->Add(this->dgvLineas);
@@ -363,6 +533,7 @@ namespace LOGIN {
 			this->panelNota->PerformLayout();
 			this->ResumeLayout(false);
 			this->PerformLayout();
+
 		}
 #pragma endregion
 
@@ -394,7 +565,9 @@ namespace LOGIN {
 			String^ id = dgvLineas->SelectedRows[0]->Cells[0]->Value->ToString();
 			LineaEnsamblajeModel^ l = ctrlLinea->buscarPorId(id);
 			if (l == nullptr) return;
-
+			//////
+			//MessageBox::Show("Cola count: " + l->ColaPiezas->Count, "Debug");
+			///////
 			labelLineaSel->Text = "Linea seleccionada: #" + l->Id;
 			labelSecCola->Text = "Cola de piezas -- Linea #" + l->Id;
 
@@ -516,9 +689,36 @@ namespace LOGIN {
 
 		   // CORREGIDO: boton deshabilitado — lineas son fijas (L-001, L-002, L-003)
 	private: System::Void btnNuevaLinea_Click_1(System::Object^ sender, System::EventArgs^ e) {
-		MessageBox::Show(
-			"Las lineas de ensamblaje son fijas (L-001, L-002, L-003).\nNo se pueden crear nuevas lineas.",
-			"Operacion no permitida", MessageBoxButtons::OK, MessageBoxIcon::Information);
+		
+		List<LineaEnsamblajeModel^>^ lineas = ctrlLinea->obtenerTodos();
+		int maxNum = 0;
+		for each (LineaEnsamblajeModel ^ l in lineas)
+		{
+			String^ idStr = l->Id; // formato "L-XXX"
+			int guion = idStr->IndexOf('-');
+			if (guion >= 0)
+			{
+				String^ numStr = idStr->Substring(guion + 1);
+				int num = 0;
+				if (Int32::TryParse(numStr, num) && num > maxNum)
+					maxNum = num;
+			}
+		}
+		int siguiente = maxNum + 1;
+		String^ nuevoId = "L-" + siguiente.ToString("D3");
+
+
+		if (ctrlLinea->agregar(nuevoId))
+		{
+			CargarLineas();
+			MessageBox::Show("Linea " + nuevoId + " creada.", "Exito",
+				MessageBoxButtons::OK, MessageBoxIcon::Information);
+		}
+		else
+		{
+			MessageBox::Show("No se pudo crear la linea.", "Error",
+				MessageBoxButtons::OK, MessageBoxIcon::Error);
+		}
 	}
 
 	private: System::Void btnAgregarCola_Click_1(System::Object^ sender, System::EventArgs^ e) {
@@ -580,6 +780,124 @@ namespace LOGIN {
 		CargarComboPiezas();
 	}
 
-	private: System::Void dgvLineas_CellContentClick(System::Object^ sender, System::Windows::Forms::DataGridViewCellEventArgs^ e) {}
-	};
+
+	private: System::Void btnRetirarPieza_Click(System::Object^ sender, System::EventArgs^ e) {
+
+		if (dgvLineas->SelectedRows->Count == 0)
+		{
+			MessageBox::Show("Selecciona una linea primero.", "Aviso",
+				MessageBoxButtons::OK, MessageBoxIcon::Information);
+			return;
+		}
+		if (dgvCola->SelectedRows->Count == 0)
+		{
+			MessageBox::Show("Selecciona una pieza de la cola primero.", "Aviso",
+				MessageBoxButtons::OK, MessageBoxIcon::Information);
+			return;
+		}
+
+		String^ lineaId = dgvLineas->SelectedRows[0]->Cells[0]->Value->ToString();
+		String^ piezaId = dgvCola->SelectedRows[0]->Cells[2]->Value->ToString();   // colPiezaId
+		String^ tipoPieza = dgvCola->SelectedRows[0]->Cells[1]->Value->ToString(); // colTipo
+
+		System::Windows::Forms::DialogResult res = MessageBox::Show(
+			"Retirar la pieza " + piezaId + " de la cola de la linea " + lineaId + "?",
+			"Confirmar retiro", MessageBoxButtons::YesNo, MessageBoxIcon::Question);
+		if (res != System::Windows::Forms::DialogResult::Yes) return;
+
+		try
+		{
+			String^ resultado = ctrlLinea->eliminarPieza(lineaId, piezaId, tipoPieza);
+			if (!String::IsNullOrEmpty(resultado))
+			{
+				MessageBox::Show(resultado, "No permitido",
+					MessageBoxButtons::OK, MessageBoxIcon::Warning);
+				return;
+			}
+
+			LineaEnsamblajeModel^ l = ctrlLinea->buscarPorId(lineaId);
+			if (l != nullptr) CargarCola(l);
+			CargarComboPiezas();
+
+			MessageBox::Show("Pieza retirada de la cola.", "Exito",
+				MessageBoxButtons::OK, MessageBoxIcon::Information);
+		}
+		catch (Exception^ ex)
+		{
+			MessageBox::Show("Error: " + ex->Message, "Error",
+				MessageBoxButtons::OK, MessageBoxIcon::Error);
+		}
+
+
+
+	}
+
+	private: System::Void btnEliminarCola_Click(System::Object^ sender, System::EventArgs^ e) {
+
+
+		if (dgvLineas->SelectedRows->Count == 0)
+		{
+			MessageBox::Show("Selecciona una linea primero.", "Aviso",
+				MessageBoxButtons::OK, MessageBoxIcon::Information);
+			return;
+		}
+
+		String^ lineaId = dgvLineas->SelectedRows[0]->Cells[0]->Value->ToString();
+
+		System::Windows::Forms::DialogResult res = MessageBox::Show(
+			"Esto eliminara la linea " + lineaId + " completa.\nLas piezas en su cola volveran a estado DISPONIBLE.\nDeseas continuar?",
+			"Confirmar eliminacion", MessageBoxButtons::YesNo, MessageBoxIcon::Warning);
+		if (res != System::Windows::Forms::DialogResult::Yes) return;
+
+		try
+		{
+			String^ resultado = ctrlLinea->eliminar(lineaId);
+			if (!String::IsNullOrEmpty(resultado))
+			{
+				MessageBox::Show(resultado, "No permitido",
+					MessageBoxButtons::OK, MessageBoxIcon::Warning);
+				return;
+			}
+
+			CargarLineas();
+			dgvCola->Rows->Clear();
+			labelLineaSel->Text = "Linea seleccionada: --";
+			labelSecCola->Text = "Cola de piezas -- Linea #--";
+			CargarComboPiezas();
+
+			MessageBox::Show("Linea eliminada y piezas restauradas a DISPONIBLE.", "Exito",
+				MessageBoxButtons::OK, MessageBoxIcon::Information);
+		}
+		catch (Exception^ ex)
+		{
+			MessageBox::Show("Error: " + ex->Message, "Error",
+				MessageBoxButtons::OK, MessageBoxIcon::Error);
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+	private: System::Void dgvLineas_CellContentClick(System::Object^ sender, System::Windows::Forms::DataGridViewCellEventArgs^ e) {
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	}
+	
+
+};
 }
