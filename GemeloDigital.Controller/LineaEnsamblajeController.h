@@ -2,12 +2,13 @@
 #include "DBConnection.h"
 #include "PanelLateralController.h"
 #include "EstructuraTechoController.h"
+#include "CicloController.h"
 
 using namespace System;
 using namespace System::Collections::Generic;
 using namespace System::Data;
 using namespace System::Data::SqlClient;
-using namespace GemeloDigitalModel;
+using namespace GemeloDigitalModel; 
 
 namespace GemeloDigitalController {
 
@@ -165,7 +166,20 @@ namespace GemeloDigitalController {
         // ==========================================================
         // DELETE
         // ==========================================================
-        bool eliminar(String^ id) {
+        
+        // Devuelve "" si se elimino correctamente, o un mensaje de motivo si esta bloqueado por regla de negocio.
+        // Solo lanza throw para errores tecnicos (BD/conexion).
+        String^ eliminar(String^ id) {
+            if (tieneCicloActivo(id)) {
+                return "No se puede eliminar la linea: tiene un ciclo activo en curso.";
+            }
+
+            // Cargar la linea para conocer las piezas en su cola ANTES de borrar
+            LineaEnsamblajeModel^ l = buscarPorId(id);
+            List<PiezaModel^>^ piezas = (l != nullptr)
+                ? gcnew List<PiezaModel^>(l->ColaPiezas)
+                : gcnew List<PiezaModel^>();
+
             SqlConnection^ conn = DBConnection::GetConnection();
             try {
                 conn->Open();
@@ -178,9 +192,7 @@ namespace GemeloDigitalController {
                 SqlCommand^ cmdLinea = gcnew SqlCommand("sp_LineasEnsamblaje_Eliminar", conn);
                 cmdLinea->CommandType = CommandType::StoredProcedure;
                 cmdLinea->Parameters->AddWithValue("@Id", id);
-
-                int filasAfectadas = cmdLinea->ExecuteNonQuery();
-                return (filasAfectadas > 0);
+                cmdLinea->ExecuteNonQuery();
             }
             catch (Exception^ ex) {
                 throw gcnew Exception("Error al eliminar linea: " + ex->Message);
@@ -188,7 +200,40 @@ namespace GemeloDigitalController {
             finally {
                 if (conn->State == ConnectionState::Open) conn->Close();
             }
+
+            // Verificamos si realmente se elimino (NOCOUNT ON hace que ExecuteNonQuery no sea confiable)
+            bool eliminada = (buscarPorId(id) == nullptr);
+            if (!eliminada) {
+                return "No se pudo eliminar la linea.";
+            }
+
+            // Restaurar estado DISPONIBLE solo de piezas que NO estan ENSAMBLADA
+            PanelLateralController^ ctrlPanel = gcnew PanelLateralController();
+            EstructuraTechoController^ ctrlTecho = gcnew EstructuraTechoController();
+            for each (PiezaModel ^ p in piezas) {
+                if (p->Estado == EstadoPieza::ENSAMBLADA) continue; // se queda como esta
+
+                PanelLateralModel^ pl = dynamic_cast<PanelLateralModel^>(p);
+                if (pl != nullptr)
+                    ctrlPanel->modificar(p->Id, p->Material, p->Peso,
+                        EstadoPieza::DISPONIBLE, pl->PuntosAnclaje, pl->EstacionId);
+                else {
+                    EstructuraTechoModel^ et = dynamic_cast<EstructuraTechoModel^>(p);
+                    if (et != nullptr)
+                        ctrlTecho->modificar(p->Id, p->Material, p->Peso,
+                            EstadoPieza::DISPONIBLE, et->PuntosUnion, et->Anchura, et->EstacionId);
+                }
+            }
+
+            return ""; // exito
         }
+
+
+
+
+
+
+
 
         // ==========================================================
         // AGREGAR PIEZA A LA COLA
@@ -225,6 +270,85 @@ namespace GemeloDigitalController {
             }
         }
 
+
+        // ==========================================================
+        // RETIRAR UNA PIEZA DE LA COLA (sin borrar la linea)
+        // ==========================================================
+        
+        // Devuelve "" si se retiro correctamente, o un mensaje de motivo si esta bloqueado por regla de negocio.
+        // Solo lanza throw para errores tecnicos (BD/conexion).
+        String^ eliminarPieza(String^ idLinea, String^ piezaId, String^ tipoPieza) {
+            if (tieneCicloActivo(idLinea)) {
+                return "No se puede retirar la pieza: la linea tiene un ciclo activo en curso.";
+            }
+
+            // Verificar estado actual de la pieza antes de retirar
+            EstadoPieza estadoActual;
+            if (tipoPieza->StartsWith("Panel")) {
+                PanelLateralController^ ctrlPanel = gcnew PanelLateralController();
+                PanelLateralModel^ p = ctrlPanel->buscarPorId(piezaId);
+                if (p == nullptr) return "Pieza no encontrada.";
+                estadoActual = p->Estado;
+            }
+            else {
+                EstructuraTechoController^ ctrlTecho = gcnew EstructuraTechoController();
+                EstructuraTechoModel^ e = ctrlTecho->buscarPorId(piezaId);
+                if (e == nullptr) return "Pieza no encontrada.";
+                estadoActual = e->Estado;
+            }
+
+            if (estadoActual == EstadoPieza::ENSAMBLADA) {
+                return "No se puede retirar una pieza ya ENSAMBLADA.";
+            }
+
+            SqlConnection^ conn = DBConnection::GetConnection();
+            SqlCommand^ cmd = gcnew SqlCommand("sp_LineaCola_EliminarPieza", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+            cmd->Parameters->AddWithValue("@LineaId", idLinea);
+            cmd->Parameters->AddWithValue("@PiezaId", piezaId);
+
+            try {
+                conn->Open();
+                cmd->ExecuteNonQuery();
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al retirar pieza de cola: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
+
+            // Restaurar estado DISPONIBLE
+            if (tipoPieza->StartsWith("Panel")) {
+                PanelLateralController^ ctrlPanel = gcnew PanelLateralController();
+                PanelLateralModel^ p = ctrlPanel->buscarPorId(piezaId);
+                if (p != nullptr)
+                    ctrlPanel->modificar(p->Id, p->Material, p->Peso,
+                        EstadoPieza::DISPONIBLE, p->PuntosAnclaje, p->EstacionId);
+            }
+            else {
+                EstructuraTechoController^ ctrlTecho = gcnew EstructuraTechoController();
+                EstructuraTechoModel^ e = ctrlTecho->buscarPorId(piezaId);
+                if (e != nullptr)
+                    ctrlTecho->modificar(e->Id, e->Material, e->Peso,
+                        EstadoPieza::DISPONIBLE, e->PuntosUnion, e->Anchura, e->EstacionId);
+            }
+
+            return ""; // exito
+        }
+
+
+
+        // ==========================================================
+        // VERIFICA SI LA LINEA TIENE UN CICLO ACTIVO EN CURSO
+        // ==========================================================
+        bool tieneCicloActivo(String^ idLinea) {
+            String^ sufijoActivo = CicloController::obtenerCicloActivo();
+            if (sufijoActivo == nullptr) return false;
+            return sufijoActivo->StartsWith(idLinea + "-C");
+        }
+
+
     private:
         void CargarColaPiezasParaLinea(LineaEnsamblajeModel^ lineaObj) {
             PanelLateralController^ ctrlPanel = gcnew PanelLateralController();
@@ -242,11 +366,12 @@ namespace GemeloDigitalController {
                 SqlDataReader^ reader = cmd->ExecuteReader();
                 while (reader->Read()) {
                     array<String^>^ fila = gcnew array<String^>(2);
-                    fila[0] = reader->GetValue(2)->ToString(); // TipoPieza
-                    fila[1] = reader->GetValue(3)->ToString(); // PiezaId
+                    fila[0] = reader->GetValue(2)->ToString(); // TipoPieza — posición 2
+                    fila[1] = reader->GetValue(1)->ToString(); // PiezaId — posición 1
                     filas->Add(fila);
                 }
                 reader->Close();
+   
             }
             catch (Exception^ ex) {
                 throw gcnew Exception("Error al leer cola de piezas: " + ex->Message);

@@ -456,7 +456,10 @@ namespace LOGIN {
 		}
 
 		for each (BrazoRoboticoModel ^ b in ctrlBrazo->obtenerTodos())
+		{
 			ctrlBrazo->modificar(b->Id, GemeloDigitalModel::EstadoBrazo::POSICIONANDO);
+			ctrlBrazo->ResetearComponentes(b->Id);
+		}
 
 		CargarEstado();
 		MessageBox::Show("Ciclo iniciado. Tareas generadas correctamente.",

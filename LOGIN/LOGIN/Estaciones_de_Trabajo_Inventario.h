@@ -11,6 +11,7 @@ namespace LOGIN {
 	using namespace System::Drawing;
 	using namespace GemeloDigitalController;
 	using namespace GemeloDigitalModel;
+	using namespace System::Data::SqlClient;
 
 	public ref class Estaciones_de_Trabajo_Inventario : public System::Windows::Forms::Form
 	{
@@ -22,6 +23,7 @@ namespace LOGIN {
 		{
 			InitializeComponent();
 			estacionCtrl = gcnew EstacionTrabajoController();
+			
 			refrescarTabla();
 			ActualizarDiagrama();
 		}
@@ -550,6 +552,7 @@ namespace LOGIN {
 					MessageBoxButtons::OK, MessageBoxIcon::Error);
 			}
 		}
+
 	}
 	private: System::Void Estaciones_de_Trabajo_Inventario_Load_1(System::Object^ sender, System::EventArgs^ e) {
 	}

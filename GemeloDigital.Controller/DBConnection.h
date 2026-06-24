@@ -9,10 +9,11 @@ namespace GemeloDigitalController {
     public ref class DBConnection {
     private:
         // Cadena de conexión actualizada con tus credenciales reales
-        static String^ connectionString = "Server=bdmijael23.cczveeoo8rq2.us-east-1.rds.amazonaws.com,1433;"
-            "Database=bdmijael23;"
-            "User Id=admin;"
-            "Password=abcd1234;";
+        static String^ connectionString =
+            "Server=200.16.7.140,1433;"
+            "Database=a20206433;"
+            "User Id=a20206433;"
+            "Password=r75c9Q53;";
 
     public:
         // Método estático para obtener la conexión en cualquier Controller

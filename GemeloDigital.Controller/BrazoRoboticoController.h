@@ -1,5 +1,9 @@
 #pragma once
 #include "DBConnection.h"
+#include "ArticulacionController.h"
+#include "GripperController.h"
+#include "SensorFuerzaController.h"
+#include "SensorPosicionController.h"
 
 using namespace System;
 using namespace System::Collections::Generic;
@@ -10,8 +14,54 @@ using namespace GemeloDigitalModel;
 namespace GemeloDigitalController {
 
     public ref class BrazoRoboticoController {
+
+    private:
+        ArticulacionController^ ctrlArticulacion;
+        GripperController^ ctrlGripper;
+        SensorFuerzaController^ ctrlSensorFuerza;
+        SensorPosicionController^ ctrlSensorPosicion;
+
+        // Pobla Articulaciones/Gripper/Sensores de un brazo ya construido
+        void PoblarComponentes(BrazoRoboticoModel^ b) {
+            for each(ArticulacionModel ^ a in ctrlArticulacion->obtenerPorBrazoId(b->Id))
+                b->agregarArticulacion(a);
+
+            List<GripperModel^>^ grippers = ctrlGripper->obtenerPorBrazoId(b->Id);
+            if (grippers->Count > 0) b->Gripper = grippers[0];
+
+            for each(SensorFuerzaModel ^ sf in ctrlSensorFuerza->obtenerPorBrazoId(b->Id))
+                b->agregarSensor(sf);
+            for each(SensorPosicionModel ^ sp in ctrlSensorPosicion->obtenerPorBrazoId(b->Id))
+                b->agregarSensor(sp);
+        }
+
     public:
-        BrazoRoboticoController() {}
+        // Resetea las 6 articulaciones a AnguloMinimo y el gripper a reposo.
+        // Se usa al iniciar un ciclo nuevo y al avanzar a la siguiente pieza/brazo.
+        void ResetearComponentes(String^ brazoId)
+        {
+            for each (ArticulacionModel ^ a in ctrlArticulacion->obtenerPorBrazoId(brazoId))
+                ctrlArticulacion->modificar(a->Id, a->AnguloMinimo);
+
+            List<GripperModel^>^ grippers = ctrlGripper->obtenerPorBrazoId(brazoId);
+            if (grippers->Count > 0)
+            {
+                GripperModel^ g = grippers[0];
+                ctrlGripper->modificar(g->Id, g->Apertura, 0.0, true);
+            }
+        }
+
+    public:
+
+
+
+        BrazoRoboticoController() {
+            ctrlArticulacion = gcnew ArticulacionController();
+            ctrlGripper = gcnew GripperController();
+            ctrlSensorFuerza = gcnew SensorFuerzaController();
+            ctrlSensorPosicion = gcnew SensorPosicionController();
+        
+        }
 
         void cargarArchivo() {}
 
@@ -54,7 +104,10 @@ namespace GemeloDigitalController {
             finally {
                 if (conn->State == ConnectionState::Open) conn->Close();
             }
+
+            if (brazoObj != nullptr) PoblarComponentes(brazoObj);
             return brazoObj;
+
         }
 
         // ==========================================================
@@ -86,7 +139,12 @@ namespace GemeloDigitalController {
 
                     BrazoRoboticoModel^ b = gcnew BrazoRoboticoModel(id, rol);
                     b->Estado = estado;
+
+                    b->Estado = estado;
+                    PoblarComponentes(b);
                     lista->Add(b);
+
+        
                 }
                 reader->Close();
             }

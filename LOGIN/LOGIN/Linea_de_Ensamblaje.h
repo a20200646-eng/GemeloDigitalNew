@@ -533,10 +533,29 @@ namespace LOGIN {
 			}
 		}
 
-		if (lineaSeleccionada->ColaPiezas->Count < 3) {
-			MessageBox::Show("La linea debe tener 3 piezas en cola antes de aprobar.\nActualmente tiene: "
-				+ lineaSeleccionada->ColaPiezas->Count + " pieza(s).",
-				"Cola incompleta", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+		int countPanelIzq = 0, countPanelDer = 0, countTecho = 0;
+		for each (PiezaModel ^ p in lineaSeleccionada->ColaPiezas) {
+			if (p->Estado != EstadoPieza::EN_PROCESO) continue; // solo cuentan piezas vivas del ciclo actual
+
+			PanelLateralModel^ pl = dynamic_cast<PanelLateralModel^>(p);
+			if (pl != nullptr) {
+				if (pl->Lado == LadoPanel::IZQUIERDO) countPanelIzq++;
+				else if (pl->Lado == LadoPanel::DERECHO) countPanelDer++;
+			}
+			else {
+				EstructuraTechoModel^ et = dynamic_cast<EstructuraTechoModel^>(p);
+				if (et != nullptr) countTecho++;
+			}
+		}
+
+		if (countPanelIzq != 1 || countPanelDer != 1 || countTecho != 1) {
+			MessageBox::Show(
+				"La cola no tiene una secuencia valida.\n\n"
+				"Requerido: 1 Panel Izquierdo + 1 Panel Derecho + 1 Estructura Techo.\n"
+				"Actual: " + countPanelIzq + " Izquierdo(s), "
+				+ countPanelDer + " Derecho(s), "
+				+ countTecho + " Techo(s).",
+				"Secuencia invalida", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 			return;
 		}
 
@@ -584,7 +603,12 @@ namespace LOGIN {
 	private: System::Void dataGridView1_SelectionChanged(System::Object^ sender, System::EventArgs^ e) {
 		if (cargando) return;
 		if (dataGridView1->SelectedRows->Count == 0) return;
-		String^ idSeleccionado = dataGridView1->SelectedRows[0]->Cells[0]->Value->ToString();
+
+		DataGridViewRow^ row = dataGridView1->SelectedRows[0];
+		if (row->IsNewRow) return;
+		if (row->Cells[0]->Value == nullptr) return;
+
+		String^ idSeleccionado = row->Cells[0]->Value->ToString();
 		lineaSeleccionada = ctrlLinea->buscarPorId(idSeleccionado);
 		ActualizarKPIs();
 		CargarColaPiezas();

@@ -580,7 +580,12 @@ private: System::Void buttonGenerarReporte_Click(System::Object^ sender, System:
 	// Crear reporte
 	ReporteController^ ctrlReporte = gcnew ReporteController();
 	String^ nuevoId = "REP" + (ctrlReporte->obtenerTodos()->Count + 1).ToString();
-	ctrlReporte->agregar(nuevoId, pendientes->Count, horas, costo);
+
+	List<String^>^ ciclosIds = gcnew List<String^>();
+	for each(CicloModel ^ c in pendientes)
+		ciclosIds->Add(c->Id);
+
+	ctrlReporte->agregar(nuevoId, ciclosIds, horas, costo);
 
 	// Marcar todos los ciclos pendientes como REPORTADO
 	for each (CicloModel ^ c in pendientes)
