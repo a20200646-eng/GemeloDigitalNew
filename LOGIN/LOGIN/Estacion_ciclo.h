@@ -9,6 +9,7 @@ namespace LOGIN {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace System::Threading;
 	using namespace GemeloDigitalController;
 	using namespace GemeloDigitalModel;
 
@@ -18,16 +19,34 @@ namespace LOGIN {
 		Estacion_ciclo(void)
 		{
 			InitializeComponent();
+
 			checkBox2->Visible = false;
 			checkBox3->Visible = false;
 			checkBox4->Visible = false;
 			checkBox5->Visible = false;
 			checkBox6->Visible = false;
+
 			this->pictureBox1->Paint += gcnew System::Windows::Forms::PaintEventHandler(
 				this, &Estacion_ciclo::pictureBox1_Paint);
+
 			ctrlBrazo = gcnew BrazoRoboticoController();
+
+			lockTareas = gcnew Object();
+			lockEventos = gcnew Object();
+			lockFin = gcnew Object();
+
+			simulacionConcurrenteActiva = false;
+			modoConcurrenteDelCiclo = false;
+			brazosFinalizados = 0;
+
 			cicloActivoSufijo = nullptr;
 			cicloActivoSufijo = CicloController::obtenerCicloActivo();
+
+			if (cicloActivoSufijo != nullptr) {
+				chkModoConcurrente->Enabled = false;
+				button1->Enabled = false;
+			}
+
 			CargarEstado();
 		}
 
@@ -54,6 +73,7 @@ namespace LOGIN {
 	private: System::Windows::Forms::CheckBox^ checkBox4;
 	private: System::Windows::Forms::CheckBox^ checkBox3;
 	private: System::Windows::Forms::CheckBox^ checkBox2;
+	private: System::Windows::Forms::CheckBox^ chkModoConcurrente;
 	private: System::Windows::Forms::PictureBox^ pictureBox1;
 	private: System::Windows::Forms::Label^ label5;
 
@@ -74,6 +94,7 @@ namespace LOGIN {
 			this->checkBox4 = (gcnew System::Windows::Forms::CheckBox());
 			this->checkBox3 = (gcnew System::Windows::Forms::CheckBox());
 			this->checkBox2 = (gcnew System::Windows::Forms::CheckBox());
+			this->chkModoConcurrente = (gcnew System::Windows::Forms::CheckBox());
 			this->checkBox1 = (gcnew System::Windows::Forms::CheckBox());
 			this->label4 = (gcnew System::Windows::Forms::Label());
 			this->button5 = (gcnew System::Windows::Forms::Button());
@@ -104,6 +125,7 @@ namespace LOGIN {
 			this->panel1->Controls->Add(this->label5);
 			this->panel1->Controls->Add(this->panel2);
 			this->panel1->Controls->Add(this->checkBox1);
+			this->panel1->Controls->Add(this->chkModoConcurrente);
 			this->panel1->Controls->Add(this->label4);
 			this->panel1->Controls->Add(this->button5);
 			this->panel1->Controls->Add(this->button4);
@@ -200,6 +222,17 @@ namespace LOGIN {
 			this->checkBox1->TabIndex = 12;
 			this->checkBox1->Text = L"Secuencia aprobada";
 			this->checkBox1->UseVisualStyleBackColor = true;
+
+			this->chkModoConcurrente->AutoSize = true;
+			this->chkModoConcurrente->ForeColor = System::Drawing::Color::White;
+			this->chkModoConcurrente->Location = System::Drawing::Point(36, 111);
+			this->chkModoConcurrente->Margin = System::Windows::Forms::Padding(2);
+			this->chkModoConcurrente->Name = L"chkModoConcurrente";
+			this->chkModoConcurrente->Size = System::Drawing::Size(190, 17);
+			this->chkModoConcurrente->TabIndex = 13;
+			this->chkModoConcurrente->Text = L"Modo automatico concurrente";
+			this->chkModoConcurrente->UseVisualStyleBackColor = true;
+
 			this->label4->AutoSize = true;
 			this->label4->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(24)), static_cast<System::Int32>(static_cast<System::Byte>(138)), static_cast<System::Int32>(static_cast<System::Byte>(71)));
 			this->label4->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
@@ -277,6 +310,14 @@ namespace LOGIN {
 		BrazoRoboticoController^ ctrlBrazo;
 		String^ cicloActivoSufijo;
 
+		Object^ lockTareas;
+		Object^ lockEventos;
+		Object^ lockFin;
+
+		bool simulacionConcurrenteActiva;
+		bool modoConcurrenteDelCiclo;
+		int brazosFinalizados;
+
 		void CargarEstado() {
 			List<BrazoRoboticoModel^>^ brazos = ctrlBrazo->obtenerTodos();
 
@@ -300,6 +341,16 @@ namespace LOGIN {
 	private: System::Void panel1_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {}
 
 	private: System::Void button5_Click(System::Object^ sender, System::EventArgs^ e) {
+		if (simulacionConcurrenteActiva) {
+			MessageBox::Show(
+				"No puedes finalizar mientras el modo automatico concurrente sigue ejecutandose.",
+				"Ejecucion en proceso",
+				MessageBoxButtons::OK,
+				MessageBoxIcon::Warning
+			);
+			return;
+		}
+
 		cicloActivoSufijo = nullptr;
 		CicloController::limpiarCicloActivo();
 
@@ -310,10 +361,24 @@ namespace LOGIN {
 		String^ nuevoCicloId = (ctrlCiclo->obtenerTodos()->Count + 1).ToString();
 		ctrlCiclo->agregar(nuevoCicloId, 0.5, "PENDIENTE");
 
+		modoConcurrenteDelCiclo = false;
+		simulacionConcurrenteActiva = false;
+		brazosFinalizados = 0;
+
+		chkModoConcurrente->Checked = false;
+		chkModoConcurrente->Enabled = true;
+
+		button1->Enabled = true;
+		button3->Enabled = true;
+		button4->Enabled = true;
+		button5->Enabled = true;
+
 		CargarEstado();
+
 		MessageBox::Show(
 			"Ciclo #" + nuevoCicloId + " completado.\n0.5 hrs registradas - estado: PENDIENTE.",
 			"Ciclo finalizado", MessageBoxButtons::OK, MessageBoxIcon::Information);
+
 		cicloActivoSufijo = nullptr;
 	}
 
@@ -441,6 +506,10 @@ namespace LOGIN {
 		cicloActivoSufijo = cicloSufijo;
 		CicloController::guardarCicloActivo(cicloSufijo);
 
+		modoConcurrenteDelCiclo = chkModoConcurrente->Checked;
+		chkModoConcurrente->Enabled = false;
+		button1->Enabled = false;
+
 		for each (PiezaModel ^ pieza in lineaActiva->ColaPiezas) {
 			String^ brazo;
 			PanelLateralModel^ pl = dynamic_cast<PanelLateralModel^>(pieza);
@@ -462,9 +531,259 @@ namespace LOGIN {
 		}
 
 		CargarEstado();
-		MessageBox::Show("Ciclo iniciado. Tareas generadas correctamente.",
-			"Ciclo iniciado", MessageBoxButtons::OK, MessageBoxIcon::Information);
+
+		if (modoConcurrenteDelCiclo) {
+			MessageBox::Show(
+				"Ciclo iniciado. Tareas generadas correctamente.\nModo automatico concurrente activado.",
+				"Ciclo iniciado",
+				MessageBoxButtons::OK,
+				MessageBoxIcon::Information
+			);
+
+			IniciarEjecucionConcurrente();
+		}
+		else {
+			MessageBox::Show(
+				"Ciclo iniciado. Tareas generadas correctamente.\nModo manual activo.",
+				"Ciclo iniciado",
+				MessageBoxButtons::OK,
+				MessageBoxIcon::Information
+			);
+		}
 	}
+
+		   private: void IniciarEjecucionConcurrente() {
+			   if (cicloActivoSufijo == nullptr) {
+				   MessageBox::Show(
+					   "No existe un ciclo activo para ejecutar en modo concurrente.",
+					   "Sin ciclo activo",
+					   MessageBoxButtons::OK,
+					   MessageBoxIcon::Warning
+				   );
+				   return;
+			   }
+
+			   if (simulacionConcurrenteActiva) {
+				   MessageBox::Show(
+					   "La ejecucion concurrente ya esta en proceso.",
+					   "Proceso activo",
+					   MessageBoxButtons::OK,
+					   MessageBoxIcon::Information
+				   );
+				   return;
+			   }
+
+			   simulacionConcurrenteActiva = true;
+			   brazosFinalizados = 0;
+
+			   button3->Enabled = false;
+			   button4->Enabled = false;
+			   button5->Enabled = false;
+
+			   Thread^ hiloIzq = gcnew Thread(gcnew ParameterizedThreadStart(this, &Estacion_ciclo::EjecutarBrazoConcurrente));
+			   Thread^ hiloDer = gcnew Thread(gcnew ParameterizedThreadStart(this, &Estacion_ciclo::EjecutarBrazoConcurrente));
+			   Thread^ hiloCen = gcnew Thread(gcnew ParameterizedThreadStart(this, &Estacion_ciclo::EjecutarBrazoConcurrente));
+
+			   hiloIzq->IsBackground = true;
+			   hiloDer->IsBackground = true;
+			   hiloCen->IsBackground = true;
+
+			   hiloIzq->Start("LATERAL_IZQ");
+			   hiloDer->Start("LATERAL_DER");
+			   hiloCen->Start("CENTRAL_SUP");
+		   }
+
+
+	private: void EjecutarBrazoConcurrente(Object^ datosBrazo) {
+		String^ brazo = safe_cast<String^>(datosBrazo);
+
+		CompletarTareaSegura("POS", brazo);
+		RegistrarEventoSeguro(
+			"Brazo " + brazo + " completo POSICIONAR en modo concurrente",
+			"POS-" + cicloActivoSufijo + "-" + brazo,
+			"COMPLETADA"
+		);
+		RefrescarVistaSeguro();
+		Thread::Sleep(800);
+
+		CompletarTareaSegura("SOS", brazo);
+		RegistrarEventoSeguro(
+			"Brazo " + brazo + " completo SOSTENER en modo concurrente",
+			"SOS-" + cicloActivoSufijo + "-" + brazo,
+			"COMPLETADA"
+		);
+		RefrescarVistaSeguro();
+		Thread::Sleep(800);
+
+		CompletarTareaSegura("SOL", brazo);
+		RegistrarEventoSeguro(
+			"Brazo " + brazo + " completo SOLDAR en modo concurrente",
+			"SOL-" + cicloActivoSufijo + "-" + brazo,
+			"COMPLETADA"
+		);
+		RefrescarVistaSeguro();
+		Thread::Sleep(800);
+
+		CompletarTareaSegura("COO", brazo);
+		RegistrarEventoSeguro(
+			"Brazo " + brazo + " completo COORDINADA en modo concurrente",
+			"COO-" + cicloActivoSufijo + "-" + brazo,
+			"COMPLETADA"
+		);
+		RefrescarVistaSeguro();
+
+		Monitor::Enter(lockFin);
+		try {
+			brazosFinalizados++;
+
+			if (brazosFinalizados == 3) {
+				simulacionConcurrenteActiva = false;
+				MostrarFinConcurrenteSeguro();
+			}
+		}
+		finally {
+			Monitor::Exit(lockFin);
+		}
+	}
+
+	private: void CompletarTareaSegura(String^ tipo, String^ brazo) {
+		Monitor::Enter(lockTareas);
+
+		try {
+			try {
+				String^ idTarea = tipo + "-" + cicloActivoSufijo + "-" + brazo;
+
+				if (tipo->Equals("POS")) {
+					TareaPosicionarController^ ctrl = gcnew TareaPosicionarController();
+					TareaPosicionarModel^ t = ctrl->buscarPorId(idTarea);
+
+					if (t != nullptr) {
+						ctrl->modificar(
+							idTarea,
+							"COMPLETADA",
+							t->PosicionObjetivo,
+							t->Tolerancia
+						);
+					}
+				}
+				else if (tipo->Equals("SOS")) {
+					TareaSostenerController^ ctrl = gcnew TareaSostenerController();
+					TareaSostenerModel^ t = ctrl->buscarPorId(idTarea);
+
+					if (t != nullptr) {
+						ctrl->modificar(
+							idTarea,
+							"COMPLETADA",
+							t->FuerzaSosten,
+							t->Duracion
+						);
+					}
+				}
+				else if (tipo->Equals("SOL")) {
+					TareaSoldarController^ ctrl = gcnew TareaSoldarController();
+					TareaSoldarModel^ t = ctrl->buscarPorId(idTarea);
+
+					if (t != nullptr) {
+						ctrl->modificar(
+							idTarea,
+							"COMPLETADA",
+							t->PuntosObjetivo,
+							t->PuntosObjetivo,
+							t->Temperatura
+						);
+					}
+				}
+				else if (tipo->Equals("COO")) {
+					TareaCoordinadaController^ ctrl = gcnew TareaCoordinadaController();
+					TareaCoordinadaModel^ t = ctrl->buscarPorId(idTarea);
+
+					if (t != nullptr) {
+						ctrl->modificar(
+							idTarea,
+							"COMPLETADA",
+							1,
+							t->TotalRequerido
+						);
+					}
+				}
+			}
+			catch (Exception^ ex) {
+				System::Diagnostics::Debug::WriteLine(
+					"Error al completar tarea concurrente: " + ex->Message
+				);
+			}
+		}
+		finally {
+			Monitor::Exit(lockTareas);
+		}
+	}
+
+
+	private: void RegistrarEventoSeguro(String^ descripcion, String^ tareaId, String^ resultado) {
+		Monitor::Enter(lockEventos);
+
+		try {
+			try {
+				EventoTareaController^ ctrlEvento = gcnew EventoTareaController();
+
+				String^ idEvento = DateTime::Now.Ticks.ToString()
+					+ "-"
+					+ Thread::CurrentThread->ManagedThreadId.ToString();
+
+				String^ timestamp = DateTime::Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+				ctrlEvento->agregar(
+					idEvento,
+					timestamp,
+					descripcion,
+					tareaId,
+					resultado
+				);
+			}
+			catch (Exception^ ex) {
+				System::Diagnostics::Debug::WriteLine(
+					"No se pudo registrar evento concurrente: " + ex->Message
+				);
+			}
+		}
+		finally {
+			Monitor::Exit(lockEventos);
+		}
+	}
+
+	private: void RefrescarVistaSeguro() {
+		if (this->InvokeRequired) {
+			this->BeginInvoke(
+				gcnew MethodInvoker(this, &Estacion_ciclo::RefrescarVistaSeguro)
+			);
+		}
+		else {
+			CargarEstado();
+			pictureBox1->Invalidate();
+		}
+	}
+
+	private: void MostrarFinConcurrenteSeguro() {
+		if (this->InvokeRequired) {
+			this->BeginInvoke(
+				gcnew MethodInvoker(this, &Estacion_ciclo::MostrarFinConcurrenteSeguro)
+			);
+		}
+		else {
+			RefrescarVistaSeguro();
+
+			button5->Enabled = true;
+
+			MessageBox::Show(
+				"Modo automatico concurrente finalizado.\nLos 3 brazos completaron sus tareas en paralelo.\nAhora puedes finalizar el ciclo.",
+				"Ejecucion concurrente completada",
+				MessageBoxButtons::OK,
+				MessageBoxIcon::Information
+			);
+		}
+	}
+
+
 
 	private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
 		for each (BrazoRoboticoModel ^ b in ctrlBrazo->obtenerTodos())
@@ -473,14 +792,36 @@ namespace LOGIN {
 	}
 
 	private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e) {
+		if (modoConcurrenteDelCiclo) {
+			MessageBox::Show(
+				"La pausa manual no esta disponible durante el modo automatico concurrente.",
+				"Modo automatico",
+				MessageBoxButtons::OK,
+				MessageBoxIcon::Information
+			);
+			return;
+		}
+
 		for each (BrazoRoboticoModel ^ b in ctrlBrazo->obtenerTodos())
 			ctrlBrazo->modificar(b->Id, GemeloDigitalModel::EstadoBrazo::PAUSA);
+
 		CargarEstado();
 	}
 
 	private: System::Void button4_Click(System::Object^ sender, System::EventArgs^ e) {
+		if (modoConcurrenteDelCiclo) {
+			MessageBox::Show(
+				"La reanudacion manual no esta disponible durante el modo automatico concurrente.",
+				"Modo automatico",
+				MessageBoxButtons::OK,
+				MessageBoxIcon::Information
+			);
+			return;
+		}
+
 		for each (BrazoRoboticoModel ^ b in ctrlBrazo->obtenerTodos())
 			ctrlBrazo->modificar(b->Id, GemeloDigitalModel::EstadoBrazo::POSICIONANDO);
+
 		CargarEstado();
 	}
 
