@@ -125,14 +125,14 @@ namespace LOGIN {
 			// label6
 			// 
 			this->label6->AutoSize = true;
-			this->label6->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->label6->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label6->ForeColor = System::Drawing::Color::White;
-			this->label6->Location = System::Drawing::Point(70, 53);
+			this->label6->Location = System::Drawing::Point(52, 43);
 			this->label6->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label6->Name = L"label6";
 			this->label6->RightToLeft = System::Windows::Forms::RightToLeft::No;
-			this->label6->Size = System::Drawing::Size(200, 22);
+			this->label6->Size = System::Drawing::Size(148, 16);
 			this->label6->TabIndex = 12;
 			this->label6->Text = L"Gestión de Usuarios";
 			// 
@@ -147,9 +147,10 @@ namespace LOGIN {
 				static_cast<System::Int32>(static_cast<System::Byte>(158)), static_cast<System::Int32>(static_cast<System::Byte>(11)));
 			this->button1->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->button1->ForeColor = System::Drawing::Color::White;
-			this->button1->Location = System::Drawing::Point(74, 93);
+			this->button1->Location = System::Drawing::Point(56, 76);
+			this->button1->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->button1->Name = L"button1";
-			this->button1->Size = System::Drawing::Size(206, 45);
+			this->button1->Size = System::Drawing::Size(154, 37);
 			this->button1->TabIndex = 13;
 			this->button1->Text = L"Administradores";
 			this->button1->UseVisualStyleBackColor = false;
@@ -166,9 +167,10 @@ namespace LOGIN {
 				static_cast<System::Int32>(static_cast<System::Byte>(158)), static_cast<System::Int32>(static_cast<System::Byte>(11)));
 			this->button2->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->button2->ForeColor = System::Drawing::Color::White;
-			this->button2->Location = System::Drawing::Point(322, 93);
+			this->button2->Location = System::Drawing::Point(242, 76);
+			this->button2->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->button2->Name = L"button2";
-			this->button2->Size = System::Drawing::Size(206, 45);
+			this->button2->Size = System::Drawing::Size(154, 37);
 			this->button2->TabIndex = 14;
 			this->button2->Text = L"Jefes de Operaciones";
 			this->button2->UseVisualStyleBackColor = false;
@@ -185,9 +187,10 @@ namespace LOGIN {
 				static_cast<System::Int32>(static_cast<System::Byte>(158)), static_cast<System::Int32>(static_cast<System::Byte>(11)));
 			this->button3->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->button3->ForeColor = System::Drawing::Color::White;
-			this->button3->Location = System::Drawing::Point(571, 93);
+			this->button3->Location = System::Drawing::Point(428, 76);
+			this->button3->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->button3->Name = L"button3";
-			this->button3->Size = System::Drawing::Size(206, 45);
+			this->button3->Size = System::Drawing::Size(154, 37);
 			this->button3->TabIndex = 15;
 			this->button3->Text = L"Operadores";
 			this->button3->UseVisualStyleBackColor = false;
@@ -204,9 +207,10 @@ namespace LOGIN {
 				static_cast<System::Int32>(static_cast<System::Byte>(158)), static_cast<System::Int32>(static_cast<System::Byte>(11)));
 			this->button4->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->button4->ForeColor = System::Drawing::Color::White;
-			this->button4->Location = System::Drawing::Point(818, 93);
+			this->button4->Location = System::Drawing::Point(614, 76);
+			this->button4->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->button4->Name = L"button4";
-			this->button4->Size = System::Drawing::Size(206, 45);
+			this->button4->Size = System::Drawing::Size(154, 37);
 			this->button4->TabIndex = 16;
 			this->button4->Text = L"Gestores";
 			this->button4->UseVisualStyleBackColor = false;
@@ -226,7 +230,8 @@ namespace LOGIN {
 			this->dataGridView1->Cursor = System::Windows::Forms::Cursors::Default;
 			this->dataGridView1->EnableHeadersVisualStyles = false;
 			this->dataGridView1->GridColor = System::Drawing::SystemColors::ActiveCaptionText;
-			this->dataGridView1->Location = System::Drawing::Point(74, 191);
+			this->dataGridView1->Location = System::Drawing::Point(56, 155);
+			this->dataGridView1->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->dataGridView1->Name = L"dataGridView1";
 			this->dataGridView1->RowHeadersBorderStyle = System::Windows::Forms::DataGridViewHeaderBorderStyle::Single;
 			dataGridViewCellStyle1->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
@@ -242,7 +247,7 @@ namespace LOGIN {
 			this->dataGridView1->RowHeadersVisible = false;
 			this->dataGridView1->RowHeadersWidth = 51;
 			this->dataGridView1->RowTemplate->Height = 24;
-			this->dataGridView1->Size = System::Drawing::Size(950, 160);
+			this->dataGridView1->Size = System::Drawing::Size(712, 130);
 			this->dataGridView1->TabIndex = 19;
 			this->dataGridView1->CellContentClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &FormMenuAdmin::dataGridView1_CellContentClick);
 			// 
@@ -288,9 +293,10 @@ namespace LOGIN {
 			this->panel1->Controls->Add(this->label1);
 			this->panel1->Controls->Add(this->label3);
 			this->panel1->Controls->Add(this->button9);
-			this->panel1->Location = System::Drawing::Point(74, 369);
+			this->panel1->Location = System::Drawing::Point(56, 300);
+			this->panel1->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->panel1->Name = L"panel1";
-			this->panel1->Size = System::Drawing::Size(1044, 204);
+			this->panel1->Size = System::Drawing::Size(784, 166);
 			this->panel1->TabIndex = 21;
 			// 
 			// button8
@@ -304,9 +310,10 @@ namespace LOGIN {
 			this->button8->FlatAppearance->MouseDownBackColor = System::Drawing::Color::MintCream;
 			this->button8->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->button8->ForeColor = System::Drawing::Color::Orange;
-			this->button8->Location = System::Drawing::Point(743, 132);
+			this->button8->Location = System::Drawing::Point(557, 107);
+			this->button8->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->button8->Name = L"button8";
-			this->button8->Size = System::Drawing::Size(202, 50);
+			this->button8->Size = System::Drawing::Size(152, 41);
 			this->button8->TabIndex = 32;
 			this->button8->Text = L"Modificar Contraseña";
 			this->button8->UseVisualStyleBackColor = false;
@@ -322,9 +329,10 @@ namespace LOGIN {
 			this->button10->FlatAppearance->MouseDownBackColor = System::Drawing::Color::MintCream;
 			this->button10->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->button10->ForeColor = System::Drawing::Color::Black;
-			this->button10->Location = System::Drawing::Point(739, 128);
+			this->button10->Location = System::Drawing::Point(554, 104);
+			this->button10->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->button10->Name = L"button10";
-			this->button10->Size = System::Drawing::Size(210, 57);
+			this->button10->Size = System::Drawing::Size(158, 46);
 			this->button10->TabIndex = 33;
 			this->button10->Text = L"Agregar";
 			this->button10->UseVisualStyleBackColor = false;
@@ -340,9 +348,10 @@ namespace LOGIN {
 			this->button7->FlatAppearance->MouseDownBackColor = System::Drawing::Color::MintCream;
 			this->button7->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->button7->ForeColor = System::Drawing::Color::Orange;
-			this->button7->Location = System::Drawing::Point(513, 133);
+			this->button7->Location = System::Drawing::Point(385, 108);
+			this->button7->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->button7->Name = L"button7";
-			this->button7->Size = System::Drawing::Size(202, 50);
+			this->button7->Size = System::Drawing::Size(152, 41);
 			this->button7->TabIndex = 29;
 			this->button7->Text = L"Modificar Nombre ";
 			this->button7->UseVisualStyleBackColor = false;
@@ -357,9 +366,10 @@ namespace LOGIN {
 			this->button6->FlatAppearance->BorderSize = 0;
 			this->button6->FlatAppearance->MouseDownBackColor = System::Drawing::Color::MintCream;
 			this->button6->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			this->button6->Location = System::Drawing::Point(268, 133);
+			this->button6->Location = System::Drawing::Point(201, 108);
+			this->button6->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->button6->Name = L"button6";
-			this->button6->Size = System::Drawing::Size(202, 50);
+			this->button6->Size = System::Drawing::Size(152, 41);
 			this->button6->TabIndex = 28;
 			this->button6->Text = L"Eliminar";
 			this->button6->UseVisualStyleBackColor = false;
@@ -370,9 +380,11 @@ namespace LOGIN {
 			this->textBox3->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(41)),
 				static_cast<System::Int32>(static_cast<System::Byte>(59)));
 			this->textBox3->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->textBox3->Location = System::Drawing::Point(513, 80);
+			this->textBox3->ForeColor = System::Drawing::Color::White;
+			this->textBox3->Location = System::Drawing::Point(385, 65);
+			this->textBox3->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->textBox3->Name = L"textBox3";
-			this->textBox3->Size = System::Drawing::Size(202, 22);
+			this->textBox3->Size = System::Drawing::Size(152, 20);
 			this->textBox3->TabIndex = 26;
 			// 
 			// textBox2
@@ -380,9 +392,11 @@ namespace LOGIN {
 			this->textBox2->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(41)),
 				static_cast<System::Int32>(static_cast<System::Byte>(59)));
 			this->textBox2->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->textBox2->Location = System::Drawing::Point(268, 80);
+			this->textBox2->ForeColor = System::Drawing::Color::White;
+			this->textBox2->Location = System::Drawing::Point(201, 65);
+			this->textBox2->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->textBox2->Name = L"textBox2";
-			this->textBox2->Size = System::Drawing::Size(202, 22);
+			this->textBox2->Size = System::Drawing::Size(152, 20);
 			this->textBox2->TabIndex = 25;
 			// 
 			// textBox1
@@ -390,9 +404,11 @@ namespace LOGIN {
 			this->textBox1->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(41)),
 				static_cast<System::Int32>(static_cast<System::Byte>(59)));
 			this->textBox1->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->textBox1->Location = System::Drawing::Point(42, 80);
+			this->textBox1->ForeColor = System::Drawing::Color::White;
+			this->textBox1->Location = System::Drawing::Point(32, 65);
+			this->textBox1->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->textBox1->Name = L"textBox1";
-			this->textBox1->Size = System::Drawing::Size(199, 22);
+			this->textBox1->Size = System::Drawing::Size(150, 20);
 			this->textBox1->TabIndex = 24;
 			// 
 			// button5
@@ -405,9 +421,10 @@ namespace LOGIN {
 			this->button5->FlatAppearance->MouseDownBackColor = System::Drawing::Color::MintCream;
 			this->button5->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->button5->ForeColor = System::Drawing::Color::Black;
-			this->button5->Location = System::Drawing::Point(42, 133);
+			this->button5->Location = System::Drawing::Point(32, 108);
+			this->button5->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->button5->Name = L"button5";
-			this->button5->Size = System::Drawing::Size(199, 50);
+			this->button5->Size = System::Drawing::Size(149, 41);
 			this->button5->TabIndex = 21;
 			this->button5->Text = L"Agregar";
 			this->button5->UseVisualStyleBackColor = false;
@@ -416,55 +433,55 @@ namespace LOGIN {
 			// label4
 			// 
 			this->label4->AutoSize = true;
-			this->label4->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label4->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label4->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(142)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(177)));
-			this->label4->Location = System::Drawing::Point(510, 48);
+			this->label4->Location = System::Drawing::Point(382, 39);
 			this->label4->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label4->Name = L"label4";
-			this->label4->Size = System::Drawing::Size(99, 16);
+			this->label4->Size = System::Drawing::Size(67, 13);
 			this->label4->TabIndex = 22;
 			this->label4->Text = L"Extra (turno):";
 			// 
 			// label2
 			// 
 			this->label2->AutoSize = true;
-			this->label2->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label2->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(142)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(177)));
-			this->label2->Location = System::Drawing::Point(265, 48);
+			this->label2->Location = System::Drawing::Point(199, 39);
 			this->label2->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(75, 16);
+			this->label2->Size = System::Drawing::Size(56, 13);
 			this->label2->TabIndex = 21;
 			this->label2->Text = L"Password:";
 			// 
 			// label1
 			// 
 			this->label1->AutoSize = true;
-			this->label1->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label1->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(142)), static_cast<System::Int32>(static_cast<System::Byte>(157)),
 				static_cast<System::Int32>(static_cast<System::Byte>(177)));
-			this->label1->Location = System::Drawing::Point(39, 48);
+			this->label1->Location = System::Drawing::Point(29, 39);
 			this->label1->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(56, 16);
+			this->label1->Size = System::Drawing::Size(44, 13);
 			this->label1->TabIndex = 20;
 			this->label1->Text = L"Nombre";
 			// 
 			// label3
 			// 
 			this->label3->AutoSize = true;
-			this->label3->Font = (gcnew System::Drawing::Font(L"MS Reference Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 7.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label3->ForeColor = System::Drawing::Color::White;
-			this->label3->Location = System::Drawing::Point(18, 20);
+			this->label3->Location = System::Drawing::Point(14, 16);
 			this->label3->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(162, 16);
+			this->label3->Size = System::Drawing::Size(119, 13);
 			this->label3->TabIndex = 19;
 			this->label3->Text = L"Agregar nuevo Usuario:";
 			// 
@@ -478,9 +495,10 @@ namespace LOGIN {
 			this->button9->FlatAppearance->MouseDownBackColor = System::Drawing::Color::MintCream;
 			this->button9->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->button9->ForeColor = System::Drawing::Color::Black;
-			this->button9->Location = System::Drawing::Point(509, 129);
+			this->button9->Location = System::Drawing::Point(382, 105);
+			this->button9->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->button9->Name = L"button9";
-			this->button9->Size = System::Drawing::Size(210, 57);
+			this->button9->Size = System::Drawing::Size(158, 46);
 			this->button9->TabIndex = 31;
 			this->button9->Text = L"Agregar";
 			this->button9->UseVisualStyleBackColor = false;
@@ -490,27 +508,29 @@ namespace LOGIN {
 			this->panel2->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(254)), static_cast<System::Int32>(static_cast<System::Byte>(249)),
 				static_cast<System::Int32>(static_cast<System::Byte>(195)));
 			this->panel2->Controls->Add(this->label5);
-			this->panel2->Location = System::Drawing::Point(74, 585);
+			this->panel2->Location = System::Drawing::Point(56, 475);
+			this->panel2->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->panel2->Name = L"panel2";
-			this->panel2->Size = System::Drawing::Size(1043, 103);
+			this->panel2->Size = System::Drawing::Size(782, 84);
 			this->panel2->TabIndex = 22;
 			// 
 			// label5
 			// 
 			this->label5->AutoSize = true;
-			this->label5->Location = System::Drawing::Point(39, 24);
+			this->label5->Location = System::Drawing::Point(29, 20);
+			this->label5->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label5->Name = L"label5";
-			this->label5->Size = System::Drawing::Size(302, 16);
+			this->label5->Size = System::Drawing::Size(237, 13);
 			this->label5->TabIndex = 0;
 			this->label5->Text = L" El administrador no puede eliminarse a sí mismo.";
 			// 
 			// FormMenuAdmin
 			// 
-			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(40)),
 				static_cast<System::Int32>(static_cast<System::Byte>(58)));
-			this->ClientSize = System::Drawing::Size(1215, 936);
+			this->ClientSize = System::Drawing::Size(911, 760);
 			this->Controls->Add(this->panel2);
 			this->Controls->Add(this->panel1);
 			this->Controls->Add(this->dataGridView1);
@@ -520,7 +540,7 @@ namespace LOGIN {
 			this->Controls->Add(this->button1);
 			this->Controls->Add(this->label6);
 			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
-			this->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->Name = L"FormMenuAdmin";
 			this->Text = L"FormMenuAdmin";
 			this->Load += gcnew System::EventHandler(this, &FormMenuAdmin::FormMenuAdmin_Load);

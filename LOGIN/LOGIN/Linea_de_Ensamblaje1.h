@@ -16,7 +16,9 @@ namespace LOGIN {
 	private:
 		LineaEnsamblajeController^ ctrlLinea;
 		PanelLateralController^ ctrlPanel;
-		EstructuraTechoController^ ctrlTecho;
+	private: System::Windows::Forms::Button^ btnRetirarPieza;
+	private: System::Windows::Forms::Button^ btnEliminarCola;
+		   EstructuraTechoController^ ctrlTecho;
 
 	public:
 		Linea_de_Ensamblaje1(void)
@@ -36,8 +38,6 @@ namespace LOGIN {
 
 	private:
 		System::ComponentModel::Container^ components;
-
-		// Controles
 		System::Windows::Forms::Label^ labelTitulo;
 		System::Windows::Forms::Label^ labelSecLineas;
 		System::Windows::Forms::DataGridView^ dgvLineas;
@@ -94,6 +94,7 @@ namespace LOGIN {
 			this->colEstado = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->labelSecAgregar = (gcnew System::Windows::Forms::Label());
 			this->panelAgregar = (gcnew System::Windows::Forms::Panel());
+			this->btnRetirarPieza = (gcnew System::Windows::Forms::Button());
 			this->labelSelPieza = (gcnew System::Windows::Forms::Label());
 			this->comboBoxPiezas = (gcnew System::Windows::Forms::ComboBox());
 			this->btnAgregarCola = (gcnew System::Windows::Forms::Button());
@@ -101,6 +102,7 @@ namespace LOGIN {
 			this->labelNota = (gcnew System::Windows::Forms::Label());
 			this->labelSecFlujo = (gcnew System::Windows::Forms::Label());
 			this->panelFlujo = (gcnew System::Windows::Forms::Panel());
+			this->btnEliminarCola = (gcnew System::Windows::Forms::Button());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dgvLineas))->BeginInit();
 			this->panelDetalle->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dgvCola))->BeginInit();
@@ -118,7 +120,7 @@ namespace LOGIN {
 			this->labelTitulo->Name = L"labelTitulo";
 			this->labelTitulo->Size = System::Drawing::Size(198, 25);
 			this->labelTitulo->TabIndex = 0;
-			this->labelTitulo->Text = L"Líneas de Ensamblaje";
+			this->labelTitulo->Text = L"Lineas de Ensamblaje";
 			// 
 			// labelSecLineas
 			// 
@@ -131,7 +133,7 @@ namespace LOGIN {
 			this->labelSecLineas->Name = L"labelSecLineas";
 			this->labelSecLineas->Size = System::Drawing::Size(115, 15);
 			this->labelSecLineas->TabIndex = 1;
-			this->labelSecLineas->Text = L"Líneas configuradas";
+			this->labelSecLineas->Text = L"Lineas configuradas";
 			// 
 			// dgvLineas
 			// 
@@ -186,7 +188,7 @@ namespace LOGIN {
 			// 
 			// colLineaIndice
 			// 
-			this->colLineaIndice->HeaderText = L"Índice Actual";
+			this->colLineaIndice->HeaderText = L"Indice Actual";
 			this->colLineaIndice->Name = L"colLineaIndice";
 			this->colLineaIndice->ReadOnly = true;
 			// 
@@ -198,7 +200,7 @@ namespace LOGIN {
 			// 
 			// btnNuevaLinea
 			// 
-			this->btnNuevaLinea->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(230)), static_cast<System::Int32>(static_cast<System::Byte>(160)),
+			this->btnNuevaLinea->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(0)), static_cast<System::Int32>(static_cast<System::Byte>(192)),
 				static_cast<System::Int32>(static_cast<System::Byte>(0)));
 			this->btnNuevaLinea->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
 			this->btnNuevaLinea->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
@@ -208,7 +210,7 @@ namespace LOGIN {
 			this->btnNuevaLinea->Name = L"btnNuevaLinea";
 			this->btnNuevaLinea->Size = System::Drawing::Size(140, 34);
 			this->btnNuevaLinea->TabIndex = 3;
-			this->btnNuevaLinea->Text = L"Nueva línea";
+			this->btnNuevaLinea->Text = L"Nueva linea";
 			this->btnNuevaLinea->UseVisualStyleBackColor = false;
 			this->btnNuevaLinea->Click += gcnew System::EventHandler(this, &Linea_de_Ensamblaje1::btnNuevaLinea_Click_1);
 			// 
@@ -234,9 +236,9 @@ namespace LOGIN {
 			this->labelLineaSel->ForeColor = System::Drawing::Color::White;
 			this->labelLineaSel->Location = System::Drawing::Point(10, 10);
 			this->labelLineaSel->Name = L"labelLineaSel";
-			this->labelLineaSel->Size = System::Drawing::Size(127, 15);
+			this->labelLineaSel->Size = System::Drawing::Size(125, 15);
 			this->labelLineaSel->TabIndex = 0;
-			this->labelLineaSel->Text = L"Línea seleccionada: —";
+			this->labelLineaSel->Text = L"Linea seleccionada: --";
 			// 
 			// labelSecuenciaHdr
 			// 
@@ -283,9 +285,9 @@ namespace LOGIN {
 				static_cast<System::Int32>(static_cast<System::Byte>(0)));
 			this->labelSecCola->Location = System::Drawing::Point(20, 228);
 			this->labelSecCola->Name = L"labelSecCola";
-			this->labelSecCola->Size = System::Drawing::Size(153, 15);
+			this->labelSecCola->Size = System::Drawing::Size(149, 15);
 			this->labelSecCola->TabIndex = 5;
-			this->labelSecCola->Text = L"Cola de piezas — Línea #—";
+			this->labelSecCola->Text = L"Cola de piezas -- Linea #--";
 			// 
 			// dgvCola
 			// 
@@ -314,10 +316,12 @@ namespace LOGIN {
 			this->dgvCola->EnableHeadersVisualStyles = false;
 			this->dgvCola->GridColor = System::Drawing::SystemColors::ActiveCaptionText;
 			this->dgvCola->Location = System::Drawing::Point(20, 250);
+			this->dgvCola->MultiSelect = false;
 			this->dgvCola->Name = L"dgvCola";
 			this->dgvCola->ReadOnly = true;
 			this->dgvCola->RowHeadersVisible = false;
 			this->dgvCola->RowTemplate->Height = 28;
+			this->dgvCola->SelectionMode = System::Windows::Forms::DataGridViewSelectionMode::FullRowSelect;
 			this->dgvCola->Size = System::Drawing::Size(1140, 160);
 			this->dgvCola->TabIndex = 6;
 			// 
@@ -370,6 +374,7 @@ namespace LOGIN {
 			this->panelAgregar->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(28)), static_cast<System::Int32>(static_cast<System::Byte>(38)),
 				static_cast<System::Int32>(static_cast<System::Byte>(54)));
 			this->panelAgregar->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->panelAgregar->Controls->Add(this->btnRetirarPieza);
 			this->panelAgregar->Controls->Add(this->labelSelPieza);
 			this->panelAgregar->Controls->Add(this->comboBoxPiezas);
 			this->panelAgregar->Controls->Add(this->btnAgregarCola);
@@ -377,6 +382,21 @@ namespace LOGIN {
 			this->panelAgregar->Name = L"panelAgregar";
 			this->panelAgregar->Size = System::Drawing::Size(1140, 60);
 			this->panelAgregar->TabIndex = 8;
+			// 
+			// btnRetirarPieza
+			// 
+			this->btnRetirarPieza->BackColor = System::Drawing::Color::Red;
+			this->btnRetirarPieza->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
+			this->btnRetirarPieza->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->btnRetirarPieza->ForeColor = System::Drawing::Color::Black;
+			this->btnRetirarPieza->Location = System::Drawing::Point(986, 14);
+			this->btnRetirarPieza->Name = L"btnRetirarPieza";
+			this->btnRetirarPieza->Size = System::Drawing::Size(116, 34);
+			this->btnRetirarPieza->TabIndex = 3;
+			this->btnRetirarPieza->Text = L"Retirar de cola";
+			this->btnRetirarPieza->UseVisualStyleBackColor = false;
+			this->btnRetirarPieza->Click += gcnew System::EventHandler(this, &Linea_de_Ensamblaje1::btnRetirarPieza_Click);
 			// 
 			// labelSelPieza
 			// 
@@ -411,7 +431,7 @@ namespace LOGIN {
 			this->btnAgregarCola->ForeColor = System::Drawing::Color::Black;
 			this->btnAgregarCola->Location = System::Drawing::Point(840, 14);
 			this->btnAgregarCola->Name = L"btnAgregarCola";
-			this->btnAgregarCola->Size = System::Drawing::Size(180, 34);
+			this->btnAgregarCola->Size = System::Drawing::Size(116, 34);
 			this->btnAgregarCola->TabIndex = 2;
 			this->btnAgregarCola->Text = L"Agregar a cola";
 			this->btnAgregarCola->UseVisualStyleBackColor = false;
@@ -437,10 +457,10 @@ namespace LOGIN {
 				static_cast<System::Int32>(static_cast<System::Byte>(255)));
 			this->labelNota->Location = System::Drawing::Point(10, 10);
 			this->labelNota->Name = L"labelNota";
-			this->labelNota->Size = System::Drawing::Size(686, 15);
+			this->labelNota->Size = System::Drawing::Size(668, 15);
 			this->labelNota->TabIndex = 0;
-			this->labelNota->Text = L"ℹ  El Gestor solo puede agregar piezas a la cola y crear líneas. La aprobación de"
-				L" la secuencia es exclusiva del Jefe de Operaciones.";
+			this->labelNota->Text = L"El Gestor solo puede agregar piezas a la cola y crear lineas. La aprobacion de la"
+				L" secuencia es exclusiva del Jefe de Operaciones.";
 			// 
 			// labelSecFlujo
 			// 
@@ -465,6 +485,21 @@ namespace LOGIN {
 			this->panelFlujo->TabIndex = 11;
 			this->panelFlujo->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Linea_de_Ensamblaje1::panelFlujo_Paint);
 			// 
+			// btnEliminarCola
+			// 
+			this->btnEliminarCola->BackColor = System::Drawing::Color::Red;
+			this->btnEliminarCola->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
+			this->btnEliminarCola->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->btnEliminarCola->ForeColor = System::Drawing::Color::Black;
+			this->btnEliminarCola->Location = System::Drawing::Point(183, 182);
+			this->btnEliminarCola->Name = L"btnEliminarCola";
+			this->btnEliminarCola->Size = System::Drawing::Size(116, 34);
+			this->btnEliminarCola->TabIndex = 4;
+			this->btnEliminarCola->Text = L"Eliminar Linea";
+			this->btnEliminarCola->UseVisualStyleBackColor = false;
+			this->btnEliminarCola->Click += gcnew System::EventHandler(this, &Linea_de_Ensamblaje1::btnEliminarCola_Click);
+			// 
 			// Linea_de_Ensamblaje1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -472,6 +507,7 @@ namespace LOGIN {
 			this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(18)), static_cast<System::Int32>(static_cast<System::Byte>(26)),
 				static_cast<System::Int32>(static_cast<System::Byte>(38)));
 			this->ClientSize = System::Drawing::Size(1200, 700);
+			this->Controls->Add(this->btnEliminarCola);
 			this->Controls->Add(this->labelTitulo);
 			this->Controls->Add(this->labelSecLineas);
 			this->Controls->Add(this->dgvLineas);
@@ -501,26 +537,19 @@ namespace LOGIN {
 		}
 #pragma endregion
 
-		// ---------------------------------------------------------------
-		// Load
-		// ---------------------------------------------------------------
 		void Form_Load(System::Object^ sender, System::EventArgs^ e)
 		{
 			CargarLineas();
 			CargarComboPiezas();
 		}
 
-		// ---------------------------------------------------------------
-		// Cargar tabla de líneas
-		// ---------------------------------------------------------------
 		void CargarLineas()
 		{
 			dgvLineas->Rows->Clear();
-			for each(LineaEnsamblajeModel ^ l in ctrlLinea->obtenerTodos())
+			for each (LineaEnsamblajeModel ^ l in ctrlLinea->obtenerTodos())
 			{
-				String^ secStr = l->SecuenciaAprobada ? "SÍ" : "PENDIENTE";
+				String^ secStr = l->SecuenciaAprobada ? "SI" : "PENDIENTE";
 				int idx = dgvLineas->Rows->Add(l->Id, l->IndiceActual, secStr);
-				// Colorear secuencia
 				dgvLineas->Rows[idx]->Cells[2]->Style->ForeColor =
 					l->SecuenciaAprobada
 					? System::Drawing::Color::FromArgb(0, 200, 100)
@@ -530,37 +559,31 @@ namespace LOGIN {
 				dgvLineas->Rows[0]->Selected = true;
 		}
 
-		// ---------------------------------------------------------------
-		// Al seleccionar una línea → actualizar detalle y cola
-		// ---------------------------------------------------------------
 		void dgvLineas_SelectionChanged(System::Object^ sender, System::EventArgs^ e)
 		{
 			if (dgvLineas->SelectedRows->Count == 0) return;
 			String^ id = dgvLineas->SelectedRows[0]->Cells[0]->Value->ToString();
 			LineaEnsamblajeModel^ l = ctrlLinea->buscarPorId(id);
 			if (l == nullptr) return;
-
-			// Actualizar panel detalle
-			labelLineaSel->Text = "Línea seleccionada: #" + l->Id;
-			labelSecCola->Text = "Cola de piezas — Línea #" + l->Id;
+			//////
+			//MessageBox::Show("Cola count: " + l->ColaPiezas->Count, "Debug");
+			///////
+			labelLineaSel->Text = "Linea seleccionada: #" + l->Id;
+			labelSecCola->Text = "Cola de piezas -- Linea #" + l->Id;
 
 			btnSecuencia->Text = l->SecuenciaAprobada ? "APROBADA" : "PENDIENTE";
 			btnSecuencia->BackColor = l->SecuenciaAprobada
 				? System::Drawing::Color::FromArgb(0, 120, 60)
 				: System::Drawing::Color::FromArgb(120, 80, 0);
 
-			// Cargar cola
 			CargarCola(l);
 		}
 
-		// ---------------------------------------------------------------
-		// Cargar cola de piezas de la línea seleccionada
-		// ---------------------------------------------------------------
 		void CargarCola(LineaEnsamblajeModel^ l)
 		{
 			dgvCola->Rows->Clear();
 			int pos = 0;
-			for each(PiezaModel ^ p in l->ColaPiezas)
+			for each (PiezaModel ^ p in l->ColaPiezas)
 			{
 				String^ estadoStr;
 				System::Drawing::Color colorEstado;
@@ -583,61 +606,43 @@ namespace LOGIN {
 					colorEstado = System::Drawing::Color::FromArgb(200, 40, 40);
 					break;
 				default:
-					estadoStr = "—";
+					estadoStr = "--";
 					colorEstado = System::Drawing::Color::Gray;
 					break;
 				}
-
-				int idx = dgvCola->Rows->Add(
-					pos, p->Tipo, p->Id, p->Material, estadoStr);
+				int idx = dgvCola->Rows->Add(pos, p->Tipo, p->Id, p->Material, estadoStr);
 				dgvCola->Rows[idx]->Cells[4]->Style->ForeColor = colorEstado;
 				pos++;
 			}
 		}
 
-		// ---------------------------------------------------------------
-		// Cargar combo de piezas disponibles
-		// ---------------------------------------------------------------
 		void CargarComboPiezas()
 		{
 			comboBoxPiezas->Items->Clear();
-
-			for each(PanelLateralModel ^ p in ctrlPanel->obtenerTodos())
+			for each (PanelLateralModel ^ p in ctrlPanel->obtenerTodos())
 			{
 				if (p->Estado == EstadoPieza::DISPONIBLE)
 				{
-					String^ item = "Panel Lateral  ID=" + p->Id
-						+ "  " + p->Material + "  DISPONIBLE";
+					String^ item = "Panel Lateral  ID=" + p->Id + "  " + p->Material + "  DISPONIBLE";
 					comboBoxPiezas->Items->Add(item);
 				}
 			}
-			for each(EstructuraTechoModel ^ t in ctrlTecho->obtenerTodos())
+			for each (EstructuraTechoModel ^ t in ctrlTecho->obtenerTodos())
 			{
 				if (t->Estado == EstadoPieza::DISPONIBLE)
 				{
-					String^ item = "Estructura Techo  ID=" + t->Id
-						+ "  " + t->Material + "  DISPONIBLE";
+					String^ item = "Estructura Techo  ID=" + t->Id + "  " + t->Material + "  DISPONIBLE";
 					comboBoxPiezas->Items->Add(item);
 				}
 			}
-
 			if (comboBoxPiezas->Items->Count > 0)
 				comboBoxPiezas->SelectedIndex = 0;
 		}
 
-		
-
-		
-
-		// ---------------------------------------------------------------
-		// Flujo GDI+ — 5 cajas con flechas
-		// ---------------------------------------------------------------
-		void panelFlujo_Paint(System::Object^ sender,
-			System::Windows::Forms::PaintEventArgs^ e)
+		void panelFlujo_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e)
 		{
 			Graphics^ g = e->Graphics;
-			g->SmoothingMode =
-				System::Drawing::Drawing2D::SmoothingMode::AntiAlias;
+			g->SmoothingMode = System::Drawing::Drawing2D::SmoothingMode::AntiAlias;
 
 			array<String^>^ pasos = gcnew array<String^>(5) {
 				"Gestor carga\nal inventario",
@@ -647,151 +652,252 @@ namespace LOGIN {
 					"Brazo posiciona\ny suelda"
 			};
 			array<System::Drawing::Color>^ colores = gcnew array<System::Drawing::Color>(5) {
-				System::Drawing::Color::FromArgb(100, 40, 160),  // violeta
-					System::Drawing::Color::FromArgb(100, 40, 160),  // violeta
-					System::Drawing::Color::FromArgb(160, 110, 0),   // naranja oscuro
-					System::Drawing::Color::FromArgb(20, 80, 160),   // azul
-					System::Drawing::Color::FromArgb(20, 80, 160)    // azul
+				System::Drawing::Color::FromArgb(100, 40, 160),
+					System::Drawing::Color::FromArgb(100, 40, 160),
+					System::Drawing::Color::FromArgb(160, 110, 0),
+					System::Drawing::Color::FromArgb(20, 80, 160),
+					System::Drawing::Color::FromArgb(20, 80, 160)
 			};
 
 			int boxW = 190, boxH = 60, gap = 30;
 			int startX = 10, startY = 10;
-			System::Drawing::Font^ font = gcnew System::Drawing::Font(
-				L"Segoe UI", 8.0F, System::Drawing::FontStyle::Regular,
-				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0));
+			System::Drawing::Font^ font = gcnew System::Drawing::Font(L"Segoe UI", 8.0F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0));
 
 			for (int i = 0; i < 5; i++)
 			{
 				int x = startX + i * (boxW + gap);
 				System::Drawing::Rectangle rect(x, startY, boxW, boxH);
-				System::Drawing::Pen^ pen = gcnew System::Drawing::Pen(
-					colores[i], 2);
-				g->DrawRectangle(pen, rect);
-
-				System::Drawing::SolidBrush^ brush =
-					gcnew System::Drawing::SolidBrush(
-						System::Drawing::Color::White);
-				System::Drawing::StringFormat^ sf =
-					gcnew System::Drawing::StringFormat();
+				g->DrawRectangle(gcnew System::Drawing::Pen(colores[i], 2), rect);
+				System::Drawing::StringFormat^ sf = gcnew System::Drawing::StringFormat();
 				sf->Alignment = System::Drawing::StringAlignment::Center;
 				sf->LineAlignment = System::Drawing::StringAlignment::Center;
-				g->DrawString(pasos[i], font,
-					gcnew System::Drawing::SolidBrush(
-						System::Drawing::Color::White),
-					System::Drawing::RectangleF(
-						(float)x, (float)startY,
-						(float)boxW, (float)boxH), sf);
-
-				// Flecha entre cajas
+				g->DrawString(pasos[i], font, gcnew System::Drawing::SolidBrush(System::Drawing::Color::White),
+					System::Drawing::RectangleF((float)x, (float)startY, (float)boxW, (float)boxH), sf);
 				if (i < 4)
 				{
 					int ax = x + boxW + 4;
 					int ay = startY + boxH / 2;
-					System::Drawing::Pen^ arrowPen =
-						gcnew System::Drawing::Pen(
-							System::Drawing::Color::FromArgb(160, 180, 210), 1.5f);
-					g->DrawLine(arrowPen,
-						ax, ay, ax + gap - 8, ay);
-					g->DrawLine(arrowPen,
-						ax + gap - 8, ay,
-						ax + gap - 14, ay - 5);
-					g->DrawLine(arrowPen,
-						ax + gap - 8, ay,
-						ax + gap - 14, ay + 5);
+					System::Drawing::Pen^ arrowPen = gcnew System::Drawing::Pen(System::Drawing::Color::FromArgb(160, 180, 210), 1.5f);
+					g->DrawLine(arrowPen, ax, ay, ax + gap - 8, ay);
+					g->DrawLine(arrowPen, ax + gap - 8, ay, ax + gap - 14, ay - 5);
+					g->DrawLine(arrowPen, ax + gap - 8, ay, ax + gap - 14, ay + 5);
 				}
 			}
 		}
-	private: System::Void Linea_de_Ensamblaje1_Load(System::Object^ sender, System::EventArgs^ e) {
+
+	private: System::Void Linea_de_Ensamblaje1_Load(System::Object^ sender, System::EventArgs^ e) {}
+
+		   // CORREGIDO: boton deshabilitado — lineas son fijas (L-001, L-002, L-003)
+	private: System::Void btnNuevaLinea_Click_1(System::Object^ sender, System::EventArgs^ e) {
+		
+		List<LineaEnsamblajeModel^>^ lineas = ctrlLinea->obtenerTodos();
+		int maxNum = 0;
+		for each (LineaEnsamblajeModel ^ l in lineas)
+		{
+			String^ idStr = l->Id; // formato "L-XXX"
+			int guion = idStr->IndexOf('-');
+			if (guion >= 0)
+			{
+				String^ numStr = idStr->Substring(guion + 1);
+				int num = 0;
+				if (Int32::TryParse(numStr, num) && num > maxNum)
+					maxNum = num;
+			}
+		}
+		int siguiente = maxNum + 1;
+		String^ nuevoId = "L-" + siguiente.ToString("D3");
+
+
+		if (ctrlLinea->agregar(nuevoId))
+		{
+			CargarLineas();
+			MessageBox::Show("Linea " + nuevoId + " creada.", "Exito",
+				MessageBoxButtons::OK, MessageBoxIcon::Information);
+		}
+		else
+		{
+			MessageBox::Show("No se pudo crear la linea.", "Error",
+				MessageBoxButtons::OK, MessageBoxIcon::Error);
+		}
 	}
 
-		   // ---------------------------------------------------------------	
-		   // Botón Nueva línea — crea una nueva línea con ID incremental y la agrega al controlado
-		   // ---------------------------------------------------------------
-private: System::Void btnNuevaLinea_Click_1(System::Object^ sender, System::EventArgs^ e) {
+	private: System::Void btnAgregarCola_Click_1(System::Object^ sender, System::EventArgs^ e) {
+		if (dgvLineas->SelectedRows->Count == 0)
+		{
+			MessageBox::Show("Selecciona una linea primero.", "Aviso",
+				MessageBoxButtons::OK, MessageBoxIcon::Information);
+			return;
+		}
+		if (comboBoxPiezas->SelectedIndex < 0)
+		{
+			MessageBox::Show("No hay piezas disponibles para agregar.", "Aviso",
+				MessageBoxButtons::OK, MessageBoxIcon::Information);
+			return;
+		}
 
-	String^ nuevoId = (ctrlLinea->obtenerTodos()->Count + 1).ToString();
-	ctrlLinea->agregar(nuevoId);
-	CargarLineas();
+		String^ lineaId = dgvLineas->SelectedRows[0]->Cells[0]->Value->ToString();
+		String^ itemStr = comboBoxPiezas->SelectedItem->ToString();
 
+		PiezaModel^ pieza = nullptr;
+		if (itemStr->StartsWith("Panel Lateral"))
+		{
+			int inicio = itemStr->IndexOf("ID=") + 3;
+			int fin = itemStr->IndexOf("  ", inicio);
+			String^ id = itemStr->Substring(inicio, fin - inicio)->Trim();
+			pieza = ctrlPanel->buscarPorId(id);
+		}
+		else
+		{
+			int inicio = itemStr->IndexOf("ID=") + 3;
+			int fin = itemStr->IndexOf("  ", inicio);
+			String^ id = itemStr->Substring(inicio, fin - inicio)->Trim();
+			pieza = ctrlTecho->buscarPorId(id);
+		}
 
+		if (pieza == nullptr)
+		{
+			MessageBox::Show("No se pudo encontrar la pieza.", "Error",
+				MessageBoxButtons::OK, MessageBoxIcon::Error);
+			return;
+		}
 
+		ctrlLinea->agregarPieza(lineaId, pieza);
 
+		// Marcar pieza como EN_PROCESO
+		PanelLateralModel^ pl = dynamic_cast<PanelLateralModel^>(pieza);
+		if (pl != nullptr)
+			ctrlPanel->modificar(pieza->Id, pieza->Material, pieza->Peso,
+				EstadoPieza::EN_PROCESO, pl->PuntosAnclaje, pl->EstacionId);
+		else {
+			EstructuraTechoModel^ et = dynamic_cast<EstructuraTechoModel^>(pieza);
+			if (et != nullptr)
+				ctrlTecho->modificar(pieza->Id, pieza->Material, pieza->Peso,
+					EstadoPieza::EN_PROCESO, et->PuntosUnion, et->Anchura, et->EstacionId);
+		}
 
-
-
-
-
-
-
-
-
-}
-private: System::Void btnAgregarCola_Click_1(System::Object^ sender, System::EventArgs^ e) {
-	if (dgvLineas->SelectedRows->Count == 0)
-	{
-		MessageBox::Show("Selecciona una línea primero.", "Aviso",
-			MessageBoxButtons::OK, MessageBoxIcon::Information);
-		return;
-	}
-	if (comboBoxPiezas->SelectedIndex < 0)
-	{
-		MessageBox::Show("No hay piezas disponibles para agregar.", "Aviso",
-			MessageBoxButtons::OK, MessageBoxIcon::Information);
-		return;
-	}
-
-	String^ lineaId = dgvLineas->SelectedRows[0]->Cells[0]->Value->ToString();
-	String^ itemStr = comboBoxPiezas->SelectedItem->ToString();
-
-	// Determinar tipo y extraer ID de la pieza seleccionada
-	PiezaModel^ pieza = nullptr;
-	if (itemStr->StartsWith("Panel Lateral"))
-	{
-		// Extraer ID del string "Panel Lateral  ID=X  ..."
-		int inicio = itemStr->IndexOf("ID=") + 3;
-		int fin = itemStr->IndexOf("  ", inicio);
-		String^ id = itemStr->Substring(inicio, fin - inicio)->Trim();
-		pieza = ctrlPanel->buscarPorId(id);
-	}
-	else
-	{
-		int inicio = itemStr->IndexOf("ID=") + 3;
-		int fin = itemStr->IndexOf("  ", inicio);
-		String^ id = itemStr->Substring(inicio, fin - inicio)->Trim();
-		pieza = ctrlTecho->buscarPorId(id);
-	}
-
-	if (pieza == nullptr)
-	{
-		MessageBox::Show("No se pudo encontrar la pieza.", "Error",
-			MessageBoxButtons::OK, MessageBoxIcon::Error);
-		return;
+		LineaEnsamblajeModel^ l = ctrlLinea->buscarPorId(lineaId);
+		if (l != nullptr) CargarCola(l);
+		CargarComboPiezas();
 	}
 
-	ctrlLinea->agregarPieza(lineaId, pieza);
 
-	// Marcar pieza como EN_PROCESO para que no aparezca en el combo
-	PanelLateralModel^ pl = dynamic_cast<PanelLateralModel^>(pieza);
-	if (pl != nullptr)
-		ctrlPanel->modificar(pieza->Id, pieza->Material, pieza->Peso,
-			EstadoPieza::EN_PROCESO, pl->PuntosAnclaje, pl->EstacionId);
-	else {
-		EstructuraTechoModel^ et = dynamic_cast<EstructuraTechoModel^>(pieza);
-		if (et != nullptr)
-			ctrlTecho->modificar(pieza->Id, pieza->Material, pieza->Peso,
-				EstadoPieza::EN_PROCESO, et->PuntosUnion, et->Anchura, et->EstacionId);
+	private: System::Void btnRetirarPieza_Click(System::Object^ sender, System::EventArgs^ e) {
+
+		if (dgvLineas->SelectedRows->Count == 0)
+		{
+			MessageBox::Show("Selecciona una linea primero.", "Aviso",
+				MessageBoxButtons::OK, MessageBoxIcon::Information);
+			return;
+		}
+		if (dgvCola->SelectedRows->Count == 0)
+		{
+			MessageBox::Show("Selecciona una pieza de la cola primero.", "Aviso",
+				MessageBoxButtons::OK, MessageBoxIcon::Information);
+			return;
+		}
+
+		String^ lineaId = dgvLineas->SelectedRows[0]->Cells[0]->Value->ToString();
+		String^ piezaId = dgvCola->SelectedRows[0]->Cells[2]->Value->ToString();   // colPiezaId
+		String^ tipoPieza = dgvCola->SelectedRows[0]->Cells[1]->Value->ToString(); // colTipo
+
+		System::Windows::Forms::DialogResult res = MessageBox::Show(
+			"Retirar la pieza " + piezaId + " de la cola de la linea " + lineaId + "?",
+			"Confirmar retiro", MessageBoxButtons::YesNo, MessageBoxIcon::Question);
+		if (res != System::Windows::Forms::DialogResult::Yes) return;
+
+		try
+		{
+			String^ resultado = ctrlLinea->eliminarPieza(lineaId, piezaId, tipoPieza);
+			if (!String::IsNullOrEmpty(resultado))
+			{
+				MessageBox::Show(resultado, "No permitido",
+					MessageBoxButtons::OK, MessageBoxIcon::Warning);
+				return;
+			}
+
+			LineaEnsamblajeModel^ l = ctrlLinea->buscarPorId(lineaId);
+			if (l != nullptr) CargarCola(l);
+			CargarComboPiezas();
+
+			MessageBox::Show("Pieza retirada de la cola.", "Exito",
+				MessageBoxButtons::OK, MessageBoxIcon::Information);
+		}
+		catch (Exception^ ex)
+		{
+			MessageBox::Show("Error: " + ex->Message, "Error",
+				MessageBoxButtons::OK, MessageBoxIcon::Error);
+		}
+
+
+
 	}
 
-	// Recargar
-	LineaEnsamblajeModel^ l = ctrlLinea->buscarPorId(lineaId);
-	if (l != nullptr) CargarCola(l);
-	CargarComboPiezas(); // Para actualizar el combo y remover la pieza agregada
+	private: System::Void btnEliminarCola_Click(System::Object^ sender, System::EventArgs^ e) {
+
+
+		if (dgvLineas->SelectedRows->Count == 0)
+		{
+			MessageBox::Show("Selecciona una linea primero.", "Aviso",
+				MessageBoxButtons::OK, MessageBoxIcon::Information);
+			return;
+		}
+
+		String^ lineaId = dgvLineas->SelectedRows[0]->Cells[0]->Value->ToString();
+
+		System::Windows::Forms::DialogResult res = MessageBox::Show(
+			"Esto eliminara la linea " + lineaId + " completa.\nLas piezas en su cola volveran a estado DISPONIBLE.\nDeseas continuar?",
+			"Confirmar eliminacion", MessageBoxButtons::YesNo, MessageBoxIcon::Warning);
+		if (res != System::Windows::Forms::DialogResult::Yes) return;
+
+		try
+		{
+			String^ resultado = ctrlLinea->eliminar(lineaId);
+			if (!String::IsNullOrEmpty(resultado))
+			{
+				MessageBox::Show(resultado, "No permitido",
+					MessageBoxButtons::OK, MessageBoxIcon::Warning);
+				return;
+			}
+
+			CargarLineas();
+			dgvCola->Rows->Clear();
+			labelLineaSel->Text = "Linea seleccionada: --";
+			labelSecCola->Text = "Cola de piezas -- Linea #--";
+			CargarComboPiezas();
+
+			MessageBox::Show("Linea eliminada y piezas restauradas a DISPONIBLE.", "Exito",
+				MessageBoxButtons::OK, MessageBoxIcon::Information);
+		}
+		catch (Exception^ ex)
+		{
+			MessageBox::Show("Error: " + ex->Message, "Error",
+				MessageBoxButtons::OK, MessageBoxIcon::Error);
+		}
+	}
 
 
 
 
-}
-private: System::Void dgvLineas_CellContentClick(System::Object^ sender, System::Windows::Forms::DataGridViewCellEventArgs^ e) {
-}
+
+
+
+
+
+
+
+
+	private: System::Void dgvLineas_CellContentClick(System::Object^ sender, System::Windows::Forms::DataGridViewCellEventArgs^ e) {
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	}
+	
+
 };
 }

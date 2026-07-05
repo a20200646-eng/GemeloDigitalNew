@@ -723,10 +723,11 @@ namespace LOGIN {
 				   if (e->CantidadPiezas == 0) estLibres++;
 			   label10->Text = estLibres.ToString();
 
-			   // Piezas en cola (total en línea de ensamblaje)
+			   // Piezas en cola (solo EN_PROCESO)
 			   int enCola = 0;
-			   for each (LineaEnsamblajeModel ^ l in ctrlLinea->obtenerTodos())
-				   enCola += l->ColaPiezas->Count;
+			   for each(LineaEnsamblajeModel ^ l in ctrlLinea->obtenerTodos())
+				   for each(PiezaModel ^ p in l->ColaPiezas)
+					   if (p->Estado == EstadoPieza::EN_PROCESO) enCola++;
 			   label12->Text = enCola.ToString();
 		   }
 

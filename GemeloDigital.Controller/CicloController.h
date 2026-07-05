@@ -1,105 +1,211 @@
 #pragma once
+#include "DBConnection.h"
+
 using namespace System;
 using namespace System::Collections::Generic;
-using namespace System::IO;
+using namespace System::Data;
+using namespace System::Data::SqlClient;
 using namespace GemeloDigitalModel;
 
 namespace GemeloDigitalController {
 
     public ref class CicloController {
-    private:
-        
-        List<CicloModel^>^ repositorio;
-        static String^ RUTA = "datos\\ciclos.dat";
-
     public:
-        CicloController() {
-            repositorio = gcnew List<CicloModel^>();
-            cargarArchivo();
-        }
+        CicloController() {}
 
-        // CREATE
+        // ==========================================================
+        // CREATE: INSERTAR CICLO
+        // ==========================================================
         bool agregar(String^ id, double horas, String^ estado) {
             if (buscarPorId(id) != nullptr) return false;
-            repositorio->Add(gcnew CicloModel(id, horas, estado));
-            guardarArchivo();
-            return true;
+
+            SqlConnection^ conn = DBConnection::GetConnection();
+            SqlCommand^ cmd = gcnew SqlCommand("sp_Ciclos_Insertar", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+
+            cmd->Parameters->AddWithValue("@Id", id);
+            cmd->Parameters->AddWithValue("@HorasTrabajadas", horas);
+            cmd->Parameters->AddWithValue("@Estado", estado);
+
+            try {
+                conn->Open();
+                cmd->ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al insertar ciclo: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
         }
 
-        // READ - por ID
+        // ==========================================================
+        // READ: BUSCAR POR ID
+        // ==========================================================
         CicloModel^ buscarPorId(String^ id) {
-            for each (CicloModel ^ c in repositorio)
-                if (c->Id->Equals(id)) return c;
-            return nullptr;
+            CicloModel^ ciclo = nullptr;
+            SqlConnection^ conn = DBConnection::GetConnection();
+            SqlCommand^ cmd = gcnew SqlCommand("sp_Ciclos_ObtenerTodos", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+
+            // No hay sp_Ciclos_BuscarPorId en los SPs entregados,
+            // así que filtramos desde obtenerTodos en memoria.
+            // Alternativa: usar sp_Ciclos_ObtenerTodos y filtrar.
+            try {
+                conn->Open();
+                SqlDataReader^ reader = cmd->ExecuteReader();
+                while (reader->Read()) {
+                    String^ resId = reader->GetValue(0)->ToString();
+                    if (resId->Equals(id)) {
+                        double resHoras = 0.0;
+                        Double::TryParse(reader->GetValue(1)->ToString(), resHoras);
+                        String^ resEstado = reader->GetValue(2)->ToString();
+                        ciclo = gcnew CicloModel(resId, resHoras, resEstado);
+                        break;
+                    }
+                }
+                reader->Close();
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al buscar ciclo por ID: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
+            return ciclo;
         }
 
-        // READ - todos
+        // ==========================================================
+        // READ: OBTENER TODOS
+        // ==========================================================
         List<CicloModel^>^ obtenerTodos() {
-            return repositorio;
+            List<CicloModel^>^ lista = gcnew List<CicloModel^>();
+            SqlConnection^ conn = DBConnection::GetConnection();
+            SqlCommand^ cmd = gcnew SqlCommand("sp_Ciclos_ObtenerTodos", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+
+            try {
+                conn->Open();
+                SqlDataReader^ reader = cmd->ExecuteReader();
+                while (reader->Read()) {
+                    String^ id = reader->GetValue(0)->ToString();
+                    double horas = 0.0;
+                    Double::TryParse(reader->GetValue(1)->ToString(), horas);
+                    String^ estado = reader->GetValue(2)->ToString();
+                    lista->Add(gcnew CicloModel(id, horas, estado));
+                }
+                reader->Close();
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al obtener ciclos: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
+            return lista;
         }
 
-        // READ - solo PENDIENTES
+        // ==========================================================
+        // READ: SOLO PENDIENTES (filtrado en memoria desde BD)
+        // ==========================================================
         List<CicloModel^>^ obtenerPendientes() {
             List<CicloModel^>^ resultado = gcnew List<CicloModel^>();
-            for each (CicloModel ^ c in repositorio)
-                if (c->Estado->Equals("PENDIENTE")) resultado->Add(c);
+            for each (CicloModel ^ c in obtenerTodos())
+                if (c->Estado->Equals("PENDIENTE"))
+                    resultado->Add(c);
             return resultado;
         }
 
-        // UPDATE - marcar como REPORTADO
+        // ==========================================================
+        // UPDATE: MARCAR COMO REPORTADO
+        // ==========================================================
         bool marcarReportado(String^ id) {
-            CicloModel^ c = buscarPorId(id);
-            if (c == nullptr) return false;
-            c->Estado = "REPORTADO";
-            guardarArchivo();
-            return true;
+            return actualizarEstado(id, "REPORTADO");
         }
 
-        // Formato: id|horasTrabajadas|estado
-        void guardarArchivo() {
-            Directory::CreateDirectory("datos");
-            StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
-            for each (CicloModel ^ c in repositorio)
-                sw->WriteLine(String::Format("{0}|{1}|{2}",
-                    c->Id, c->HorasTrabajadas, c->Estado));
-            sw->Close();
-        }
+        bool actualizarEstado(String^ id, String^ nuevoEstado) {
+            SqlConnection^ conn = DBConnection::GetConnection();
+            SqlCommand^ cmd = gcnew SqlCommand("sp_Ciclos_ActualizarEstado", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
 
-        void cargarArchivo() {
-            if (!File::Exists(RUTA)) return;
-            repositorio->Clear();
-            StreamReader^ sr = gcnew StreamReader(RUTA, Text::Encoding::UTF8);
-            String^ linea;
-            while ((linea = sr->ReadLine()) != nullptr) {
-                if (linea->Trim()->Length == 0) continue;
-                array<String^>^ c = linea->Split('|');
-                if (c->Length < 3) continue;
-                repositorio->Add(gcnew CicloModel(
-                    c[0], Double::Parse(c[1]), c[2]));
+            cmd->Parameters->AddWithValue("@Id", id);
+            cmd->Parameters->AddWithValue("@Estado", nuevoEstado);
+
+            try {
+                conn->Open();
+                int filas = cmd->ExecuteNonQuery();
+                return (filas > 0);
             }
-            sr->Close();
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al actualizar estado de ciclo: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
         }
 
-		//Métodos para manejar el ciclo activo (el que se está ejecutando actualmente en la planta)
-        // Ciclo activo
-        static String^ RUTA_ACTIVO = "datos\\ciclo_activo.dat";
-
+        // ==========================================================
+        // CICLO ACTIVO (tabla CicloActivo — 1 solo registro)
+        // ==========================================================
         static void guardarCicloActivo(String^ sufijo) {
-            Directory::CreateDirectory("datos");
-            File::WriteAllText(RUTA_ACTIVO, sufijo, Text::Encoding::UTF8);
+            SqlConnection^ conn = DBConnection::GetConnection();
+            SqlCommand^ cmd = gcnew SqlCommand("sp_CicloActivo_Guardar", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+            cmd->Parameters->AddWithValue("@Sufijo", sufijo);
+
+            try {
+                conn->Open();
+                cmd->ExecuteNonQuery();
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al guardar ciclo activo: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
         }
 
         static String^ obtenerCicloActivo() {
-            if (!File::Exists(RUTA_ACTIVO)) return nullptr;
-            String^ contenido = File::ReadAllText(RUTA_ACTIVO, Text::Encoding::UTF8)->Trim();
-            return (contenido->Length == 0) ? nullptr : contenido;
+            SqlConnection^ conn = DBConnection::GetConnection();
+            SqlCommand^ cmd = gcnew SqlCommand("sp_CicloActivo_Obtener", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+
+            try {
+                conn->Open();
+                Object^ resultado = cmd->ExecuteScalar();
+                if (resultado == nullptr || resultado == DBNull::Value)
+                    return nullptr;
+                String^ val = resultado->ToString()->Trim();
+                return (val->Length == 0) ? nullptr : val;
+            }
+            catch (Exception^) {
+                return nullptr;
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
         }
 
         static void limpiarCicloActivo() {
-            if (File::Exists(RUTA_ACTIVO))
-                File::Delete(RUTA_ACTIVO);
+            SqlConnection^ conn = DBConnection::GetConnection();
+            SqlCommand^ cmd = gcnew SqlCommand("sp_CicloActivo_Eliminar", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+
+            try {
+                conn->Open();
+                cmd->ExecuteNonQuery();
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al limpiar ciclo activo: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
         }
 
-
+        // Compatibilidad — estos métodos ya no hacen nada con archivos
+        void guardarArchivo() {}
+        void cargarArchivo() {}
     };
 }

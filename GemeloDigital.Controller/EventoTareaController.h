@@ -1,86 +1,92 @@
 #pragma once
+#include "DBConnection.h"
+
 using namespace System;
 using namespace System::Collections::Generic;
-using namespace System::IO;
+using namespace System::Data;
+using namespace System::Data::SqlClient;
 using namespace GemeloDigitalModel;
 
 namespace GemeloDigitalController {
 
     public ref class EventoTareaController {
-    private:
-        List<EventoTareaModel^>^ repositorio;
-        static String^ RUTA = "datos\\eventos_tarea.dat";
-
     public:
-        EventoTareaController() {
-            repositorio = gcnew List<EventoTareaModel^>();
-            cargarArchivo();
-        }
+        EventoTareaController() {}
 
-        // CREATE
+        // ==========================================================
+        // CREATE: INSERTAR EVENTO DE TAREA (historial, solo INSERT)
+        // SP: sp_EventosTarea_Insertar(@Id, @Timestamp, @Descripcion,
+        //     @TareaId, @Resultado)
+        // ==========================================================
         bool agregar(String^ id, String^ timestamp, String^ descripcion,
             String^ tareaId, String^ resultado) {
-            if (buscarPorId(id) != nullptr) return false;
-            repositorio->Add(gcnew EventoTareaModel(
-                id, timestamp, descripcion, tareaId, resultado));
-            guardarArchivo();
-            return true;
+
+            // No bloqueamos duplicados — es un historial (append-only)
+            SqlConnection^ conn = DBConnection::GetConnection();
+            SqlCommand^ cmd = gcnew SqlCommand("sp_EventosTarea_Insertar", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+
+            cmd->Parameters->AddWithValue("@Id", id);
+            cmd->Parameters->AddWithValue("@Timestamp", timestamp);
+            cmd->Parameters->AddWithValue("@Descripcion", descripcion);
+            cmd->Parameters->AddWithValue("@TareaId", tareaId);
+            cmd->Parameters->AddWithValue("@Resultado", resultado);
+
+            try {
+                conn->Open();
+                cmd->ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al registrar evento de tarea: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
         }
 
-        // READ - por ID
+        // ==========================================================
+        // READ: BUSCAR POR ID (filtrado en memoria)
+        // ==========================================================
         EventoTareaModel^ buscarPorId(String^ id) {
-            for each (EventoTareaModel ^ e in repositorio)
+            for each (EventoTareaModel ^ e in obtenerTodos())
                 if (e->Id->Equals(id)) return e;
             return nullptr;
         }
 
-        // READ - todos
+        // ==========================================================
+        // READ: OBTENER TODOS (historial completo)
+        // ==========================================================
         List<EventoTareaModel^>^ obtenerTodos() {
-            return repositorio;
-        }
+            List<EventoTareaModel^>^ lista = gcnew List<EventoTareaModel^>();
+            SqlConnection^ conn = DBConnection::GetConnection();
+            SqlCommand^ cmd = gcnew SqlCommand("sp_EventosTarea_ObtenerTodos", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
 
-        // UPDATE - Timestamp y TareaId son inmutables
-        bool modificar(String^ id, String^ descripcion, String^ resultado) {
-            EventoTareaModel^ e = buscarPorId(id);
-            if (e == nullptr) return false;
-            e->Descripcion = descripcion;
-            e->Resultado = resultado;
-            guardarArchivo();
-            return true;
-        }
-
-        // DELETE
-        bool eliminar(String^ id) {
-            EventoTareaModel^ e = buscarPorId(id);
-            if (e == nullptr) return false;
-            repositorio->Remove(e);
-            guardarArchivo();
-            return true;
-        }
-
-        // Formato: id|timestamp|descripcion|tareaId|resultado
-        void guardarArchivo() {
-            Directory::CreateDirectory("datos");
-            StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
-            for each (EventoTareaModel ^ e in repositorio)
-                sw->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}",
-                    e->Id, e->Timestamp, e->Descripcion,
-                    e->TareaId, e->Resultado));
-            sw->Close();
-        }
-
-        void cargarArchivo() {
-            if (!File::Exists(RUTA)) return;
-            repositorio->Clear();
-            StreamReader^ sr = gcnew StreamReader(RUTA, Text::Encoding::UTF8);
-            String^ linea;
-            while ((linea = sr->ReadLine()) != nullptr) {
-                if (linea->Trim()->Length == 0) continue;
-                array<String^>^ c = linea->Split('|');
-                repositorio->Add(gcnew EventoTareaModel(
-                    c[0], c[1], c[2], c[3], c[4]));
+            try {
+                conn->Open();
+                SqlDataReader^ reader = cmd->ExecuteReader();
+                while (reader->Read()) {
+                    String^ id = reader->GetValue(0)->ToString();
+                    String^ timestamp = reader->GetValue(1)->ToString();
+                    String^ descripcion = reader->GetValue(2)->ToString();
+                    String^ tareaId = reader->GetValue(3)->ToString();
+                    String^ resultado = reader->GetValue(4)->ToString();
+                    lista->Add(gcnew EventoTareaModel(id, timestamp, descripcion, tareaId, resultado));
+                }
+                reader->Close();
             }
-            sr->Close();
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al obtener eventos de tarea: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
+            return lista;
         }
+
+        // EventosTarea es solo INSERT y SELECT — no se modifica ni elimina
+        void guardarArchivo() {}
+        void cargarArchivo() {}
     };
 }

@@ -1,39 +1,32 @@
 #pragma once
+#include "DBConnection.h"
 #include "PanelLateralController.h"
 #include "EstructuraTechoController.h"
+#include "CicloController.h"
 
 using namespace System;
 using namespace System::Collections::Generic;
 using namespace System::Data;
 using namespace System::Data::SqlClient;
-using namespace GemeloDigitalModel;
+using namespace GemeloDigitalModel; 
 
 namespace GemeloDigitalController {
 
     public ref class LineaEnsamblajeController {
-    private:
-        String^ connectionString = "Server=bdmijael23.cczveeoo8rq2.us-east-1.rds.amazonaws.com,1433;" +
-            "Database=bdmijael23;" +
-            "User Id=admin;" +
-            "Password=abcd1234;";
-
     public:
         LineaEnsamblajeController() {}
 
-        void cargarArchivo(PanelLateralController^ ctrlPanel, EstructuraTechoController^ ctrlTecho) {
-            // Método vacío para compatibilidad con las invocaciones de tus formularios gráficos.
-        }
+        void cargarArchivo(PanelLateralController^ ctrlPanel, EstructuraTechoController^ ctrlTecho) {}
 
         // ==========================================================
-        // CREATE: AGREGAR LÍNEA
+        // CREATE
         // ==========================================================
         bool agregar(String^ id) {
             if (buscarPorId(id) != nullptr) return false;
 
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             SqlCommand^ cmd = gcnew SqlCommand("sp_LineasEnsamblaje_Insertar", conn);
             cmd->CommandType = CommandType::StoredProcedure;
-
             cmd->Parameters->AddWithValue("@Id", id);
             cmd->Parameters->AddWithValue("@IndiceActual", 0);
             cmd->Parameters->AddWithValue("@SecuenciaAprobada", 0);
@@ -44,7 +37,7 @@ namespace GemeloDigitalController {
                 return true;
             }
             catch (Exception^ ex) {
-                throw gcnew Exception("Error al agregar línea de ensamblaje: " + ex->Message);
+                throw gcnew Exception("Error al agregar linea: " + ex->Message);
             }
             finally {
                 if (conn->State == ConnectionState::Open) conn->Close();
@@ -52,11 +45,11 @@ namespace GemeloDigitalController {
         }
 
         // ==========================================================
-        // READ: BUSCAR LÍNEA POR ID
+        // READ: BUSCAR POR ID
         // ==========================================================
         LineaEnsamblajeModel^ buscarPorId(String^ id) {
             LineaEnsamblajeModel^ lineaObj = nullptr;
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             SqlCommand^ cmd = gcnew SqlCommand("sp_LineasEnsamblaje_BuscarPorId", conn);
             cmd->CommandType = CommandType::StoredProcedure;
             cmd->Parameters->AddWithValue("@Id", id);
@@ -71,35 +64,39 @@ namespace GemeloDigitalController {
                     int resIndiceActual = 0;
                     Int32::TryParse(reader->GetValue(1)->ToString(), resIndiceActual);
 
-                    int resAprobadaInt = 0;
-                    Int32::TryParse(reader->GetValue(2)->ToString(), resAprobadaInt);
-                    bool resSecuenciaAprobada = (resAprobadaInt == 1);
+                    // FIX: BIT de SQL Server puede devolver "True"/"False" o "1"/"0"
+                    bool resSecuenciaAprobada = false;
+                    Object^ valAprobada = reader->GetValue(2);
+                    if (valAprobada != nullptr && valAprobada != DBNull::Value) {
+                        String^ strVal = valAprobada->ToString()->ToLower()->Trim();
+                        resSecuenciaAprobada = (strVal == "1" || strVal == "true");
+                    }
 
                     lineaObj = gcnew LineaEnsamblajeModel(resId);
                     lineaObj->IndiceActual = resIndiceActual;
                     lineaObj->SecuenciaAprobada = resSecuenciaAprobada;
                 }
                 reader->Close();
-
-                if (lineaObj != nullptr) {
-                    CargarColaPiezasParaLinea(lineaObj, conn);
-                }
             }
             catch (Exception^ ex) {
-                throw gcnew Exception("Error al buscar línea por ID: " + ex->Message);
+                throw gcnew Exception("Error al buscar linea por ID: " + ex->Message);
             }
             finally {
                 if (conn->State == ConnectionState::Open) conn->Close();
             }
+
+            if (lineaObj != nullptr)
+                CargarColaPiezasParaLinea(lineaObj);
+
             return lineaObj;
         }
 
         // ==========================================================
-        // READ: OBTENER TODAS LAS LÍNEAS
+        // READ: OBTENER TODAS
         // ==========================================================
         List<LineaEnsamblajeModel^>^ obtenerTodos() {
             List<LineaEnsamblajeModel^>^ lista = gcnew List<LineaEnsamblajeModel^>();
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             SqlCommand^ cmd = gcnew SqlCommand("sp_LineasEnsamblaje_ObtenerTodos", conn);
             cmd->CommandType = CommandType::StoredProcedure;
 
@@ -113,9 +110,13 @@ namespace GemeloDigitalController {
                     int indiceActual = 0;
                     Int32::TryParse(reader->GetValue(1)->ToString(), indiceActual);
 
-                    int aprobadaInt = 0;
-                    Int32::TryParse(reader->GetValue(2)->ToString(), aprobadaInt);
-                    bool secuenciaAprobada = (aprobadaInt == 1);
+                    // FIX: BIT de SQL Server puede devolver "True"/"False" o "1"/"0"
+                    bool secuenciaAprobada = false;
+                    Object^ valAprobada = reader->GetValue(2);
+                    if (valAprobada != nullptr && valAprobada != DBNull::Value) {
+                        String^ strVal = valAprobada->ToString()->ToLower()->Trim();
+                        secuenciaAprobada = (strVal == "1" || strVal == "true");
+                    }
 
                     LineaEnsamblajeModel^ l = gcnew LineaEnsamblajeModel(id);
                     l->IndiceActual = indiceActual;
@@ -123,25 +124,25 @@ namespace GemeloDigitalController {
                     lista->Add(l);
                 }
                 reader->Close();
-
-                for each (LineaEnsamblajeModel ^ l in lista) {
-                    CargarColaPiezasParaLinea(l, conn);
-                }
             }
             catch (Exception^ ex) {
-                throw gcnew Exception("Error al obtener líneas: " + ex->Message);
+                throw gcnew Exception("Error al obtener lineas: " + ex->Message);
             }
             finally {
                 if (conn->State == ConnectionState::Open) conn->Close();
             }
+
+            for each (LineaEnsamblajeModel ^ l in lista)
+                CargarColaPiezasParaLinea(l);
+
             return lista;
         }
 
         // ==========================================================
-        // UPDATE: MODIFICAR LÍNEA
+        // UPDATE
         // ==========================================================
         bool modificar(String^ id, int indiceActual, bool secuenciaAprobada) {
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             SqlCommand^ cmd = gcnew SqlCommand("sp_LineasEnsamblaje_Modificar", conn);
             cmd->CommandType = CommandType::StoredProcedure;
 
@@ -155,7 +156,7 @@ namespace GemeloDigitalController {
                 return (filasAfectadas > 0);
             }
             catch (Exception^ ex) {
-                throw gcnew Exception("Error al modificar línea: " + ex->Message);
+                throw gcnew Exception("Error al modificar linea: " + ex->Message);
             }
             finally {
                 if (conn->State == ConnectionState::Open) conn->Close();
@@ -163,10 +164,23 @@ namespace GemeloDigitalController {
         }
 
         // ==========================================================
-        // DELETE: ELIMINAR LÍNEA
+        // DELETE
         // ==========================================================
-        bool eliminar(String^ id) {
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+        
+        // Devuelve "" si se elimino correctamente, o un mensaje de motivo si esta bloqueado por regla de negocio.
+        // Solo lanza throw para errores tecnicos (BD/conexion).
+        String^ eliminar(String^ id) {
+            if (tieneCicloActivo(id)) {
+                return "No se puede eliminar la linea: tiene un ciclo activo en curso.";
+            }
+
+            // Cargar la linea para conocer las piezas en su cola ANTES de borrar
+            LineaEnsamblajeModel^ l = buscarPorId(id);
+            List<PiezaModel^>^ piezas = (l != nullptr)
+                ? gcnew List<PiezaModel^>(l->ColaPiezas)
+                : gcnew List<PiezaModel^>();
+
+            SqlConnection^ conn = DBConnection::GetConnection();
             try {
                 conn->Open();
 
@@ -178,31 +192,60 @@ namespace GemeloDigitalController {
                 SqlCommand^ cmdLinea = gcnew SqlCommand("sp_LineasEnsamblaje_Eliminar", conn);
                 cmdLinea->CommandType = CommandType::StoredProcedure;
                 cmdLinea->Parameters->AddWithValue("@Id", id);
-
-                int filasAfectadas = cmdLinea->ExecuteNonQuery();
-                return (filasAfectadas > 0);
+                cmdLinea->ExecuteNonQuery();
             }
             catch (Exception^ ex) {
-                throw gcnew Exception("Error al eliminar línea: " + ex->Message);
+                throw gcnew Exception("Error al eliminar linea: " + ex->Message);
             }
             finally {
                 if (conn->State == ConnectionState::Open) conn->Close();
             }
+
+            // Verificamos si realmente se elimino (NOCOUNT ON hace que ExecuteNonQuery no sea confiable)
+            bool eliminada = (buscarPorId(id) == nullptr);
+            if (!eliminada) {
+                return "No se pudo eliminar la linea.";
+            }
+
+            // Restaurar estado DISPONIBLE solo de piezas que NO estan ENSAMBLADA
+            PanelLateralController^ ctrlPanel = gcnew PanelLateralController();
+            EstructuraTechoController^ ctrlTecho = gcnew EstructuraTechoController();
+            for each (PiezaModel ^ p in piezas) {
+                if (p->Estado == EstadoPieza::ENSAMBLADA) continue; // se queda como esta
+
+                PanelLateralModel^ pl = dynamic_cast<PanelLateralModel^>(p);
+                if (pl != nullptr)
+                    ctrlPanel->modificar(p->Id, p->Material, p->Peso,
+                        EstadoPieza::DISPONIBLE, pl->PuntosAnclaje, pl->EstacionId);
+                else {
+                    EstructuraTechoModel^ et = dynamic_cast<EstructuraTechoModel^>(p);
+                    if (et != nullptr)
+                        ctrlTecho->modificar(p->Id, p->Material, p->Peso,
+                            EstadoPieza::DISPONIBLE, et->PuntosUnion, et->Anchura, et->EstacionId);
+                }
+            }
+
+            return ""; // exito
         }
 
+
+
+
+
+
+
+
         // ==========================================================
-        // SOLUCIÓN AL ERROR: AGREGAR PIEZA ENVIANDO EL PARAMETRO @Orden
+        // AGREGAR PIEZA A LA COLA
         // ==========================================================
         bool agregarPieza(String^ idLinea, PiezaModel^ pieza) {
             LineaEnsamblajeModel^ l = buscarPorId(idLinea);
             if (l == nullptr || pieza == nullptr) return false;
 
             l->agregarPieza(pieza);
-
-            // Determinamos la posición/orden en la cola de elementos local
             int posicionOrden = l->ColaPiezas->Count;
 
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             try {
                 conn->Open();
 
@@ -212,37 +255,135 @@ namespace GemeloDigitalController {
                 SqlCommand^ cmd = gcnew SqlCommand("sp_LineaCola_Insertar", conn);
                 cmd->CommandType = CommandType::StoredProcedure;
                 cmd->Parameters->AddWithValue("@LineaId", idLinea);
+                cmd->Parameters->AddWithValue("@Orden", posicionOrden);
                 cmd->Parameters->AddWithValue("@TipoPieza", tipoPieza);
                 cmd->Parameters->AddWithValue("@PiezaId", pieza->Id);
-
-                // INYECTAMOS EL PARÁMETRO FALTANTE REQUERIDO POR TU BASE DE DATOS
-                cmd->Parameters->AddWithValue("@Orden", posicionOrden);
 
                 cmd->ExecuteNonQuery();
                 return true;
             }
             catch (Exception^ ex) {
-                throw gcnew Exception("Error al registrar pieza en la cola de producción en SQL: " + ex->Message);
+                throw gcnew Exception("Error al registrar pieza en cola SQL: " + ex->Message);
             }
             finally {
                 if (conn->State == ConnectionState::Open) conn->Close();
             }
         }
 
+
+        // ==========================================================
+        // RETIRAR UNA PIEZA DE LA COLA (sin borrar la linea)
+        // ==========================================================
+        
+        // Devuelve "" si se retiro correctamente, o un mensaje de motivo si esta bloqueado por regla de negocio.
+        // Solo lanza throw para errores tecnicos (BD/conexion).
+        String^ eliminarPieza(String^ idLinea, String^ piezaId, String^ tipoPieza) {
+            if (tieneCicloActivo(idLinea)) {
+                return "No se puede retirar la pieza: la linea tiene un ciclo activo en curso.";
+            }
+
+            // Verificar estado actual de la pieza antes de retirar
+            EstadoPieza estadoActual;
+            if (tipoPieza->StartsWith("Panel")) {
+                PanelLateralController^ ctrlPanel = gcnew PanelLateralController();
+                PanelLateralModel^ p = ctrlPanel->buscarPorId(piezaId);
+                if (p == nullptr) return "Pieza no encontrada.";
+                estadoActual = p->Estado;
+            }
+            else {
+                EstructuraTechoController^ ctrlTecho = gcnew EstructuraTechoController();
+                EstructuraTechoModel^ e = ctrlTecho->buscarPorId(piezaId);
+                if (e == nullptr) return "Pieza no encontrada.";
+                estadoActual = e->Estado;
+            }
+
+            if (estadoActual == EstadoPieza::ENSAMBLADA) {
+                return "No se puede retirar una pieza ya ENSAMBLADA.";
+            }
+
+            SqlConnection^ conn = DBConnection::GetConnection();
+            SqlCommand^ cmd = gcnew SqlCommand("sp_LineaCola_EliminarPieza", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+            cmd->Parameters->AddWithValue("@LineaId", idLinea);
+            cmd->Parameters->AddWithValue("@PiezaId", piezaId);
+
+            try {
+                conn->Open();
+                cmd->ExecuteNonQuery();
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al retirar pieza de cola: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
+
+            // Restaurar estado DISPONIBLE
+            if (tipoPieza->StartsWith("Panel")) {
+                PanelLateralController^ ctrlPanel = gcnew PanelLateralController();
+                PanelLateralModel^ p = ctrlPanel->buscarPorId(piezaId);
+                if (p != nullptr)
+                    ctrlPanel->modificar(p->Id, p->Material, p->Peso,
+                        EstadoPieza::DISPONIBLE, p->PuntosAnclaje, p->EstacionId);
+            }
+            else {
+                EstructuraTechoController^ ctrlTecho = gcnew EstructuraTechoController();
+                EstructuraTechoModel^ e = ctrlTecho->buscarPorId(piezaId);
+                if (e != nullptr)
+                    ctrlTecho->modificar(e->Id, e->Material, e->Peso,
+                        EstadoPieza::DISPONIBLE, e->PuntosUnion, e->Anchura, e->EstacionId);
+            }
+
+            return ""; // exito
+        }
+
+
+
+        // ==========================================================
+        // VERIFICA SI LA LINEA TIENE UN CICLO ACTIVO EN CURSO
+        // ==========================================================
+        bool tieneCicloActivo(String^ idLinea) {
+            String^ sufijoActivo = CicloController::obtenerCicloActivo();
+            if (sufijoActivo == nullptr) return false;
+            return sufijoActivo->StartsWith(idLinea + "-C");
+        }
+
+
     private:
-        void CargarColaPiezasParaLinea(LineaEnsamblajeModel^ lineaObj, SqlConnection^ conn) {
+        void CargarColaPiezasParaLinea(LineaEnsamblajeModel^ lineaObj) {
             PanelLateralController^ ctrlPanel = gcnew PanelLateralController();
             EstructuraTechoController^ ctrlTecho = gcnew EstructuraTechoController();
 
+            List<array<String^>^>^ filas = gcnew List<array<String^>^>();
+
+            SqlConnection^ conn = DBConnection::GetConnection();
             SqlCommand^ cmd = gcnew SqlCommand("sp_LineaCola_ObtenerPorLinea", conn);
             cmd->CommandType = CommandType::StoredProcedure;
             cmd->Parameters->AddWithValue("@LineaId", lineaObj->Id);
 
-            SqlDataReader^ reader = cmd->ExecuteReader();
-            while (reader->Read()) {
+            try {
+                conn->Open();
+                SqlDataReader^ reader = cmd->ExecuteReader();
+                while (reader->Read()) {
+                    array<String^>^ fila = gcnew array<String^>(2);
+                    fila[0] = reader->GetValue(2)->ToString(); // TipoPieza — posición 2
+                    fila[1] = reader->GetValue(1)->ToString(); // PiezaId — posición 1
+                    filas->Add(fila);
+                }
+                reader->Close();
+   
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al leer cola de piezas: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
+
+            for each (array<String^> ^ fila in filas) {
                 int tipoPieza = 0;
-                Int32::TryParse(reader->GetValue(1)->ToString(), tipoPieza);
-                String^ piezaId = reader->GetValue(2)->ToString();
+                Int32::TryParse(fila[0], tipoPieza);
+                String^ piezaId = fila[1];
 
                 if (tipoPieza == 0) {
                     PanelLateralModel^ p = ctrlPanel->buscarPorId(piezaId);
@@ -253,7 +394,6 @@ namespace GemeloDigitalController {
                     if (e != nullptr) lineaObj->ColaPiezas->Add(e);
                 }
             }
-            reader->Close();
         }
     };
 }

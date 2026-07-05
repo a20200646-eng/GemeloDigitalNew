@@ -10,12 +10,7 @@ namespace GemeloDigitalController {
 
     public ref class EstacionTrabajoController {
     private:
-        // Cadena de conexión configurada exactamente con tus datos de AWS RDS
-        String^ connectionString = "Server=bdmijael23.cczveeoo8rq2.us-east-1.rds.amazonaws.com,1433;" +
-            "Database=bdmijael23;" +
-            "User Id=admin;" +
-            "Password=abcd1234;";
-
+       
     public:
         EstacionTrabajoController() {
             // No requiere lógica de inicialización para archivos locales
@@ -25,7 +20,7 @@ namespace GemeloDigitalController {
         // 1. CREATE: AGREGAR ESTACIÓN DE TRABAJO
         // ==========================================================
         bool agregar(String^ id, TipoEstacion tipo, int cantidadPiezas) {
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             SqlCommand^ cmd = gcnew SqlCommand("sp_EstacionesTrabajo_Insertar", conn);
             cmd->CommandType = CommandType::StoredProcedure;
 
@@ -52,7 +47,7 @@ namespace GemeloDigitalController {
         // ==========================================================
         EstacionTrabajoModel^ buscarPorId(String^ id) {
             EstacionTrabajoModel^ estacion = nullptr;
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             SqlCommand^ cmd = gcnew SqlCommand("sp_EstacionesTrabajo_BuscarPorId", conn);
             cmd->CommandType = CommandType::StoredProcedure;
 
@@ -113,7 +108,7 @@ namespace GemeloDigitalController {
         // ==========================================================
         List<EstacionTrabajoModel^>^ obtenerTodos() {
             List<EstacionTrabajoModel^>^ lista = gcnew List<EstacionTrabajoModel^>();
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             SqlCommand^ cmd = gcnew SqlCommand("sp_EstacionesTrabajo_ObtenerTodos", conn);
             cmd->CommandType = CommandType::StoredProcedure;
 
@@ -162,7 +157,7 @@ namespace GemeloDigitalController {
         // 5. UPDATE: MODIFICAR ESTACIÓN
         // ==========================================================
         bool modificar(String^ id, TipoEstacion tipo, int cantidadPiezas) {
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             SqlCommand^ cmd = gcnew SqlCommand("sp_EstacionesTrabajo_Modificar", conn);
             cmd->CommandType = CommandType::StoredProcedure;
 
@@ -188,7 +183,7 @@ namespace GemeloDigitalController {
         // 6. DELETE: ELIMINAR ESTACIÓN
         // ==========================================================
         bool eliminar(String^ id) {
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             SqlCommand^ cmd = gcnew SqlCommand("sp_EstacionesTrabajo_Eliminar", conn);
             cmd->CommandType = CommandType::StoredProcedure;
 

@@ -10,10 +10,7 @@ namespace GemeloDigitalController {
 
     public ref class PanelLateralController {
     private:
-        String^ connectionString = "Server=bdmijael23.cczveeoo8rq2.us-east-1.rds.amazonaws.com,1433;" +
-            "Database=bdmijael23;" +
-            "User Id=admin;" +
-            "Password=abcd1234;";
+        
 
     public:
         PanelLateralController() {}
@@ -24,7 +21,7 @@ namespace GemeloDigitalController {
         bool agregar(String^ id, String^ material, double peso, LadoPanel lado,
             int puntosAnclaje, String^ estacionId) {
 
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             SqlCommand^ cmd = gcnew SqlCommand("sp_PanelesLaterales_Insertar", conn);
             cmd->CommandType = CommandType::StoredProcedure;
 
@@ -55,7 +52,7 @@ namespace GemeloDigitalController {
         // ==========================================================
         PanelLateralModel^ buscarPorId(String^ id) {
             PanelLateralModel^ panel = nullptr;
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             SqlCommand^ cmd = gcnew SqlCommand("sp_PanelesLaterales_BuscarPorId", conn);
             cmd->CommandType = CommandType::StoredProcedure;
 
@@ -113,7 +110,7 @@ namespace GemeloDigitalController {
         // ==========================================================
         List<PanelLateralModel^>^ obtenerTodos() {
             List<PanelLateralModel^>^ lista = gcnew List<PanelLateralModel^>();
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             SqlCommand^ cmd = gcnew SqlCommand("sp_PanelesLaterales_ObtenerTodos", conn);
             cmd->CommandType = CommandType::StoredProcedure;
 
@@ -179,7 +176,7 @@ namespace GemeloDigitalController {
                 ladoOriginal = static_cast<int>(panelExistente->Lado);
             }
 
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             SqlCommand^ cmd = gcnew SqlCommand("sp_PanelesLaterales_Modificar", conn);
             cmd->CommandType = CommandType::StoredProcedure;
 
@@ -209,7 +206,7 @@ namespace GemeloDigitalController {
         // 5. DELETE: ELIMINAR PANEL LATERAL
         // ==========================================================
         bool eliminar(String^ id) {
-            SqlConnection^ conn = gcnew SqlConnection(connectionString);
+            SqlConnection^ conn = DBConnection::GetConnection();
             SqlCommand^ cmd = gcnew SqlCommand("sp_PanelesLaterales_Eliminar", conn);
             cmd->CommandType = CommandType::StoredProcedure;
 

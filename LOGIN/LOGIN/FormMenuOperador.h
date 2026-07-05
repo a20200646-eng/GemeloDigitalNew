@@ -7,6 +7,8 @@ namespace LOGIN {
 	using namespace System;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
+	using namespace System::Collections::Generic;
+
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
@@ -33,6 +35,10 @@ namespace LOGIN {
 			ctrlCoordinada = gcnew TareaCoordinadaController();
 			ctrlEvento = gcnew EventoTareaController();
 
+			ctrlArticulacion = gcnew ArticulacionController();
+			ctrlGripper = gcnew GripperController();
+			ctrlBrazo = gcnew BrazoRoboticoController();
+
 			tabActivo = 0; // 0=Posicionar 1=Sostener 2=Soldar 3=Coordinada
 
 
@@ -54,6 +60,12 @@ namespace LOGIN {
 		TareaSoldarController^ ctrlSoldar;
 		TareaCoordinadaController^ ctrlCoordinada;
 		EventoTareaController^ ctrlEvento;
+
+
+		// Componentes físicos del brazo (Prioridad 4)
+		ArticulacionController^ ctrlArticulacion;
+		GripperController^ ctrlGripper;
+		BrazoRoboticoController^ ctrlBrazo;
 
 		//
 		LineaEnsamblajeModel^ lineaActual;
@@ -209,7 +221,7 @@ namespace LOGIN {
 				{
 					TareaCoordinadaModel^ t = ctrlCoordinada->buscarPorId(idSel);
 					if (t != nullptr)
-						btnAccion1->Enabled = (t->TotalConfirmado < t->TotalRequerido);
+						btnAccion1->Enabled = (t->TotalConfirmado < t->TotalRequerido) && TareasPreviasCompletadas();
 				}
 			}
 		}
@@ -342,11 +354,12 @@ namespace LOGIN {
 			}
 
 			// Controlar btnAccion1 para tab Coordinada
+			// Controlar btnAccion1 para tab Coordinada
 			if (tabActivo == 3)
 			{
 				TareaCoordinadaModel^ t = ctrlCoordinada->buscarPorId(id);
 				if (t != nullptr)
-					btnAccion1->Enabled = (t->TotalConfirmado < t->TotalRequerido);
+					btnAccion1->Enabled = (t->TotalConfirmado < t->TotalRequerido) && TareasPreviasCompletadas();
 			}
 			
 		}
@@ -543,6 +556,50 @@ namespace LOGIN {
 		}
 
 		// ---------------------------------------------------------------
+		// Mapea el nombre de Rol (brazoActual: "LATERAL_IZQ"/"LATERAL_DER"/
+		// "CENTRAL_SUP") al Id real del brazo en BD ("BR-001", etc.)
+		// ---------------------------------------------------------------
+		String^ ObtenerBrazoIdPorRol(String^ rolStr)
+		{
+			for each(BrazoRoboticoModel ^ b in ctrlBrazo->obtenerTodos())
+				if (b->Rol.ToString() == rolStr) return b->Id;
+			return nullptr;
+		}
+
+		// ---------------------------------------------------------------
+		// Resetea las 6 articulaciones a AnguloMinimo y el gripper a su
+		// estado de reposo — se llama al iniciar una pieza/ciclo nuevo
+		// ---------------------------------------------------------------
+		void ResetearComponentesBrazo(String^ brazoId)
+		{
+			ctrlBrazo->ResetearComponentes(brazoId);
+		}
+
+		// ---------------------------------------------------------------
+		// Regla de bloqueo de Coordinada: exige al menos una tarea
+		// COMPLETADA de cada tipo (Posicionar/Sostener/Soldar) para el
+		// brazoActual antes de permitir "+ Confirmar brazo"
+		// ---------------------------------------------------------------
+		bool TareasPreviasCompletadas()
+		{
+			if (brazoActual == nullptr) return false;
+			bool posOk = false, sosOk = false, solOk = false;
+
+			for each(TareaPosicionarModel ^ t in ctrlPosicionar->obtenerTodos())
+				if (t->Id->Contains(brazoActual) && t->Estado == "COMPLETADA") { posOk = true; break; }
+
+			for each(TareaSostenerModel ^ t in ctrlSostener->obtenerTodos())
+				if (t->Id->Contains(brazoActual) && t->Estado == "COMPLETADA") { sosOk = true; break; }
+
+			for each(TareaSoldarModel ^ t in ctrlSoldar->obtenerTodos())
+				if (t->Id->Contains(brazoActual) && t->Estado == "COMPLETADA") { solOk = true; break; }
+
+			return posOk && sosOk && solOk;
+		}
+
+
+
+		// ---------------------------------------------------------------
 		// Obtener ID de la fila seleccionada (nullptr si no hay)
 		// ---------------------------------------------------------------
 		String^ ObtenerIdSeleccionado()
@@ -580,6 +637,21 @@ namespace LOGIN {
 				}
 				String^ nuevoEstado = (t->Estado == "PENDIENTE") ? "EN CURSO" : "COMPLETADA";
 				ctrlPosicionar->modificar(id, nuevoEstado, t->PosicionObjetivo, t->Tolerancia);
+
+				// Mover las 6 articulaciones: 50% al primer click, 100% al segundo
+				if (brazoActual != nullptr)
+				{
+					String^ brazoId = ObtenerBrazoIdPorRol(brazoActual);
+					if (brazoId != nullptr)
+					{
+						double fraccion = (nuevoEstado == "COMPLETADA") ? 1.0 : 0.5;
+						for each(ArticulacionModel ^ a in ctrlArticulacion->obtenerPorBrazoId(brazoId))
+						{
+							double nuevoAngulo = a->AnguloMinimo + fraccion * (a->AnguloMaximo - a->AnguloMinimo);
+							ctrlArticulacion->modificar(a->Id, nuevoAngulo);
+						}
+					}
+				}
 				break;
 			}
 			case 1: // Sostener — avanzar estado, COMPLETADA automática
@@ -594,6 +666,25 @@ namespace LOGIN {
 				}
 				String^ nuevoEstado = (t->Estado == "PENDIENTE") ? "EN CURSO" : "COMPLETADA";
 				ctrlSostener->modificar(id, nuevoEstado, t->FuerzaSosten, t->Duracion);
+
+				// Avanzar FuerzaAgarre del gripper hasta FuerzaSosten (50%/100%)
+				// Al completarse: Gripper.Abierto = false
+				if (brazoActual != nullptr)
+				{
+					String^ brazoId = ObtenerBrazoIdPorRol(brazoActual);
+					if (brazoId != nullptr)
+					{
+						List<GripperModel^>^ grippers = ctrlGripper->obtenerPorBrazoId(brazoId);
+						if (grippers->Count > 0)
+						{
+							GripperModel^ g = grippers[0];
+							double fraccion = (nuevoEstado == "COMPLETADA") ? 1.0 : 0.5;
+							double nuevaFuerza = fraccion * t->FuerzaSosten;
+							bool nuevoAbierto = (nuevoEstado == "COMPLETADA") ? false : g->Abierto;
+							ctrlGripper->modificar(g->Id, g->Apertura, nuevaFuerza, nuevoAbierto);
+						}
+					}
+				}
 				break;
 			}
 			case 2: // Soldar — incrementar punto, COMPLETADA automática al llegar al objetivo
@@ -609,6 +700,25 @@ namespace LOGIN {
 				int nuevosPuntos = t->PuntosCompletados + 1;
 				String^ nuevoEstado = (nuevosPuntos >= t->PuntosObjetivo) ? "COMPLETADA" : "EN CURSO";
 				ctrlSoldar->modificar(id, nuevoEstado, t->PuntosObjetivo, nuevosPuntos, t->Temperatura);
+
+				// Avanzar Codo y MunecaFlexion: cada punto suma (100% / PuntosObjetivo) del rango
+				if (brazoActual != nullptr)
+				{
+					String^ brazoId = ObtenerBrazoIdPorRol(brazoActual);
+					if (brazoId != nullptr)
+					{
+						double fraccion = (double)nuevosPuntos / (double)t->PuntosObjetivo;
+						if (fraccion > 1.0) fraccion = 1.0;
+						for each(ArticulacionModel ^ a in ctrlArticulacion->obtenerPorBrazoId(brazoId))
+						{
+							if (a->Nombre == "Codo" || a->Nombre == "MunecaFlexion")
+							{
+								double nuevoAngulo = a->AnguloMinimo + fraccion * (a->AnguloMaximo - a->AnguloMinimo);
+								ctrlArticulacion->modificar(a->Id, nuevoAngulo);
+							}
+						}
+					}
+				}
 				break;
 			}
 			case 3: // Coordinada — confirmar, COMPLETADA automática + lógica pieza ensamblada
@@ -692,13 +802,28 @@ namespace LOGIN {
 						ctrlEvento->agregar(eventoId, timestamp, descripcion, id, "COMPLETADA");
 
 						ActualizarPanelLinea();
+
+						// Resetear componentes del brazo que trabajará en la siguiente pieza
+						if (brazoActual != nullptr)
+						{
+							String^ siguienteBrazoId = ObtenerBrazoIdPorRol(brazoActual);
+							if (siguienteBrazoId != nullptr)
+								ResetearComponentesBrazo(siguienteBrazoId);
+						}
+
+						// Retorno automático a Posicionar para la siguiente pieza/brazo
+						CambiarTab(0);
 					}
 				}
 
-				// Deshabilitar botón si ya se completó
-				TareaCoordinadaModel^ actualizado = ctrlCoordinada->buscarPorId(id);
-				if (actualizado != nullptr && actualizado->TotalConfirmado >= actualizado->TotalRequerido)
-					btnAccion1->Enabled = false;
+				// Deshabilitar botón si ya se completó — solo aplica si seguimos en la tab Coordinada
+				// (si ya saltamos a Posicionar por el retorno automático, este check ya no corresponde)
+				if (tabActivo == 3)
+				{
+					TareaCoordinadaModel^ actualizado = ctrlCoordinada->buscarPorId(id);
+					if (actualizado != nullptr && actualizado->TotalConfirmado >= actualizado->TotalRequerido)
+						btnAccion1->Enabled = false;
+				}
 				break;
 			}
 			}

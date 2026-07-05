@@ -1,91 +1,130 @@
 #pragma once
+#include "DBConnection.h"
 using namespace System;
 using namespace System::Collections::Generic;
-using namespace System::IO;
+using namespace System::Data;
+using namespace System::Data::SqlClient;
 using namespace GemeloDigitalModel;
 
 namespace GemeloDigitalController {
 
     public ref class ArticulacionController {
-    private:
-        List<ArticulacionModel^>^ repositorio;
-        static String^ RUTA = "datos\\articulaciones.dat";
-
     public:
-        ArticulacionController() {
-            repositorio = gcnew List<ArticulacionModel^>();
-            cargarArchivo();
-        }
+        ArticulacionController() {}
 
-        // CREATE
+        // CREATE — uso principal: seed inicial
         bool agregar(String^ id, String^ nombre, bool activo,
-            double anguloActual, double anguloMinimo, double anguloMaximo) {
-            if (buscarPorId(id) != nullptr) return false;
-            repositorio->Add(gcnew ArticulacionModel(
-                id, nombre, activo, anguloActual, anguloMinimo, anguloMaximo));
-            guardarArchivo();
-            return true;
-        }
-
-        // READ - por ID
-        ArticulacionModel^ buscarPorId(String^ id) {
-            for each (ArticulacionModel ^ a in repositorio)
-                if (a->Id->Equals(id)) return a;
-            return nullptr;
-        }
-
-        // READ - todos
-        List<ArticulacionModel^>^ obtenerTodos() {
-            return repositorio;
-        }
-
-        // UPDATE - reemplaza todos los atributos modificables
-        bool modificar(String^ id, String^ nombre, bool activo,
-            double anguloActual, double anguloMinimo, double anguloMaximo) {
-            ArticulacionModel^ a = buscarPorId(id);
-            if (a == nullptr) return false;
-            a->Nombre = nombre;
-            a->Activo = activo;
-            a->AnguloActual = anguloActual;
-            a->AnguloMinimo = anguloMinimo;
-            a->AnguloMaximo = anguloMaximo;
-            guardarArchivo();
-            return true;
-        }
-
-        // DELETE
-        bool eliminar(String^ id) {
-            ArticulacionModel^ a = buscarPorId(id);
-            if (a == nullptr) return false;
-            repositorio->Remove(a);
-            guardarArchivo();
-            return true;
-        }
-
-        // Formato: id|nombre|activo|anguloActual|anguloMinimo|anguloMaximo
-        void guardarArchivo() {
-            Directory::CreateDirectory("datos");
-            StreamWriter^ sw = gcnew StreamWriter(RUTA, false, Text::Encoding::UTF8);
-            for each (ArticulacionModel ^ a in repositorio)
-                sw->WriteLine(String::Format("{0}|{1}|{2}|{3}|{4}|{5}",
-                    a->Id, a->Nombre, (a->Activo ? 1 : 0),
-                    a->AnguloActual, a->AnguloMinimo, a->AnguloMaximo));
-            sw->Close();
-        }
-
-        void cargarArchivo() {
-            if (!File::Exists(RUTA)) return;
-            repositorio->Clear();
-            StreamReader^ sr = gcnew StreamReader(RUTA, Text::Encoding::UTF8);
-            String^ linea;
-            while ((linea = sr->ReadLine()) != nullptr) {
-                if (linea->Trim()->Length == 0) continue;
-                array<String^>^ c = linea->Split('|');
-                repositorio->Add(gcnew ArticulacionModel(
-                    c[0], c[1], c[2]->Equals("1"),
-                    Double::Parse(c[3]), Double::Parse(c[4]), Double::Parse(c[5])));
+            double anguloActual, double anguloMinimo, double anguloMaximo, String^ brazoId) {
+            SqlConnection^ conn = DBConnection::GetConnection();
+            SqlCommand^ cmd = gcnew SqlCommand("sp_Articulaciones_Insertar", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+            cmd->Parameters->AddWithValue("@Id", id);
+            cmd->Parameters->AddWithValue("@Nombre", nombre);
+            cmd->Parameters->AddWithValue("@Activo", activo);
+            cmd->Parameters->AddWithValue("@AnguloActual", anguloActual);
+            cmd->Parameters->AddWithValue("@AnguloMinimo", anguloMinimo);
+            cmd->Parameters->AddWithValue("@AnguloMaximo", anguloMaximo);
+            cmd->Parameters->AddWithValue("@BrazoId", brazoId);
+            try {
+                conn->Open();
+                cmd->ExecuteNonQuery();
+                return true;
             }
-            sr->Close();
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al agregar articulacion en SQL: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
+        }
+
+        // READ — todas las articulaciones de un brazo (uso principal: poblar BrazoRoboticoModel)
+        List<ArticulacionModel^>^ obtenerPorBrazoId(String^ brazoId) {
+            List<ArticulacionModel^>^ lista = gcnew List<ArticulacionModel^>();
+            SqlConnection^ conn = DBConnection::GetConnection();
+            SqlCommand^ cmd = gcnew SqlCommand("sp_Articulaciones_ObtenerPorBrazo", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+            cmd->Parameters->AddWithValue("@BrazoId", brazoId);
+            try {
+                conn->Open();
+                SqlDataReader^ reader = cmd->ExecuteReader();
+                while (reader->Read())
+                    lista->Add(LeerArticulacion(reader));
+                reader->Close();
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al obtener articulaciones por brazo: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
+            return lista;
+        }
+
+        // READ — por ID
+        ArticulacionModel^ buscarPorId(String^ id) {
+            ArticulacionModel^ a = nullptr;
+            SqlConnection^ conn = DBConnection::GetConnection();
+            SqlCommand^ cmd = gcnew SqlCommand("sp_Articulaciones_BuscarPorId", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+            cmd->Parameters->AddWithValue("@Id", id);
+            try {
+                conn->Open();
+                SqlDataReader^ reader = cmd->ExecuteReader();
+                if (reader->Read()) a = LeerArticulacion(reader);
+                reader->Close();
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al buscar articulacion por ID: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
+            return a;
+        }
+
+        // UPDATE — solo AnguloActual (campo dinamico que avanzan las tareas del Operador)
+        // sp usa SET NOCOUNT ON -> no confiar en filasAfectadas, verificar con buscarPorId()
+        bool modificar(String^ id, double nuevoAngulo) {
+            SqlConnection^ conn = DBConnection::GetConnection();
+            SqlCommand^ cmd = gcnew SqlCommand("sp_Articulaciones_ActualizarAngulo", conn);
+            cmd->CommandType = CommandType::StoredProcedure;
+            cmd->Parameters->AddWithValue("@Id", id);
+            cmd->Parameters->AddWithValue("@AnguloActual", nuevoAngulo);
+            try {
+                conn->Open();
+                cmd->ExecuteNonQuery();
+            }
+            catch (Exception^ ex) {
+                throw gcnew Exception("Error al actualizar angulo de articulacion: " + ex->Message);
+            }
+            finally {
+                if (conn->State == ConnectionState::Open) conn->Close();
+            }
+
+            ArticulacionModel^ verif = buscarPorId(id);
+            return (verif != nullptr && Math::Abs(verif->AnguloActual - nuevoAngulo) < 0.0001);
+        }
+
+    private:
+        // Lectura blindada de una fila -> ArticulacionModel
+        // Columnas: Id(0) Nombre(1) Activo(2) AnguloActual(3) AnguloMinimo(4) AnguloMaximo(5) BrazoId(6)
+        ArticulacionModel^ LeerArticulacion(SqlDataReader^ reader) {
+            String^ id = reader->GetValue(0)->ToString();
+            String^ nombre = reader->GetValue(1)->ToString();
+
+            bool activo = false;
+            Object^ valActivo = reader->GetValue(2);
+            if (valActivo != nullptr && valActivo != DBNull::Value) {
+                String^ s = valActivo->ToString()->ToLower()->Trim();
+                activo = (s == "1" || s == "true");
+            }
+
+            double anguloActual = 0.0; Double::TryParse(reader->GetValue(3)->ToString(), anguloActual);
+            double anguloMinimo = 0.0; Double::TryParse(reader->GetValue(4)->ToString(), anguloMinimo);
+            double anguloMaximo = 0.0; Double::TryParse(reader->GetValue(5)->ToString(), anguloMaximo);
+
+            return gcnew ArticulacionModel(id, nombre, activo, anguloActual, anguloMinimo, anguloMaximo);
         }
     };
 }
