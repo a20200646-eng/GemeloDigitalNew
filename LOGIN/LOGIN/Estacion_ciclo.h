@@ -520,7 +520,7 @@ namespace LOGIN {
 
 			ctrlPos->agregar("POS-" + cicloSufijo + "-" + brazo, 90.0, 0.5);
 			ctrlSos->agregar("SOS-" + cicloSufijo + "-" + brazo, 10.0, 5);
-			ctrlSol->agregar("SOL-" + cicloSufijo + "-" + brazo, 3, 250.0);
+			ctrlSol->agregar("SOL-" + cicloSufijo + "-" + brazo, 6, 250.0);
 			ctrlCoo->agregar("COO-" + cicloSufijo + "-" + brazo, 1);
 		}
 

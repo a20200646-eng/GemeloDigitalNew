@@ -105,6 +105,9 @@
     <ClInclude Include="DBConnection.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="BrazoFisicoCliente.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GemeloDigital.Controller.cpp">

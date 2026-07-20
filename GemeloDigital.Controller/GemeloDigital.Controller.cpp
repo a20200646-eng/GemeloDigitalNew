@@ -27,3 +27,4 @@
 #include "ReporteController.h"
 #include "ControladorSistema.h"
 #include "CicloController.h"
+#include "BrazoFisicoCliente.h"

@@ -638,20 +638,23 @@ namespace LOGIN {
 				String^ nuevoEstado = (t->Estado == "PENDIENTE") ? "EN CURSO" : "COMPLETADA";
 				ctrlPosicionar->modificar(id, nuevoEstado, t->PosicionObjetivo, t->Tolerancia);
 
-				// Mover las 6 articulaciones: 50% al primer click, 100% al segundo
+				// Simulacion (BD) sin cambios
 				if (brazoActual != nullptr)
 				{
 					String^ brazoId = ObtenerBrazoIdPorRol(brazoActual);
 					if (brazoId != nullptr)
 					{
 						double fraccion = (nuevoEstado == "COMPLETADA") ? 1.0 : 0.5;
-						for each(ArticulacionModel ^ a in ctrlArticulacion->obtenerPorBrazoId(brazoId))
+						for each (ArticulacionModel ^ a in ctrlArticulacion->obtenerPorBrazoId(brazoId))
 						{
 							double nuevoAngulo = a->AnguloMinimo + fraccion * (a->AnguloMaximo - a->AnguloMinimo);
 							ctrlArticulacion->modificar(a->Id, nuevoAngulo);
 						}
 					}
 				}
+				// Brazo fisico: pose grabada (HOME->MOV1 en click 1, HOME->MOV2 en click 2)
+				if (nuevoEstado == "EN CURSO")    BrazoFisicoCliente::irAPose("POSICIONAR_1");
+				else if (nuevoEstado == "COMPLETADA") BrazoFisicoCliente::irAPose("POSICIONAR_2");
 				break;
 			}
 			case 1: // Sostener — avanzar estado, COMPLETADA automática
@@ -685,9 +688,12 @@ namespace LOGIN {
 						}
 					}
 				}
+				// Brazo fisico: pequeno desplazamiento de MOV2 hacia MOV3
+				if (nuevoEstado == "EN CURSO")    BrazoFisicoCliente::irAPose("SOSTENER_1");
+				else if (nuevoEstado == "COMPLETADA") BrazoFisicoCliente::irAPose("SOSTENER_2");
 				break;
 			}
-			case 2: // Soldar — incrementar punto, COMPLETADA automática al llegar al objetivo
+			case 2: // Soldar
 			{
 				TareaSoldarModel^ t = ctrlSoldar->buscarPorId(id);
 				if (t == nullptr) return;
@@ -709,7 +715,8 @@ namespace LOGIN {
 					{
 						double fraccion = (double)nuevosPuntos / (double)t->PuntosObjetivo;
 						if (fraccion > 1.0) fraccion = 1.0;
-						for each(ArticulacionModel ^ a in ctrlArticulacion->obtenerPorBrazoId(brazoId))
+
+						for each (ArticulacionModel ^ a in ctrlArticulacion->obtenerPorBrazoId(brazoId))
 						{
 							if (a->Nombre == "Codo" || a->Nombre == "MunecaFlexion")
 							{
@@ -719,9 +726,11 @@ namespace LOGIN {
 						}
 					}
 				}
+				// Brazo fisico: pose grabada de este punto de soldadura (1-6)
+				BrazoFisicoCliente::irAPose("SOLDAR_" + nuevosPuntos);
 				break;
 			}
-			case 3: // Coordinada — confirmar, COMPLETADA automática + lógica pieza ensamblada
+			case 3: // Coordinada
 			{
 				TareaCoordinadaModel^ t = ctrlCoordinada->buscarPorId(id);
 				if (t == nullptr) return;
@@ -743,6 +752,9 @@ namespace LOGIN {
 
 				if (nuevoEstado == "COMPLETADA")
 				{
+					// Brazo fisico: vuelve a Home siempre, sin importar si queda otra pieza
+					BrazoFisicoCliente::irAPose("HOME");
+
 					// Verificar si todas las COO están completadas
 					int completadas = 0;
 					for each (TareaCoordinadaModel ^ tc in ctrlCoordinada->obtenerTodos())
