@@ -6,7 +6,7 @@ using namespace System::Collections::Generic;
 using namespace System::Data;
 using namespace System::Data::SqlClient;
 using namespace GemeloDigitalModel;
-
+//pedro
 namespace GemeloDigitalController {
 
     public ref class AdministradorController {
